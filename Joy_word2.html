@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Word Quest — Tile Match</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Noto+Sans+KR:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #1a1a2e;
+  --card: #16213e;
+  --card2: #1f3460;
+  --gold: #ffd166;
+  --mint: #06d6a0;
+  --coral: #ff6b6b;
+  --sky: #5bc8f5;
+  --lav: #b388ff;
+  --text: #eaf4fb;
+  --muted: #7a9ab8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex; flex-direction: column;
+  height: 100vh; height: 100dvh;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(91,200,245,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(179,136,255,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* HEADER */
+.header {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  position: relative; z-index: 2;
+}
+.hd-left h1 { font-size: 18px; font-weight: 900; color: var(--gold); }
+.hd-left p  { font-size: 10px; color: var(--muted); font-family: 'Noto Sans KR', sans-serif; margin-top: 1px; }
+.hd-pills { display: flex; gap: 6px; }
+.pill {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px; padding: 3px 10px;
+  font-size: 12px; font-weight: 800; color: var(--gold);
+}
+
+/* TARGET WORDS */
+.targets {
+  flex-shrink: 0;
+  padding: 7px 8px 6px;
+  display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  position: relative; z-index: 2;
+}
+.target-word {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.target-label {
+  font-size: 9px; color: var(--muted);
+  font-family: 'Noto Sans KR', sans-serif; letter-spacing: 0.3px;
+}
+.target-letters { display: flex; gap: 2px; }
+.target-letter {
+  width: 22px; height: 26px;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 900;
+  color: rgba(255,255,255,0.15);
+  transition: all 0.3s;
+}
+.target-letter.filled {
+  background: rgba(6,214,160,0.18);
+  border-color: var(--mint);
+  color: var(--mint);
+  animation: letterPop 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.target-letter.complete {
+  background: rgba(255,209,102,0.18);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+@keyframes letterPop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.target-word.done .target-label { color: var(--mint); }
+.target-word.done .target-label::after { content: ' ✓'; }
+
+/* BOARD */
+.board-wrap {
+  flex: 1; position: relative; overflow: hidden; z-index: 1;
+}
+.board { position: absolute; inset: 6px; }
+
+/* TILE */
+.tile {
+  position: absolute;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none; -webkit-user-select: none;
+  border: none; background: none;
+  transition: box-shadow 0.15s;
+}
+.tile-inner {
+  width: 100%; height: 100%;
+  border-radius: 10px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 1px;
+  box-shadow: 0 5px 0 rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
+  position: relative; overflow: hidden;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+.tile-inner::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 42%;
+  background: rgba(255,255,255,0.12);
+  border-radius: 10px 10px 0 0;
+  pointer-events: none;
+}
+.tile .ltr { font-size: 20px; font-weight: 900; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.5); line-height: 1; }
+.tile .ico { font-size: 10px; line-height: 1; }
+.tile.covered { filter: brightness(0.5) saturate(0.6); pointer-events: none; }
+.tile:not(.covered):active .tile-inner { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.45); }
+.tile.removing { animation: tileVanish 0.3s ease forwards; pointer-events: none; }
+@keyframes tileVanish {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.25); opacity: 1; }
+  100% { transform: scale(0); opacity: 0; }
+}
+
+/* OVERFLOW BAR */
+.overflow-bar {
+  flex-shrink: 0; height: 3px;
+  background: rgba(255,255,255,0.05);
+  position: relative; z-index: 2;
+}
+.overflow-fill {
+  height: 100%; border-radius: 2px;
+  transition: width 0.3s, background 0.3s;
+}
+
+/* SLOT BAR */
+.slot-bar {
+  flex-shrink: 0;
+  padding: 7px 8px 6px;
+  display: flex; gap: 4px; justify-content: center; align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  position: relative; z-index: 2;
+  min-height: 60px;
+}
+.slot {
+  flex: 1;
+  max-width: 52px;
+  min-width: 30px;
+  height: 46px;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px dashed rgba(255,255,255,0.12);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; transition: border-color 0.2s;
+}
+.slot.occupied { border-style: solid; border-color: rgba(255,255,255,0.2); cursor: pointer; }
+.slot.occupied:active { transform: scale(0.94); }
+.slot.danger { border-color: var(--coral) !important; animation: shake 0.4s ease; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)} }
+.slot-tile {
+  width: calc(100% - 4px);
+  height: 40px;
+  border-radius: 8px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 1px;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+  position: relative; overflow: hidden;
+  pointer-events: none;
+}
+.slot-tile::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 42%;
+  background: rgba(255,255,255,0.12);
+  border-radius: 8px 8px 0 0;
+  pointer-events: none;
+}
+.slot-ltr { font-size: 16px; font-weight: 900; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.4); line-height: 1; }
+.slot-ico { font-size: 9px; }
+.slot-tile.match3-anim { animation: match3Pop 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes match3Pop { 0%{transform:scale(1)} 50%{transform:scale(1.3)} 100%{transform:scale(1)} }
+
+/* cancel hint label */
+.slot.occupied::before {
+  content: '↩';
+  position: absolute;
+  top: -8px; right: -6px;
+  font-size: 10px;
+  background: rgba(255,107,107,0.85);
+  color: white;
+  border-radius: 50%;
+  width: 16px; height: 16px;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 10;
+}
+.slot.occupied:hover::before,
+.slot.occupied:active::before { opacity: 1; }
+
+/* CONTROLS */
+.controls {
+  flex-shrink: 0;
+  display: flex; gap: 8px; padding: 5px 14px 10px;
+  justify-content: center; position: relative; z-index: 2;
+}
+.ctrl-btn {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px; padding: 7px 16px;
+  color: var(--text); font-family: 'Nunito', sans-serif;
+  font-size: 12px; font-weight: 800;
+  cursor: pointer; transition: all 0.15s;
+}
+.ctrl-btn:active { transform: scale(0.95); opacity: 0.8; }
+
+/* WORD POPUP */
+.popup-bg {
+  position: fixed; inset: 0;
+  background: rgba(8,12,26,0.88);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; padding: 20px;
+  opacity: 0; pointer-events: none; transition: opacity 0.22s;
+}
+.popup-bg.show { opacity: 1; pointer-events: all; }
+.popup-card {
+  background: var(--card2);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 24px; padding: 26px 22px;
+  text-align: center; max-width: 300px; width: 100%;
+  transform: scale(0.88); transition: transform 0.22s;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+}
+.popup-bg.show .popup-card { transform: scale(1); }
+.wp-emoji { font-size: 52px; display: block; margin-bottom: 10px; animation: bounceIn 0.4s ease; }
+@keyframes bounceIn { 0%{transform:scale(0.3)} 60%{transform:scale(1.15)} 100%{transform:scale(1)} }
+.wp-word { font-size: 26px; font-weight: 900; color: var(--gold); letter-spacing: 3px; margin-bottom: 4px; }
+.wp-kr { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+.wp-sentence {
+  font-size: 13px; color: var(--text); opacity: 0.8; line-height: 1.6;
+  background: rgba(255,255,255,0.05); border-radius: 10px;
+  padding: 8px 12px; margin-bottom: 14px;
+}
+.wp-btn {
+  background: var(--gold); color: #1a1a00;
+  border: none; border-radius: 12px; padding: 11px;
+  font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 900;
+  cursor: pointer; width: 100%;
+}
+.wp-btn:active { transform: scale(0.96); }
+
+/* CLEAR POPUP */
+.clear-card {
+  background: linear-gradient(135deg, var(--card), var(--card2));
+  border: 1.5px solid rgba(255,209,102,0.25);
+  border-radius: 28px; padding: 30px 22px;
+  text-align: center; max-width: 320px; width: 100%;
+  transform: scale(0.85); transition: transform 0.25s;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+}
+.popup-bg.show .clear-card { transform: scale(1); }
+.clear-stars { font-size: 36px; margin-bottom: 8px; }
+.clear-title { font-size: 24px; font-weight: 900; color: var(--gold); margin-bottom: 4px; }
+.clear-sub { font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+.clear-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-bottom: 16px; }
+.cstat { background: rgba(255,255,255,0.05); border-radius: 11px; padding: 9px 4px; }
+.cstat .cn { font-size: 20px; font-weight: 900; color: var(--sky); }
+.cstat .cl { font-size: 10px; color: var(--muted); font-family: 'Noto Sans KR', sans-serif; margin-top: 2px; }
+.clear-btns { display: flex; gap: 8px; }
+.clear-btn {
+  flex: 1; border: none; border-radius: 12px; padding: 11px;
+  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 900; cursor: pointer;
+}
+.clear-btn.primary { background: var(--gold); color: #1a1a00; }
+.clear-btn.secondary { background: rgba(255,255,255,0.08); color: var(--text); }
+
+/* FAIL POPUP */
+.fail-card {
+  background: linear-gradient(135deg, #2a1a1a, #3a1f1f);
+  border: 1.5px solid rgba(255,107,107,0.3);
+  border-radius: 24px; padding: 28px 22px;
+  text-align: center; max-width: 300px; width: 100%;
+  transform: scale(0.85); transition: transform 0.25s;
+}
+.popup-bg.show .fail-card { transform: scale(1); }
+.fail-emoji { font-size: 44px; margin-bottom: 10px; }
+.fail-title { font-size: 20px; font-weight: 900; color: var(--coral); margin-bottom: 5px; }
+.fail-sub { font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+.fail-btn { background: var(--coral); color: white; border: none; border-radius: 12px; padding: 12px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 900; cursor: pointer; width: 100%; }
+
+/* CONFETTI */
+.confetti-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 250; overflow: hidden; }
+.cp { position: absolute; border-radius: 2px; animation: cpFall linear forwards; }
+@keyframes cpFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="hd-left">
+    <h1>⭐ Word Quest</h1>
+    <p id="worldLabel">Stage 1</p>
+  </div>
+  <div class="hd-pills">
+    <div class="pill">🎯 <span id="scoreNum">0</span></div>
+    <div class="pill">⏱ <span id="timerNum">0</span>s</div>
+  </div>
+</div>
+
+<div class="targets" id="targets"></div>
+<div class="overflow-bar"><div class="overflow-fill" id="overflowFill" style="width:0%"></div></div>
+<div class="board-wrap" id="boardWrap"><div class="board" id="board"></div></div>
+<div class="slot-bar" id="slotBar"></div>
+<div class="controls">
+  <button class="ctrl-btn" style="color:var(--sky);border-color:rgba(91,200,245,0.3)" onclick="shuffleBoard()">🔀 Shuffle</button>
+  <button class="ctrl-btn" style="color:var(--gold);border-color:rgba(255,209,102,0.3)" onclick="useHint()">💡 Hint</button>
+  <button class="ctrl-btn" style="color:var(--coral);border-color:rgba(255,107,107,0.3)" onclick="restartStage()">↺ Restart</button>
+</div>
+
+<!-- WORD POPUP -->
+<div class="popup-bg" id="wordPopup">
+  <div class="popup-card">
+    <span class="wp-emoji" id="wpEmoji"></span>
+    <div class="wp-word" id="wpWord"></div>
+    <div class="wp-kr" id="wpKr"></div>
+    <div class="wp-sentence" id="wpSentence"></div>
+    <button class="wp-btn" onclick="closeWordPopup()">Next ➜</button>
+  </div>
+</div>
+
+<!-- CLEAR POPUP -->
+<div class="popup-bg" id="clearPopup">
+  <div class="clear-card">
+    <div class="clear-stars" id="clearStars"></div>
+    <div class="clear-title">Stage Clear! 🎉</div>
+    <div class="clear-sub" id="clearSub"></div>
+    <div class="clear-stats">
+      <div class="cstat"><div class="cn" id="cstatWords">4</div><div class="cl">단어 완성</div></div>
+      <div class="cstat"><div class="cn" id="cstatTime">0s</div><div class="cl">클리어 시간</div></div>
+      <div class="cstat"><div class="cn" id="cstatScore">0</div><div class="cl">점수</div></div>
+    </div>
+    <div class="clear-btns">
+      <button class="clear-btn secondary" onclick="restartStage()">↺ 다시</button>
+      <button class="clear-btn primary" onclick="nextStage()">Next ➜</button>
+    </div>
+  </div>
+</div>
+
+<!-- FAIL POPUP -->
+<div class="popup-bg" id="failPopup">
+  <div class="fail-card">
+    <div class="fail-emoji">😅</div>
+    <div class="fail-title">슬롯이 꽉 찼어요!</div>
+    <div class="fail-sub">슬롯 타일을 클릭하면 취소할 수 있어요!</div>
+    <button class="fail-btn" onclick="closeFailPopup()">알겠어요!</button>
+  </div>
+</div>
+
+<div class="confetti-wrap" id="confettiWrap"></div>
+
+<script>
+// ══════════════════════════════════════════════
+//  ALL WORDS DATA
+// ══════════════════════════════════════════════
+const ALL_WORDS = [
+  { word:'SISTER', kr:'언니/누나', emoji:'👧', sentence:'My sister is very kind.' },
+  { word:'MOTHER', kr:'엄마',      emoji:'👩', sentence:'My mother makes yummy food.' },
+  { word:'FATHER', kr:'아빠',      emoji:'👨', sentence:'My father reads books at night.' },
+  { word:'SCHOOL', kr:'학교',      emoji:'🏫', sentence:'I go to school every morning.' },
+  { word:'BASKET', kr:'바구니',    emoji:'🧺', sentence:'Put the apples in the basket.' },
+  { word:'BRIDGE', kr:'다리',      emoji:'🌉', sentence:'We walked over the bridge.' },
+  { word:'MIRROR', kr:'거울',      emoji:'🪞', sentence:'I see my face in the mirror.' },
+  { word:'CASTLE', kr:'성',        emoji:'🏰', sentence:'The princess lives in a castle.' },
+  { word:'ISLAND', kr:'섬',        emoji:'🏝', sentence:'The island has beautiful beaches.' },
+  { word:'GARDEN', kr:'정원',      emoji:'🌷', sentence:'Flowers grow in the garden.' },
+  { word:'MARKET', kr:'시장',      emoji:'🛒', sentence:'Mom buys food at the market.' },
+  { word:'DANCER', kr:'댄서',      emoji:'💃', sentence:'The dancer spins on the stage.' },
+  { word:'HAPPY',  kr:'행복한',    emoji:'😊', sentence:'She is a very happy girl.' },
+  { word:'FUNNY',  kr:'웃긴',      emoji:'😄', sentence:'He tells funny jokes every day.' },
+  { word:'BRAVE',  kr:'용감한',    emoji:'🦁', sentence:'The brave knight fights the dragon.' },
+  { word:'QUIET',  kr:'조용한',    emoji:'🤫', sentence:'Please be quiet in the library.' },
+  { word:'SMART',  kr:'똑똑한',    emoji:'🧠', sentence:'You are a very smart student.' },
+  { word:'SHINY',  kr:'빛나는',    emoji:'✨', sentence:'The shiny star lit up the sky.' },
+  { word:'DIRTY',  kr:'더러운',    emoji:'🪣', sentence:'Wash your dirty hands before eating.' },
+  { word:'CLOUDY', kr:'흐린',      emoji:'☁️', sentence:'It is a cloudy day outside.' },
+  { word:'GENTLE', kr:'부드러운',  emoji:'🕊', sentence:'She has a gentle and kind voice.' },
+  { word:'MIGHTY', kr:'강력한',    emoji:'💪', sentence:'The mighty lion roared loudly.' },
+  { word:'SLEEPY', kr:'졸린',      emoji:'😴', sentence:'I feel very sleepy after lunch.' },
+  { word:'HUNGRY', kr:'배고픈',    emoji:'🍽', sentence:'The hungry puppy ate all its food.' },
+  { word:'DANCE',  kr:'춤추다',    emoji:'💃', sentence:'We love to dance to music.' },
+  { word:'CLIMB',  kr:'오르다',    emoji:'🧗', sentence:'Can you climb that tall tree?' },
+  { word:'SPEAK',  kr:'말하다',    emoji:'🗣', sentence:'Please speak clearly and slowly.' },
+  { word:'WRITE',  kr:'쓰다',      emoji:'✏️', sentence:'I write in my notebook every day.' },
+  { word:'CHASE',  kr:'쫓다',      emoji:'🏃', sentence:'The dog loves to chase the ball.' },
+  { word:'SMILE',  kr:'웃다',      emoji:'😁', sentence:'Smile and the world smiles back.' },
+  { word:'SHARE',  kr:'나누다',    emoji:'🤝', sentence:'Always share your toys with friends.' },
+  { word:'LISTEN', kr:'듣다',      emoji:'👂', sentence:'Listen carefully to your teacher.' },
+  { word:'TRAVEL', kr:'여행하다',  emoji:'✈️', sentence:'I want to travel around the world.' },
+  { word:'CREATE', kr:'만들다',    emoji:'🎨', sentence:'Let us create something beautiful today.' },
+  { word:'FOLLOW', kr:'따르다',    emoji:'👣', sentence:'Follow the path through the forest.' },
+  { word:'TICKLE', kr:'간지럽히다',emoji:'🤣', sentence:'Do not tickle me! I will laugh.' },
+  { word:'NEVER',  kr:'절대 안',   emoji:'🚫', sentence:'I will never give up my dream.' },
+  { word:'AGAIN',  kr:'다시',      emoji:'🔄', sentence:'Let us try again one more time.' },
+  { word:'EARLY',  kr:'일찍',      emoji:'🌅', sentence:'Birds sing early in the morning.' },
+  { word:'OFTEN',  kr:'자주',      emoji:'📅', sentence:'We often play in the park together.' },
+  { word:'ABOVE',  kr:'위에',      emoji:'⬆️', sentence:'The clouds float above the mountain.' },
+  { word:'BELOW',  kr:'아래에',    emoji:'⬇️', sentence:'Fish swim below the water surface.' },
+  { word:'ALWAYS', kr:'항상',      emoji:'♾', sentence:'Always be kind to your friends.' },
+  { word:'BEFORE', kr:'~전에',     emoji:'⏮', sentence:'Wash hands before every meal.' },
+  { word:'BEHIND', kr:'뒤에',      emoji:'👀', sentence:'Hide behind the big oak tree.' },
+  { word:'INSIDE', kr:'안에',      emoji:'📦', sentence:'Stay inside when it is raining hard.' },
+  { word:'AROUND', kr:'주변에',    emoji:'🔃', sentence:'Look around before you cross the street.' },
+  { word:'ACROSS', kr:'건너서',    emoji:'🌉', sentence:'We swam across the cool river.' },
+  { word:'PLANT',  kr:'식물',      emoji:'🌱', sentence:'Water the plant every morning.' },
+  { word:'WATER',  kr:'물',        emoji:'💧', sentence:'Drink lots of water every day.' },
+  { word:'LIGHT',  kr:'빛',        emoji:'💡', sentence:'Turn on the light in the dark room.' },
+  { word:'EARTH',  kr:'지구',      emoji:'🌍', sentence:'We must take care of the earth.' },
+  { word:'MONEY',  kr:'돈',        emoji:'💰', sentence:'Save your money to buy something nice.' },
+  { word:'NIGHT',  kr:'밤',        emoji:'🌙', sentence:'Stars come out at night.' },
+  { word:'STORY',  kr:'이야기',    emoji:'📖', sentence:'She reads a story before bedtime.' },
+  { word:'PLACE',  kr:'장소',      emoji:'📍', sentence:'This is my favorite place to read.' },
+  { word:'THING',  kr:'물건',      emoji:'📦', sentence:'What is that strange thing over there?' },
+  { word:'BUNCH',  kr:'묶음',      emoji:'🍇', sentence:'I bought a bunch of grapes today.' },
+  { word:'CHECK',  kr:'확인',      emoji:'✅', sentence:'Check your answers before turning in.' },
+  { word:'BLANK',  kr:'빈칸',      emoji:'⬜', sentence:'Fill in the blank with the right word.' },
+];
+
+// 알파벳별 타일 색상
+const LETTER_COLORS = {
+  A:{bg:'#e74c3c',sh:'#c0392b'}, B:{bg:'#e74c3c',sh:'#c0392b'}, C:{bg:'#e67e22',sh:'#ca6f1e'},
+  D:{bg:'#e67e22',sh:'#ca6f1e'}, E:{bg:'#f39c12',sh:'#d68910'}, F:{bg:'#27ae60',sh:'#1e8449'},
+  G:{bg:'#27ae60',sh:'#1e8449'}, H:{bg:'#16a085',sh:'#0e6655'}, I:{bg:'#2980b9',sh:'#1f618d'},
+  J:{bg:'#2980b9',sh:'#1f618d'}, K:{bg:'#8e44ad',sh:'#6c3483'}, L:{bg:'#8e44ad',sh:'#6c3483'},
+  M:{bg:'#c0392b',sh:'#922b21'}, N:{bg:'#d35400',sh:'#a04000'}, O:{bg:'#1abc9c',sh:'#148f77'},
+  P:{bg:'#3498db',sh:'#2471a3'}, Q:{bg:'#9b59b6',sh:'#76448a'}, R:{bg:'#e91e8c',sh:'#b5156b'},
+  S:{bg:'#00897b',sh:'#00695c'}, T:{bg:'#1565c0',sh:'#0d47a1'}, U:{bg:'#6d4c41',sh:'#4e342e'},
+  V:{bg:'#558b2f',sh:'#33691e'}, W:{bg:'#f57c00',sh:'#e65100'}, X:{bg:'#880e4f',sh:'#560027'},
+  Y:{bg:'#827717',sh:'#524c00'}, Z:{bg:'#37474f',sh:'#1c313a'},
+};
+function getColor(l) { return LETTER_COLORS[l] || {bg:'#555',sh:'#333'}; }
+
+// ══════════════════════════════════════════════
+//  GAME STATE
+// ══════════════════════════════════════════════
+let SLOT_MAX = 7; // dynamically set per stage
+const WORDS_PER_STAGE = 4;
+
+let stageWords = [];
+let completedWords = new Set();
+let wordLetterCounts = {}; // letter -> how many still needed across all words
+let tiles = [];
+let slots = [];  // array of {letter, emoji, color, id} | null
+let score = 0, timerSec = 0, timerInterval;
+let gameActive = false;
+let stageCount = 0;
+let pendingPopupQueue = []; // words waiting for popup
+
+// ══════════════════════════════════════════════
+//  STAGE INIT
+// ══════════════════════════════════════════════
+function initStage() {
+  stageCount++;
+  completedWords.clear();
+  pendingPopupQueue = [];
+  gameActive = true;
+
+  // pick 4 random words
+  const shuffled = [...ALL_WORDS].sort(() => Math.random() - 0.5);
+  stageWords = shuffled.slice(0, WORDS_PER_STAGE);
+
+  // SLOT_MAX = 이 스테이지에서 가장 긴 단어 글자 수와 동일
+  SLOT_MAX = Math.max(...stageWords.map(w => w.word.length));
+  slots = Array(SLOT_MAX).fill(null);
+
+  stageWords.forEach(w => {
+    w._filled = Array(w.word.length).fill(false);
+  });
+
+  document.getElementById('worldLabel').textContent = `Stage ${stageCount} · 랜덤 4단어`;
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('timerNum').textContent = 0;
+  timerSec = 0;
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timerSec++;
+    document.getElementById('timerNum').textContent = timerSec;
+  }, 1000);
+
+  renderTargets();
+  renderSlots();
+  buildTiles();
+}
+
+// ══════════════════════════════════════════════
+//  TARGETS RENDER
+// ══════════════════════════════════════════════
+function renderTargets() {
+  document.getElementById('targets').innerHTML = stageWords.map((w, wi) => `
+    <div class="target-word" id="tw-${wi}">
+      <div class="target-label">${w.emoji} ${w.kr}</div>
+      <div class="target-letters">
+        ${w.word.split('').map((_,ci) =>
+          `<div class="target-letter" id="tl-${wi}-${ci}">·</div>`
+        ).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function revealAt(wi, ci) {
+  const el = document.getElementById(`tl-${wi}-${ci}`);
+  if (!el) return;
+  el.textContent = stageWords[wi].word[ci];
+  el.classList.add('filled');
+}
+
+function markWordDone(wi) {
+  document.getElementById(`tw-${wi}`)?.classList.add('done');
+  stageWords[wi].word.split('').forEach((_,ci) => {
+    const el = document.getElementById(`tl-${wi}-${ci}`);
+    el?.classList.remove('filled');
+    el?.classList.add('complete');
+  });
+}
+
+// ══════════════════════════════════════════════
+//  BUILD TILES  (only letters needed, ×3 each)
+// ══════════════════════════════════════════════
+function buildTiles() {
+  const board = document.getElementById('board');
+  const wrap  = document.getElementById('boardWrap');
+  board.innerHTML = '';
+  tiles = [];
+
+  // collect unique letters × 3 copies
+  const letterCounts = {};
+  stageWords.forEach(w => {
+    w.word.split('').forEach(l => {
+      letterCounts[l] = (letterCounts[l] || 0) + 1;
+    });
+  });
+
+  // each unique letter needs exactly 3 tiles (one match = one removal from pool)
+  // For words with repeated letters (e.g. MIRROR: M,I,R,R,O,R) we need 3×each unique letter
+  let pool = [];
+  Object.keys(letterCounts).forEach(l => {
+    // 3 copies per unique letter regardless of frequency in words
+    for (let i = 0; i < 3; i++) {
+      // pick an emoji from a word that contains this letter
+      const sourceWord = stageWords.find(w => w.word.includes(l));
+      pool.push({ letter: l, emoji: sourceWord ? sourceWord.emoji : '⭐' });
+    }
+  });
+
+  // shuffle
+  pool = pool.sort(() => Math.random() - 0.5);
+
+  const bw = wrap.clientWidth - 12;
+  const bh = wrap.clientHeight - 12;
+  const CELL = Math.min(58, Math.max(42, Math.floor(Math.min(bw, bh) / Math.ceil(Math.sqrt(pool.length * 1.6)))));
+
+  const cols = Math.floor(bw / (CELL + 4));
+
+  // place in a loose grid with slight random offset, multiple layers
+  pool.forEach((item, i) => {
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const layerDepth = Math.floor(i / (pool.length / 3));
+
+    const baseX = col * (CELL + 4) + layerDepth * 5;
+    const baseY = row * (CELL + 4) + layerDepth * 4;
+    const jx = (Math.random() - 0.5) * 10;
+    const jy = (Math.random() - 0.5) * 8;
+
+    const x = Math.max(0, Math.min(bw - CELL, baseX + jx));
+    const y = Math.max(0, Math.min(bh - CELL, baseY + jy));
+
+    const id = `t${i}`;
+    const color = getColor(item.letter);
+    const zIdx = layerDepth * 10 + row;
+
+    const el = document.createElement('button');
+    el.className = 'tile';
+    el.id = id;
+    el.style.cssText = `left:${x}px;top:${y}px;width:${CELL}px;height:${CELL}px;z-index:${zIdx};`;
+    el.innerHTML = `<div class="tile-inner" style="background:${color.bg};box-shadow:0 5px 0 ${color.sh},inset 0 1px 0 rgba(255,255,255,0.18);">
+      <span class="ltr">${item.letter}</span>
+      <span class="ico">${item.emoji}</span>
+    </div>`;
+    el.addEventListener('click', () => clickTile(id));
+    board.appendChild(el);
+
+    tiles.push({ id, letter: item.letter, emoji: item.emoji, x, y, w: CELL, h: CELL,
+                 layer: layerDepth, color, el, removed: false });
+  });
+
+  updateCoverage();
+}
+
+// ══════════════════════════════════════════════
+//  COVERAGE CHECK
+// ══════════════════════════════════════════════
+function updateCoverage() {
+  const active = tiles.filter(t => !t.removed);
+  active.forEach(t => {
+    const covered = active.some(o => {
+      if (o.id === t.id || o.layer <= t.layer) return false;
+      const margin = 10;
+      return o.x < t.x + t.w - margin && o.x + o.w > t.x + margin &&
+             o.y < t.y + t.h - margin && o.y + o.h > t.y + margin;
+    });
+    t.covered = covered;
+    t.el.classList.toggle('covered', covered);
+    t.el.style.pointerEvents = covered ? 'none' : 'auto';
+  });
+}
+
+// ══════════════════════════════════════════════
+//  CLICK TILE → to slot
+// ══════════════════════════════════════════════
+function clickTile(id) {
+  if (!gameActive) return;
+  const tile = tiles.find(t => t.id === id);
+  if (!tile || tile.removed || tile.covered) return;
+
+  const emptyIdx = slots.indexOf(null);
+  if (emptyIdx === -1) return;
+
+  // animate: shrink tile, place in slot
+  tile.el.style.transition = 'transform 0.2s, opacity 0.2s';
+  tile.el.style.transform = 'scale(0.5)';
+  tile.el.style.opacity = '0';
+
+  setTimeout(() => {
+    tile.removed = true;
+    tile.el.remove();
+    slots[emptyIdx] = { letter: tile.letter, emoji: tile.emoji, color: tile.color, id: tile.id };
+    renderSlots();
+    updateCoverage();
+    checkTriple();
+    updateOverflow();
+    checkFail();
+  }, 180);
+}
+
+// ══════════════════════════════════════════════
+//  CLICK SLOT → cancel back to board
+// ══════════════════════════════════════════════
+function clickSlot(slotIdx) {
+  if (!gameActive) return;
+  const item = slots[slotIdx];
+  if (!item) return;
+
+  // return tile to board at random free position
+  const wrap = document.getElementById('boardWrap');
+  const board = document.getElementById('board');
+  const bw = wrap.clientWidth - 12;
+  const bh = wrap.clientHeight - 12;
+  const activeTile = tiles.find(t => !t.removed);
+  const CELL = activeTile ? activeTile.w : 50;
+
+  const x = Math.random() * (bw - CELL);
+  const y = Math.random() * (bh - CELL * 0.5);
+  const color = item.color;
+  const newId = `t_r_${Date.now()}`;
+
+  const el = document.createElement('button');
+  el.className = 'tile';
+  el.id = newId;
+  el.style.cssText = `left:${x}px;top:${y}px;width:${CELL}px;height:${CELL}px;z-index:5;opacity:0;transform:scale(0.5);transition:opacity 0.2s,transform 0.2s;`;
+  el.innerHTML = `<div class="tile-inner" style="background:${color.bg};box-shadow:0 5px 0 ${color.sh},inset 0 1px 0 rgba(255,255,255,0.18);">
+    <span class="ltr">${item.letter}</span>
+    <span class="ico">${item.emoji}</span>
+  </div>`;
+  el.addEventListener('click', () => clickTile(newId));
+  board.appendChild(el);
+  requestAnimationFrame(() => {
+    el.style.opacity = '1';
+    el.style.transform = 'scale(1)';
+  });
+
+  const tileObj = { id: newId, letter: item.letter, emoji: item.emoji,
+                    x, y, w: CELL, h: CELL, layer: 0, color, el, removed: false };
+  tiles.push(tileObj);
+
+  // remove from slot
+  slots[slotIdx] = null;
+  // compact
+  const compact = slots.filter(s => s !== null);
+  slots = [...compact, ...Array(SLOT_MAX - compact.length).fill(null)];
+  renderSlots();
+  updateCoverage();
+  updateOverflow();
+}
+
+// ══════════════════════════════════════════════
+//  CHECK TRIPLE — any 3 same letters in slots
+// ══════════════════════════════════════════════
+function checkTriple() {
+  const counts = {};
+  slots.forEach((s, i) => {
+    if (!s) return;
+    if (!counts[s.letter]) counts[s.letter] = [];
+    counts[s.letter].push(i);
+  });
+
+  for (const [letter, idxs] of Object.entries(counts)) {
+    if (idxs.length >= 3) {
+      const toRemove = idxs.slice(0, 3);
+
+      // flash animation
+      toRemove.forEach(i => {
+        document.querySelector(`#slot-${i} .slot-tile`)?.classList.add('match3-anim');
+      });
+
+      setTimeout(() => {
+        toRemove.forEach(i => { slots[i] = null; });
+        // compact left
+        const compact = slots.filter(s => s !== null);
+        slots = [...compact, ...Array(SLOT_MAX - compact.length).fill(null)];
+        renderSlots();
+        updateOverflow();
+
+        // apply letter to any matching word position
+        applyLetterToWords(letter);
+
+        // recurse in case another triple formed
+        setTimeout(checkTriple, 100);
+      }, 380);
+      return;
+    }
+  }
+}
+
+// ══════════════════════════════════════════════
+//  APPLY LETTER → fill ANY matching unfilled position across all words
+//  순서 무관 — 어느 단어든 해당 글자 빈 자리에 채움
+// ══════════════════════════════════════════════
+function applyLetterToWords(letter) {
+  let filled = false;
+
+  for (let wi = 0; wi < stageWords.length; wi++) {
+    const w = stageWords[wi];
+    if (completedWords.has(w.word)) continue;
+
+    // find first unfilled position in this word that matches letter
+    for (let ci = 0; ci < w.word.length; ci++) {
+      if (w.word[ci] === letter && !w._filled[ci]) {
+        w._filled[ci] = true;
+        revealAt(wi, ci);
+        score += 10;
+        document.getElementById('scoreNum').textContent = score;
+        filled = true;
+
+        // check if word fully filled
+        if (w._filled.every(Boolean)) {
+          completedWords.add(w.word);
+          markWordDone(wi);
+          pendingPopupQueue.push(w);
+          setTimeout(flushPopupQueue, 300);
+        }
+        break; // one position per letter application
+      }
+    }
+    if (filled) break;
+  }
+}
+
+// ══════════════════════════════════════════════
+//  POPUP QUEUE (one at a time)
+// ══════════════════════════════════════════════
+function flushPopupQueue() {
+  if (pendingPopupQueue.length === 0) return;
+  if (document.getElementById('wordPopup').classList.contains('show')) return;
+  const w = pendingPopupQueue.shift();
+  showWordPopup(w);
+}
+
+function showWordPopup(w) {
+  document.getElementById('wpEmoji').textContent = w.emoji;
+  document.getElementById('wpWord').textContent = w.word;
+  document.getElementById('wpKr').textContent = w.kr;
+  document.getElementById('wpSentence').textContent = w.sentence;
+  document.getElementById('wordPopup').classList.add('show');
+  speak(w.word);
+}
+
+function closeWordPopup() {
+  document.getElementById('wordPopup').classList.remove('show');
+  setTimeout(() => {
+    if (pendingPopupQueue.length > 0) {
+      flushPopupQueue();
+    } else if (completedWords.size === WORDS_PER_STAGE) {
+      setTimeout(showClear, 300);
+    }
+  }, 200);
+}
+
+// ══════════════════════════════════════════════
+//  SLOT RENDER
+// ══════════════════════════════════════════════
+function renderSlots() {
+  // 슬롯 크기: 칸 수에 따라 동적 조절
+  const barW = document.getElementById('slotBar').clientWidth - 20;
+  const slotW = Math.min(52, Math.max(32, Math.floor(barW / SLOT_MAX) - 5));
+  const slotH = Math.round(slotW * 1.15);
+  const innerW = slotW - 4;
+  const innerH = slotH - 6;
+  const fontSize = Math.max(12, Math.round(slotW * 0.38));
+  const icoSize = Math.max(7, Math.round(slotW * 0.18));
+
+  document.getElementById('slotBar').innerHTML = slots.map((s, i) => {
+    if (!s) return `<div class="slot" id="slot-${i}" style="width:${slotW}px;height:${slotH}px;"></div>`;
+    return `<div class="slot occupied" id="slot-${i}" onclick="clickSlot(${i})" title="탭하면 취소" style="width:${slotW}px;height:${slotH}px;">
+      <div class="slot-tile" style="width:${innerW}px;height:${innerH}px;background:${s.color.bg};box-shadow:0 3px 0 ${s.color.sh},inset 0 1px 0 rgba(255,255,255,0.15);">
+        <span class="slot-ltr" style="font-size:${fontSize}px;">${s.letter}</span>
+        <span class="slot-ico" style="font-size:${icoSize}px;">${s.emoji}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateOverflow() {
+  const filled = slots.filter(s => s !== null).length;
+  const pct = (filled / SLOT_MAX) * 100;
+  const fill = document.getElementById('overflowFill');
+  fill.style.width = pct + '%';
+  const dangerThreshold = Math.max(SLOT_MAX - 1, 1);
+  fill.style.background = filled >= SLOT_MAX ? 'var(--coral)' : filled >= Math.ceil(SLOT_MAX * 0.6) ? 'var(--gold)' : 'var(--mint)';
+
+  // danger border on slots
+  document.querySelectorAll('.slot.occupied').forEach(el => {
+    el.classList.toggle('danger', filled >= dangerThreshold);
+  });
+}
+
+function checkFail() {
+  if (slots.filter(s => s !== null).length >= SLOT_MAX) {
+    gameActive = false;
+    clearInterval(timerInterval);
+    setTimeout(() => document.getElementById('failPopup').classList.add('show'), 300);
+  }
+}
+
+function closeFailPopup() {
+  document.getElementById('failPopup').classList.remove('show');
+  gameActive = true;
+  // restart timer
+  timerInterval = setInterval(() => {
+    timerSec++;
+    document.getElementById('timerNum').textContent = timerSec;
+  }, 1000);
+}
+
+// ══════════════════════════════════════════════
+//  CLEAR
+// ══════════════════════════════════════════════
+function showClear() {
+  clearInterval(timerInterval);
+  const t = timerSec;
+  const stars = t < 60 ? '⭐⭐⭐' : t < 120 ? '⭐⭐' : '⭐';
+  const msg = t < 60 ? '완벽해요! 1분 이내 클리어!' : t < 120 ? '잘했어요!' : '훌륭해요!';
+  document.getElementById('clearStars').textContent = stars;
+  document.getElementById('clearSub').textContent = msg;
+  document.getElementById('cstatWords').textContent = WORDS_PER_STAGE;
+  document.getElementById('cstatTime').textContent = t + 's';
+  document.getElementById('cstatScore').textContent = score;
+  document.getElementById('clearPopup').classList.add('show');
+  launchConfetti();
+}
+
+// ══════════════════════════════════════════════
+//  SHUFFLE / HINT
+// ══════════════════════════════════════════════
+function shuffleBoard() {
+  const wrap = document.getElementById('boardWrap');
+  const bw = wrap.clientWidth - 12;
+  const bh = wrap.clientHeight - 12;
+  tiles.filter(t => !t.removed).forEach(t => {
+    const nx = Math.random() * (bw - t.w);
+    const ny = Math.random() * (bh - t.h);
+    t.x = nx; t.y = ny;
+    t.el.style.transition = 'left 0.35s cubic-bezier(0.34,1.2,0.64,1), top 0.35s cubic-bezier(0.34,1.2,0.64,1)';
+    t.el.style.left = nx + 'px';
+    t.el.style.top  = ny + 'px';
+    setTimeout(() => { t.el.style.transition = ''; }, 400);
+  });
+  setTimeout(updateCoverage, 410);
+}
+
+function useHint() {
+  for (const w of stageWords) {
+    if (completedWords.has(w.word)) continue;
+    // find first unfilled position index
+    const idx = w._filled.findIndex(filled => !filled);
+    if (idx === -1) continue;
+    const letter = w.word[idx];
+    // highlight up to 2 matching uncovered tiles
+    const matches = tiles.filter(t => !t.removed && !t.covered && t.letter === letter);
+    if (matches.length === 0) continue;
+    matches.slice(0, 2).forEach(t => {
+      t.el.style.transition = 'transform 0.15s, box-shadow 0.15s';
+      t.el.style.transform = 'scale(1.2) translateY(-4px)';
+      t.el.style.boxShadow = '0 0 18px var(--gold)';
+      setTimeout(() => {
+        t.el.style.transition = 'transform 0.2s, box-shadow 0.2s';
+        t.el.style.transform = '';
+        t.el.style.boxShadow = '';
+      }, 900);
+    });
+    return;
+  }
+}
+
+// ══════════════════════════════════════════════
+//  RESTART / NEXT
+// ══════════════════════════════════════════════
+function restartStage() {
+  document.getElementById('clearPopup').classList.remove('show');
+  document.getElementById('failPopup').classList.remove('show');
+  document.getElementById('wordPopup').classList.remove('show');
+  score = Math.max(0, score - 30);
+  stageCount = Math.max(0, stageCount - 1);
+  initStage();
+}
+
+function nextStage() {
+  document.getElementById('clearPopup').classList.remove('show');
+  initStage();
+}
+
+// ══════════════════════════════════════════════
+//  CONFETTI / TTS
+// ══════════════════════════════════════════════
+function launchConfetti() {
+  const wrap = document.getElementById('confettiWrap');
+  wrap.innerHTML = '';
+  const colors = ['#ffd166','#ff6b6b','#5bc8f5','#06d6a0','#b388ff','#ff9f43'];
+  for (let i = 0; i < 65; i++) {
+    const el = document.createElement('div');
+    el.className = 'cp';
+    el.style.cssText = `left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};
+      width:${4+Math.random()*8}px;height:${4+Math.random()*8}px;
+      border-radius:${Math.random()>.5?'50%':'2px'};
+      animation-duration:${1.5+Math.random()*2.5}s;
+      animation-delay:${Math.random()*0.5}s;`;
+    wrap.appendChild(el);
+  }
+  setTimeout(() => wrap.innerHTML = '', 5000);
+}
+
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance(text.toLowerCase());
+  u.lang = 'en-US'; u.rate = 0.85; u.pitch = 1.1;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+window.addEventListener('load', initStage);
+window.addEventListener('resize', () => { buildTiles(); });
+</script>
+</body>
+</html>

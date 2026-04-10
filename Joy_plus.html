@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>기쁨이의 수학 왕국 모험 🏰</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sky:#1a1a2e; --deep:#16213e; --panel:#0f3460;
+  --gold:#ffd700; --silver:#c0c0c0; --accent:#e94560;
+  --green:#4ecca3; --blue:#4d96ff; --orange:#ff9f1c;
+  --purple:#c77dff; --pink:#ff61a6;
+  --r:18px; --shadow:0 8px 32px rgba(0,0,0,.5);
+  --jua:'Jua',sans-serif; --nun:'Nunito',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+html,body{width:100%;height:100%;overflow:hidden}
+body{
+  font-family:var(--nun);
+  background:var(--sky);
+  color:#fff;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── CANVAS ── */
+#root{
+  width:min(100vw,640px);
+  height:min(100vh,900px);
+  position:relative;
+  overflow:hidden;
+  border-radius:0;
+}
+@media(min-width:660px){ #root{border-radius:24px;box-shadow:0 0 80px rgba(233,69,96,.3)} }
+
+/* ── SCREENS ── */
+.screen{
+  position:absolute;inset:0;
+  display:none;flex-direction:column;
+  background:var(--deep);
+  overflow-y:auto;overflow-x:hidden;
+}
+.screen.active{display:flex}
+
+/* ─── PARALLAX BG ─── */
+.bg-layer{
+  position:absolute;inset:0;pointer-events:none;z-index:0;
+  overflow:hidden;
+}
+.bg-stars{background:radial-gradient(ellipse at 20% 30%,#1c2951 0%,var(--sky) 60%)}
+.cloud{
+  position:absolute;border-radius:50px;background:rgba(255,255,255,.06);
+  animation:cloudFloat var(--d,20s) linear infinite;
+}
+@keyframes cloudFloat{from{transform:translateX(-200px)}to{transform:translateX(110%)} }
+
+/* ─── TITLE SCREEN ─── */
+#screen-title{
+  align-items:center;justify-content:center;
+  background:linear-gradient(160deg,#0d0d2b,#1a0a3d 50%,#0d1b3e);
+}
+.title-castle{font-size:5rem;margin-bottom:8px;animation:castleFloat 3s ease-in-out infinite}
+@keyframes castleFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-16px) rotate(2deg)}}
+.title-h1{font-family:var(--jua);font-size:2.4rem;text-align:center;line-height:1.2;
+  background:linear-gradient(135deg,var(--gold),#ff9f1c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 12px rgba(255,215,0,.5));margin-bottom:6px}
+.title-sub{color:#a8c8e8;font-size:.95rem;margin-bottom:32px;text-align:center}
+.title-hero{font-size:4rem;animation:heroFloat 2.5s ease-in-out infinite}
+@keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.big-btn{
+  padding:18px 40px;border-radius:var(--r);border:none;cursor:pointer;
+  font-family:var(--jua);font-size:1.5rem;color:#111;
+  background:linear-gradient(135deg,var(--gold),var(--orange));
+  box-shadow:0 6px 24px rgba(255,215,0,.4);
+  transition:transform .15s,box-shadow .15s;
+  position:relative;overflow:hidden;
+}
+.big-btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.15);
+  transform:translateX(-100%) skewX(-20deg);transition:transform .4s}
+.big-btn:hover::after{transform:translateX(200%) skewX(-20deg)}
+.big-btn:active{transform:scale(.96)}
+.big-btn:hover{transform:scale(1.04);box-shadow:0 10px 32px rgba(255,215,0,.5)}
+
+/* ─── MAP SCREEN ─── */
+#screen-map{overflow:hidden}
+.map-header{
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(0,0,0,.4);padding:12px 16px;
+  flex-shrink:0;z-index:10;position:relative;
+  border-bottom:2px solid rgba(255,255,255,.08);
+}
+.player-info{display:flex;align-items:center;gap:10px}
+.avatar{font-size:2rem}
+.stat-bar{display:flex;flex-direction:column;gap:2px}
+.player-name{font-family:var(--jua);font-size:1rem;color:var(--gold)}
+.hp-row{display:flex;gap:3px}
+.heart{font-size:1.1rem;transition:transform .2s}
+.xp-row{display:flex;align-items:center;gap:6px;font-size:.75rem;color:#a8c8e8}
+.xp-bar-bg{width:80px;height:6px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
+.xp-bar{height:100%;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .5s}
+.star-count{font-family:var(--jua);font-size:1.1rem;color:var(--gold);display:flex;align-items:center;gap:4px}
+
+/* MAP SCROLL */
+.map-world{
+  flex:1;position:relative;
+  background:linear-gradient(180deg,#0d1f3c 0%,#122a45 40%,#0d1a2e 100%);
+  overflow:hidden;min-height:0;
+}
+.map-path{position:absolute;inset:0}
+
+/* World nodes */
+.world-node{
+  position:absolute;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;z-index:5;
+  transition:transform .2s;
+}
+.world-node:hover{transform:translate(-50%,-50%) scale(1.08)}
+.world-node:active{transform:translate(-50%,-50%) scale(.95)}
+.node-circle{
+  width:72px;height:72px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:2rem;
+  border:4px solid rgba(255,255,255,.2);
+  box-shadow:0 4px 20px rgba(0,0,0,.5),0 0 0 0 rgba(255,215,0,.5);
+  position:relative;
+  transition:box-shadow .3s;
+}
+.world-node.unlocked .node-circle{
+  border-color:var(--gold);
+  animation:nodePulse 2s ease-in-out infinite;
+}
+@keyframes nodePulse{0%,100%{box-shadow:0 4px 20px rgba(0,0,0,.5),0 0 0 0 rgba(255,215,0,.5)}
+  50%{box-shadow:0 4px 20px rgba(0,0,0,.5),0 0 0 12px rgba(255,215,0,0)}}
+.world-node.locked .node-circle{filter:grayscale(.8);opacity:.5}
+.world-node.completed .node-circle{border-color:var(--green)}
+.node-label{font-family:var(--jua);font-size:.8rem;text-align:center;
+  background:rgba(0,0,0,.7);padding:3px 8px;border-radius:10px;white-space:nowrap}
+.node-stars{font-size:.9rem}
+.connecting-path{
+  position:absolute;background:rgba(255,255,255,.12);
+  transform-origin:left center;z-index:2;
+  border-radius:3px;height:6px;
+}
+.connecting-path.active{background:var(--gold);opacity:.5}
+
+/* ─── BATTLE / GAME SCREEN ─── */
+#screen-battle{background:linear-gradient(160deg,#0a0a1a,#1a0a2e)}
+.battle-scene{
+  position:relative;height:200px;flex-shrink:0;
+  background:linear-gradient(180deg,#0d1b3e 0%,#1a2e4a 60%,#2a4a3a 100%);
+  overflow:hidden;
+}
+.ground{position:absolute;bottom:0;left:0;right:0;height:40px;
+  background:linear-gradient(180deg,#2a4a3a,#1a3020);border-top:2px solid rgba(255,255,255,.1)}
+.hero-sprite{position:absolute;bottom:38px;left:60px;font-size:3.5rem;
+  animation:heroIdle 1.5s ease-in-out infinite}
+@keyframes heroIdle{0%,100%{transform:translateY(0) scaleX(1)}50%{transform:translateY(-6px) scaleX(1)}}
+.hero-sprite.attacking{animation:heroAttack .5s ease-out forwards}
+@keyframes heroAttack{0%{transform:translateX(0)}50%{transform:translateX(60px)}100%{transform:translateX(0)}}
+.enemy-sprite{position:absolute;bottom:38px;right:60px;font-size:3.5rem;
+  animation:enemyIdle 2s ease-in-out infinite;transition:transform .3s}
+@keyframes enemyIdle{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-4px) rotate(3deg)}}
+.enemy-sprite.hurt{animation:enemyHurt .4s forwards}
+@keyframes enemyHurt{0%{transform:translateX(0)}25%{transform:translateX(30px) scale(.8)}75%{transform:translateX(-10px)}100%{transform:translateX(0)}}
+
+/* HP bars */
+.hp-bars{display:flex;justify-content:space-between;padding:0 12px;margin-top:4px}
+.hp-bar-block{flex:1;max-width:45%}
+.hp-bar-label{font-family:var(--jua);font-size:.8rem;color:#a8c8e8;margin-bottom:3px}
+.hp-bar-track{height:12px;background:rgba(255,255,255,.1);border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,.15)}
+.hp-bar-fill{height:100%;border-radius:6px;transition:width .5s;background:linear-gradient(90deg,#6bcb77,#4caf50)}
+.hp-bar-fill.low{background:linear-gradient(90deg,#ff9f1c,#ff6b6b)}
+.hp-val{font-size:.75rem;color:#a8c8e8;margin-top:2px}
+
+/* Enemy HP */
+.enemy-hp-fill{background:linear-gradient(90deg,#ff6b6b,#e94560)}
+
+/* Battle area */
+.battle-content{flex:1;padding:16px;display:flex;flex-direction:column;align-items:center;overflow-y:auto;min-height:0}
+.battle-story{
+  background:rgba(0,0,0,.4);border-radius:var(--r);padding:12px 16px;
+  margin-bottom:16px;width:100%;border:1px solid rgba(255,255,255,.1);
+  font-size:.9rem;color:#c8dff0;line-height:1.5;
+}
+.battle-story .enemy-name{font-family:var(--jua);color:var(--accent);font-size:1rem}
+.question-panel{
+  background:rgba(0,0,0,.5);border-radius:var(--r);
+  padding:16px;width:100%;margin-bottom:16px;
+  border:2px solid rgba(255,255,255,.12);text-align:center;
+}
+.question-label{font-size:.8rem;color:#a8c8e8;margin-bottom:6px;letter-spacing:.05em;text-transform:uppercase}
+.question-text{font-family:var(--jua);font-size:2.2rem;color:var(--gold);line-height:1.2}
+.question-text .op{color:var(--green)}
+.question-text .eq{color:#a8c8e8}
+.timer-bar-bg{height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;margin-top:10px}
+.timer-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .1s linear}
+
+.answer-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
+.answer-btn{
+  padding:20px;border-radius:var(--r);border:3px solid rgba(255,255,255,.15);
+  font-family:var(--jua);font-size:1.8rem;color:#fff;cursor:pointer;
+  background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+  transition:transform .12s,background .12s,border-color .12s;
+  box-shadow:0 4px 16px rgba(0,0,0,.3);
+  position:relative;overflow:hidden;
+}
+.answer-btn:active{transform:scale(.94)}
+.answer-btn:hover{border-color:rgba(255,255,255,.4);transform:scale(1.03)}
+.answer-btn.correct{
+  background:linear-gradient(135deg,#2d6a4f,#4caf50)!important;
+  border-color:#6bcb77!important;
+  animation:btnPop .35s cubic-bezier(.36,1.56,.64,1);
+}
+.answer-btn.wrong{
+  background:linear-gradient(135deg,#6b2d2d,#e53935)!important;
+  border-color:#ff6b6b!important;
+  animation:btnShake .4s;
+}
+@keyframes btnPop{0%{transform:scale(1)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes btnShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+
+/* COMBO */
+.combo-badge{
+  position:absolute;top:-40px;left:50%;transform:translateX(-50%);
+  font-family:var(--jua);font-size:1.2rem;color:var(--gold);
+  animation:comboPop .6s forwards;
+  pointer-events:none;white-space:nowrap;
+}
+@keyframes comboPop{0%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
+  100%{opacity:0;transform:translateX(-50%) translateY(-40px) scale(1.4)}}
+
+/* ─── RESULT SCREEN ─── */
+#screen-result{align-items:center;justify-content:center;
+  background:linear-gradient(160deg,#0a0a1a,#1a0a2e)}
+.result-card{
+  background:rgba(255,255,255,.05);border-radius:24px;
+  padding:32px 24px;text-align:center;width:90%;max-width:420px;
+  border:2px solid var(--gold);box-shadow:0 20px 60px rgba(0,0,0,.6);
+  animation:cardSlide .5s cubic-bezier(.36,1.56,.64,1);
+}
+@keyframes cardSlide{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.result-trophy{font-size:4rem;margin-bottom:8px;animation:trophySpin 1s ease-out}
+@keyframes trophySpin{from{transform:rotate(-20deg) scale(.5)}to{transform:rotate(0) scale(1)}}
+.result-title{font-family:var(--jua);font-size:1.8rem;color:var(--gold);margin-bottom:4px}
+.result-story{font-size:.9rem;color:#a8c8e8;margin-bottom:20px;line-height:1.5}
+.result-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.stat-box{background:rgba(0,0,0,.3);border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,.1)}
+.stat-box .stat-val{font-family:var(--jua);font-size:1.6rem;color:var(--gold)}
+.stat-box .stat-name{font-size:.75rem;color:#a8c8e8;margin-top:2px}
+.star-rating{font-size:2rem;margin-bottom:20px;letter-spacing:4px}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.sm-btn{
+  padding:12px 22px;border-radius:14px;border:none;cursor:pointer;
+  font-family:var(--jua);font-size:1.1rem;
+  transition:transform .12s;
+}
+.sm-btn:active{transform:scale(.95)}
+.sm-btn:hover{transform:scale(1.04)}
+.sm-btn.primary{background:linear-gradient(135deg,var(--gold),var(--orange));color:#111}
+.sm-btn.secondary{background:rgba(255,255,255,.12);color:#fff;border:2px solid rgba(255,255,255,.2)}
+
+/* ─── FLOATING EFFECTS ─── */
+.float-text{
+  position:fixed;pointer-events:none;z-index:999;
+  font-family:var(--jua);font-size:1.6rem;
+  animation:floatUp .9s ease-out forwards;
+}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-80px) scale(1.3)}}
+
+.confetti-p{
+  position:fixed;pointer-events:none;z-index:998;
+  width:10px;height:10px;
+  animation:cfall var(--d,2s) ease-in var(--dl,0s) forwards;
+}
+@keyframes cfall{0%{transform:translateY(-10px) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+/* LEVEL UP overlay */
+.levelup-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;
+  display:flex;align-items:center;justify-content:center;
+  animation:fadein .3s;
+}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.levelup-card{
+  background:linear-gradient(135deg,#1a0a3d,#0a1a3d);
+  border-radius:24px;padding:36px 28px;text-align:center;
+  max-width:340px;width:90%;
+  border:3px solid var(--gold);
+  box-shadow:0 0 60px rgba(255,215,0,.3);
+  animation:pop .4s cubic-bezier(.36,1.56,.64,1);
+}
+@keyframes pop{from{transform:scale(.5) rotate(-5deg)}to{transform:scale(1) rotate(0)}}
+.levelup-card h2{font-family:var(--jua);font-size:2rem;color:var(--gold);margin-bottom:8px}
+.levelup-card p{color:#a8c8e8;margin-bottom:20px;line-height:1.5}
+</style>
+</head>
+<body>
+<div id="root">
+
+<!-- ══ TITLE SCREEN ══ -->
+<div id="screen-title" class="screen active">
+  <div class="bg-layer bg-stars"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:24px">
+    <div class="title-castle">🏰</div>
+    <h1 class="title-h1">기쁨이의<br>수학 왕국 모험!</h1>
+    <p class="title-sub">수학 마법으로 왕국을 구해요! ⚔️✨</p>
+    <div class="title-hero">🧙‍♀️</div>
+    <div style="height:24px"></div>
+    <button class="big-btn" onclick="showMap()">🗺️ 모험 시작!</button>
+    <div style="margin-top:16px;color:#a8c8e8;font-size:.85rem;text-align:center;line-height:1.6">
+      별 <span id="title-stars" style="color:var(--gold);font-family:var(--jua)">0</span>개 모음 · LV <span id="title-lv" style="color:var(--green);font-family:var(--jua)">1</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAP SCREEN ══ -->
+<div id="screen-map" class="screen">
+  <div class="map-header">
+    <div class="player-info">
+      <div class="avatar">🧙‍♀️</div>
+      <div class="stat-bar">
+        <div class="player-name">기쁨이 <span style="color:var(--green);font-size:.8rem">LV.<span id="map-lv">1</span></span></div>
+        <div class="hp-row" id="map-hp">❤️❤️❤️</div>
+        <div class="xp-row">
+          XP <div class="xp-bar-bg"><div class="xp-bar" id="map-xpbar" style="width:0%"></div></div>
+          <span id="map-xp-text">0/10</span>
+        </div>
+      </div>
+    </div>
+    <div class="star-count">⭐ <span id="map-stars">0</span></div>
+  </div>
+
+  <div class="map-world" id="map-world">
+    <!-- Nodes rendered by JS -->
+  </div>
+</div>
+
+<!-- ══ BATTLE SCREEN ══ -->
+<div id="screen-battle" class="screen">
+  <div class="battle-scene">
+    <div class="ground"></div>
+    <div class="hero-sprite" id="hero-spr">🧙‍♀️</div>
+    <div class="enemy-sprite" id="enemy-spr">👾</div>
+    <!-- HP bars inside scene -->
+    <div style="position:absolute;top:8px;left:0;right:0">
+      <div class="hp-bars">
+        <div class="hp-bar-block">
+          <div class="hp-bar-label">기쁨이</div>
+          <div class="hp-bar-track"><div class="hp-bar-fill" id="hero-hp-fill" style="width:100%"></div></div>
+          <div class="hp-val" id="hero-hp-val">3/3</div>
+        </div>
+        <div class="hp-bar-block" style="text-align:right">
+          <div class="hp-bar-label">적</div>
+          <div class="hp-bar-track"><div class="hp-bar-fill enemy-hp-fill" id="enemy-hp-fill" style="width:100%"></div></div>
+          <div class="hp-val" id="enemy-hp-val">5/5</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="battle-content">
+    <div class="battle-story" id="battle-story">
+      <span class="enemy-name">👾 슬라임</span>이 나타났다!<br>수학 마법으로 물리쳐요!
+    </div>
+
+    <div class="question-panel">
+      <div class="question-label">⚔️ 마법 주문을 맞춰라!</div>
+      <div class="question-text" id="q-text">3 + 4 = ?</div>
+      <div class="timer-bar-bg"><div class="timer-bar" id="timer-bar"></div></div>
+    </div>
+
+    <div class="answer-grid" id="answer-grid"></div>
+  </div>
+</div>
+
+<!-- ══ RESULT SCREEN ══ -->
+<div id="screen-result" class="screen">
+  <div class="result-card">
+    <div class="result-trophy" id="res-trophy">🏆</div>
+    <div class="result-title" id="res-title">승리!</div>
+    <div class="result-story" id="res-story">슬라임을 물리쳤어요!</div>
+    <div class="result-stats">
+      <div class="stat-box"><div class="stat-val" id="res-correct">0</div><div class="stat-name">맞춘 문제</div></div>
+      <div class="stat-box"><div class="stat-val" id="res-stars">0</div><div class="stat-name">획득 별 ⭐</div></div>
+      <div class="stat-box"><div class="stat-val" id="res-combo">0</div><div class="stat-name">최고 콤보</div></div>
+      <div class="stat-box"><div class="stat-val" id="res-time">0s</div><div class="stat-name">평균 시간</div></div>
+    </div>
+    <div class="star-rating" id="res-star-rating">⭐⭐⭐</div>
+    <div class="btn-row">
+      <button class="sm-btn primary" id="res-next-btn" onclick="">🗺️ 지도로</button>
+      <button class="sm-btn secondary" onclick="retryBattle()">🔄 다시!</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- #root -->
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+const G = {
+  lv: 1, xp: 0, xpNext: 10,
+  hp: 3, maxHp: 3,
+  stars: 0,
+  worldProgress: 0,   // how many nodes cleared
+  currentNode: 0,
+  // battle state
+  battle: {
+    enemyHp: 5, enemyMaxHp: 5,
+    q: null, timer: null, timerLeft: 0,
+    correct: 0, wrong: 0, combo: 0, maxCombo: 0,
+    totalTime: 0, questionCount: 0,
+    starsEarned: 0,
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════
+// WORLD MAP DATA
+// ═══════════════════════════════════════════════════════════════
+const WORLDS = [
+  { id:0, name:'초록 마을', icon:'🌿', color:'#4ecca3', enemy:'🟢', enemyName:'그린 슬라임',
+    story:'초록 마을에 슬라임이 나타났어요! 작은 수로 물리쳐요.', type:'add', range:[1,9], enemyHp:4,
+    x:'20%', y:'78%' },
+  { id:1, name:'강가 다리', icon:'🌊', color:'#4d96ff', enemy:'🐸', enemyName:'개구리 몬스터',
+    story:'다리를 건너려면 개구리 마법사를 이겨야 해요!', type:'add-sub', range:[1,15], enemyHp:5,
+    x:'45%', y:'65%' },
+  { id:2, name:'모래 성', icon:'🏖️', color:'#ffd700', enemy:'🦀', enemyName:'게 기사',
+    story:'모래성의 게 기사가 길을 막고 있어요!', type:'sub', range:[5,20], enemyHp:6,
+    x:'70%', y:'55%' },
+  { id:3, name:'얼음 동굴', icon:'❄️', color:'#a8d8f0', enemy:'🧊', enemyName:'얼음 골렘',
+    story:'얼음 동굴 속 골렘! 큰 수를 계산해야 해요.', type:'add-sub', range:[10,30], enemyHp:7,
+    x:'30%', y:'44%' },
+  { id:4, name:'구름 탑', icon:'☁️', color:'#c77dff', enemy:'⚡', enemyName:'번개 마법사',
+    story:'하늘 높이 번개 마법사가 기다려요!', type:'add-sub', range:[10,40], enemyHp:8,
+    x:'60%', y:'33%' },
+  { id:5, name:'묶음 숲', icon:'🌲', color:'#ff9f1c', enemy:'🐺', enemyName:'묶음 늑대',
+    story:'숲 속 늑대는 묶음 마법으로만 물리칠 수 있어요!', type:'mult-intro', range:[2,5], enemyHp:8,
+    x:'20%', y:'24%' },
+  { id:6, name:'도형 신전', icon:'🔷', color:'#ff61a6', enemy:'🗿', enemyName:'도형 골렘',
+    story:'신전의 골렘! 도형 문제로 마법 자물쇠를 열어요.', type:'shape', range:[1,1], enemyHp:9,
+    x:'50%', y:'16%' },
+  { id:7, name:'수정 왕국', icon:'💎', color:'#ffd700', enemy:'👑', enemyName:'수학 마왕',
+    story:'드디어 수학 마왕과의 최후 결전! 모든 수학으로 싸워요!', type:'mixed', range:[1,50], enemyHp:12,
+    x:'75%', y:'10%' },
+];
+
+// ═══════════════════════════════════════════════════════════════
+// SCREEN NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+}
+
+function showMap(){
+  updateMapUI();
+  renderMap();
+  showScreen('map');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MAP
+// ═══════════════════════════════════════════════════════════════
+function renderMap(){
+  const world = document.getElementById('map-world');
+  world.innerHTML='';
+
+  // Draw connecting lines
+  WORLDS.forEach((node,i)=>{
+    if(i===0) return;
+    const prev=WORLDS[i-1];
+    const line=document.createElement('div');
+    // simplified dashed line
+    const x1=parseFloat(prev.x)/100, y1=parseFloat(prev.y)/100;
+    const x2=parseFloat(node.x)/100, y2=parseFloat(node.y)/100;
+    const ww=world.offsetWidth||360, wh=world.offsetHeight||500;
+    const dx=(x2-x1)*ww, dy=(y2-y1)*wh;
+    const len=Math.sqrt(dx*dx+dy*dy);
+    const angle=Math.atan2(dy,dx)*180/Math.PI;
+    line.className='connecting-path'+(i<=G.worldProgress?' active':'');
+    line.style.cssText=`left:${prev.x};top:${prev.y};width:${len}px;transform:rotate(${angle}deg)`;
+    world.appendChild(line);
+  });
+
+  // Nodes
+  WORLDS.forEach((node,i)=>{
+    const div=document.createElement('div');
+    const status = i<G.worldProgress?'completed':i===G.worldProgress?'unlocked':'locked';
+    div.className=`world-node ${status}`;
+    div.style.cssText=`left:${node.x};top:${node.y}`;
+
+    const stars = i<G.worldProgress ? '⭐'.repeat(Math.min(3,Math.max(1,3-(i%3?0:0)))) : '';
+
+    div.innerHTML=`
+      <div class="node-circle" style="background:radial-gradient(circle,${node.color}33,${node.color}11)">
+        ${status==='completed'?'✅':status==='locked'?'🔒':node.icon}
+      </div>
+      <div class="node-label" style="color:${node.color}">${node.name}</div>
+      ${stars?`<div class="node-stars">${stars}</div>`:''}
+    `;
+
+    if(status!=='locked'){
+      div.onclick=()=>startBattle(i);
+    }
+    world.appendChild(div);
+  });
+}
+
+function updateMapUI(){
+  document.getElementById('map-lv').textContent=G.lv;
+  document.getElementById('map-stars').textContent=G.stars;
+  document.getElementById('map-hp').textContent='❤️'.repeat(G.hp)+'🖤'.repeat(G.maxHp-G.hp);
+  const xpPct=Math.round(G.xp/G.xpNext*100);
+  document.getElementById('map-xpbar').style.width=xpPct+'%';
+  document.getElementById('map-xp-text').textContent=`${G.xp}/${G.xpNext}`;
+  document.getElementById('title-stars').textContent=G.stars;
+  document.getElementById('title-lv').textContent=G.lv;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// QUESTION GENERATOR
+// ═══════════════════════════════════════════════════════════════
+function genQuestion(type, range){
+  const [lo,hi]=range;
+  let a,b,ans,text,choices;
+
+  if(type==='add'||type==='add-sub'){
+    const doSub=type==='add-sub'&&Math.random()>.5&&lo>=3;
+    if(doSub){
+      a=Math.floor(Math.random()*(hi-lo))+lo+1;
+      b=Math.floor(Math.random()*(a-lo))+1;
+      ans=a-b;
+      text=`${a} <span class="op">−</span> ${b} <span class="eq">=</span> ?`;
+    } else {
+      a=Math.floor(Math.random()*(hi-lo))+lo;
+      b=Math.floor(Math.random()*(hi-lo-a+2))+1;
+      if(a+b>hi+10)b=Math.max(1,hi-a);
+      ans=a+b;
+      text=`${a} <span class="op">+</span> ${b} <span class="eq">=</span> ?`;
+    }
+  } else if(type==='sub'){
+    a=Math.floor(Math.random()*(hi-lo))+lo+1;
+    b=Math.floor(Math.random()*(a-1))+1;
+    ans=a-b;
+    text=`${a} <span class="op">−</span> ${b} <span class="eq">=</span> ?`;
+  } else if(type==='mult-intro'){
+    a=Math.floor(Math.random()*3)+2; // 2,3,4
+    b=Math.floor(Math.random()*4)+2; // 2..5
+    ans=a*b;
+    text=`${a} <span class="op">×</span> ${b} <span class="eq">=</span> ?`;
+  } else if(type==='shape'){
+    const shapes=[
+      {q:'삼각형의 꼭짓점은?',a:3},
+      {q:'사각형의 변은?',a:4},
+      {q:'원의 꼭짓점은?',a:0},
+      {q:'오각형의 변은?',a:5},
+      {q:'정사각형의 꼭짓점은?',a:4},
+    ];
+    const s=shapes[Math.floor(Math.random()*shapes.length)];
+    ans=s.a; text=`<span style="font-size:1.4rem">${s.q}</span>`;
+  } else { // mixed
+    const subType=['add','sub','mult-intro'][Math.floor(Math.random()*3)];
+    return genQuestion(subType,range);
+  }
+
+  // Choices
+  const s=new Set([ans]);
+  while(s.size<4){
+    const d=ans+(Math.floor(Math.random()*11)-5);
+    if(d>=0) s.add(d);
+  }
+  choices=[...s].sort(()=>Math.random()-.5);
+  return {text,ans,choices,a,b};
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BATTLE
+// ═══════════════════════════════════════════════════════════════
+let battleRetryNode=0;
+function startBattle(nodeIdx){
+  const node=WORLDS[nodeIdx];
+  G.currentNode=nodeIdx;
+  battleRetryNode=nodeIdx;
+
+  const b=G.battle;
+  b.enemyHp=node.enemyHp;
+  b.enemyMaxHp=node.enemyHp;
+  b.correct=0; b.wrong=0; b.combo=0; b.maxCombo=0;
+  b.totalTime=0; b.questionCount=0; b.starsEarned=0;
+  if(b.timer) clearInterval(b.timer);
+
+  // Update enemy sprite
+  document.getElementById('enemy-spr').textContent=node.enemy;
+  document.getElementById('battle-story').innerHTML=
+    `<span class="enemy-name">${node.enemy} ${node.enemyName}</span>이(가) 나타났다!<br>${node.story}`;
+
+  // HP reset
+  document.getElementById('hero-hp-fill').style.width='100%';
+  document.getElementById('hero-hp-val').textContent=`${G.hp}/${G.maxHp}`;
+  updateEnemyHp();
+
+  showScreen('battle');
+  nextQuestion();
+}
+
+function retryBattle(){ startBattle(battleRetryNode); }
+
+function updateEnemyHp(){
+  const b=G.battle;
+  const pct=Math.max(0,b.enemyHp/b.enemyMaxHp*100);
+  document.getElementById('enemy-hp-fill').style.width=pct+'%';
+  document.getElementById('enemy-hp-val').textContent=`${Math.max(0,b.enemyHp)}/${b.enemyMaxHp}`;
+}
+function updateHeroHp(){
+  const pct=G.hp/G.maxHp*100;
+  const fill=document.getElementById('hero-hp-fill');
+  fill.style.width=pct+'%';
+  fill.className='hp-bar-fill'+(G.hp<=1?' low':'');
+  document.getElementById('hero-hp-val').textContent=`${G.hp}/${G.maxHp}`;
+}
+
+let timerInterval=null;
+let questionStart=0;
+
+function nextQuestion(){
+  const node=WORLDS[G.currentNode];
+  const b=G.battle;
+  if(b.timer) clearInterval(b.timer);
+  if(timerInterval) clearInterval(timerInterval);
+
+  const q=genQuestion(node.type,node.range);
+  b.q=q;
+  b.questionCount++;
+  questionStart=Date.now();
+
+  document.getElementById('q-text').innerHTML=q.text;
+
+  // Timer bar (8 sec)
+  const timerBar=document.getElementById('timer-bar');
+  timerBar.style.transition='none';
+  timerBar.style.width='100%';
+  const TOTAL_TIME=8000;
+  let elapsed=0;
+  timerInterval=setInterval(()=>{
+    elapsed+=100;
+    const pct=Math.max(0,100-(elapsed/TOTAL_TIME*100));
+    timerBar.style.transition='width .1s linear';
+    timerBar.style.width=pct+'%';
+    if(elapsed>=TOTAL_TIME){
+      clearInterval(timerInterval);
+      timerExpire();
+    }
+  },100);
+
+  // Answer buttons
+  const grid=document.getElementById('answer-grid');
+  grid.innerHTML='';
+  q.choices.forEach(c=>{
+    const btn=document.createElement('button');
+    btn.className='answer-btn';
+    btn.textContent=c;
+    btn.onclick=()=>onAnswer(c,btn);
+    grid.appendChild(btn);
+  });
+}
+
+function onAnswer(chosen, btn){
+  const b=G.battle;
+  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+  const elapsed=(Date.now()-questionStart)/1000;
+  b.totalTime+=elapsed;
+
+  // Disable all
+  document.querySelectorAll('.answer-btn').forEach(b=>b.onclick=null);
+
+  if(chosen===b.q.ans){
+    btn.classList.add('correct');
+    b.correct++;
+    b.combo++;
+    b.maxCombo=Math.max(b.maxCombo,b.combo);
+
+    // damage enemy
+    const dmg=1+Math.floor(b.combo/3);
+    b.enemyHp-=dmg;
+    b.starsEarned+=b.combo>=3?2:1;
+
+    // hero attack anim
+    document.getElementById('hero-spr').className='hero-sprite attacking';
+    setTimeout(()=>document.getElementById('hero-spr').className='hero-sprite',500);
+    // enemy hurt
+    setTimeout(()=>{
+      document.getElementById('enemy-spr').className='enemy-sprite hurt';
+      setTimeout(()=>document.getElementById('enemy-spr').className='enemy-sprite',400);
+    },200);
+
+    floatText(btn,b.combo>=3?`🔥 ${b.combo}콤보!`:`+${dmg}⚔️`,b.combo>=3?'#ffd700':'#6bcb77');
+    updateEnemyHp();
+
+    if(b.enemyHp<=0){
+      clearInterval(timerInterval);
+      setTimeout(()=>battleWin(),400);
+      return;
+    }
+    setTimeout(nextQuestion,500);
+  } else {
+    btn.classList.add('wrong');
+    b.wrong++;
+    b.combo=0;
+    // Show correct
+    document.querySelectorAll('.answer-btn').forEach(ab=>{
+      if(Number(ab.textContent)===b.q.ans) ab.classList.add('correct');
+    });
+    G.hp=Math.max(0,G.hp-1);
+    updateHeroHp();
+    floatText(btn,'💔','#ff6b6b');
+
+    if(G.hp<=0){
+      clearInterval(timerInterval);
+      setTimeout(()=>battleLose(),500);
+      return;
+    }
+    setTimeout(nextQuestion,700);
+  }
+}
+
+function timerExpire(){
+  const b=G.battle;
+  b.combo=0;
+  G.hp=Math.max(0,G.hp-1);
+  updateHeroHp();
+  document.querySelectorAll('.answer-btn').forEach(ab=>{
+    if(Number(ab.textContent)===b.q.ans) ab.classList.add('correct');
+    ab.onclick=null;
+  });
+  floatText(document.getElementById('q-text'),'⏰ 시간초과!','#ff9f1c');
+
+  if(G.hp<=0){ setTimeout(()=>battleLose(),600); return; }
+  setTimeout(nextQuestion,800);
+}
+
+function battleWin(){
+  const b=G.battle;
+  const node=WORLDS[G.currentNode];
+
+  // XP & stars
+  const xpGain=b.correct*2+(b.maxCombo>=3?5:0);
+  G.xp+=xpGain;
+  G.stars+=b.starsEarned;
+  if(G.currentNode>=G.worldProgress) G.worldProgress=G.currentNode+1;
+
+  // Level up?
+  let leveled=false;
+  while(G.xp>=G.xpNext){ G.xp-=G.xpNext; G.xpNext=Math.round(G.xpNext*1.4); G.lv++; leveled=true; }
+
+  // Star rating
+  const acc=b.correct/(b.correct+b.wrong+.01);
+  const rating=acc>=.9?3:acc>=.7?2:1;
+
+  // Results
+  document.getElementById('res-trophy').textContent=node.icon;
+  document.getElementById('res-title').textContent=`${node.enemyName} 처치!`;
+  document.getElementById('res-story').textContent=`${node.name}를 구했어요! 수학 마법이 통했어요 ✨`;
+  document.getElementById('res-correct').textContent=b.correct;
+  document.getElementById('res-stars').textContent=b.starsEarned;
+  document.getElementById('res-combo').textContent=b.maxCombo;
+  document.getElementById('res-time').textContent=`${b.questionCount>0?(b.totalTime/b.questionCount).toFixed(1):0}s`;
+  document.getElementById('res-star-rating').textContent='⭐'.repeat(rating)+'☆'.repeat(3-rating);
+
+  const nextBtn=document.getElementById('res-next-btn');
+  nextBtn.onclick=()=>{
+    showMap();
+    if(leveled) setTimeout(()=>showLevelUp(G.lv),300);
+  };
+
+  celebrate();
+  showScreen('result');
+}
+
+function battleLose(){
+  const node=WORLDS[G.currentNode];
+  const b=G.battle;
+  G.hp=Math.max(1,G.hp); // restore 1 hp on lose
+
+  document.getElementById('res-trophy').textContent='💪';
+  document.getElementById('res-title').textContent='아, 아쉬워요!';
+  document.getElementById('res-story').textContent=`${node.enemyName}에게 졌어요. 괜찮아요, 다시 도전! 더 잘할 수 있어요! 💪`;
+  document.getElementById('res-correct').textContent=b.correct;
+  document.getElementById('res-stars').textContent=b.starsEarned;
+  document.getElementById('res-combo').textContent=b.maxCombo;
+  document.getElementById('res-time').textContent=`${b.questionCount>0?(b.totalTime/b.questionCount).toFixed(1):0}s`;
+  document.getElementById('res-star-rating').textContent='☆☆☆';
+  document.getElementById('res-next-btn').onclick=showMap;
+
+  showScreen('result');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EFFECTS
+// ═══════════════════════════════════════════════════════════════
+function floatText(el,text,color){
+  const rect=el.getBoundingClientRect();
+  const div=document.createElement('div');
+  div.className='float-text';
+  div.textContent=text;
+  div.style.cssText=`color:${color};left:${rect.left+rect.width/2}px;top:${rect.top}px;transform:translateX(-50%)`;
+  document.body.appendChild(div);
+  setTimeout(()=>div.remove(),900);
+}
+
+function celebrate(){
+  const cols=['#ffd700','#ff6b6b','#6bcb77','#4d96ff','#c77dff','#ff61a6'];
+  for(let i=0;i<50;i++){
+    const c=document.createElement('div');
+    c.className='confetti-p';
+    c.style.cssText=`left:${Math.random()*100}%;background:${cols[~~(Math.random()*cols.length)]};--d:${Math.random()*1.5+1}s;--dl:${Math.random()*.5}s;border-radius:${Math.random()>.5?'50%':'2px'}`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2500);
+  }
+}
+
+function showLevelUp(lv){
+  const overlay=document.createElement('div');
+  overlay.className='levelup-overlay';
+  overlay.innerHTML=`
+    <div class="levelup-card">
+      <div style="font-size:3.5rem;margin-bottom:8px">⬆️✨</div>
+      <h2>레벨 업!</h2>
+      <p>이제 <span style="color:var(--gold);font-family:var(--jua)">LV ${lv}</span>이 되었어요!<br>더 강해진 기쁨이! 🎉</p>
+      <button class="sm-btn primary" onclick="this.parentElement.parentElement.remove()">야호! 🌟</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  celebrate();
+}
+
+// Add background clouds for atmosphere
+(function(){
+  const mapW=document.getElementById('map-world');
+  for(let i=0;i<4;i++){
+    const c=document.createElement('div');
+    c.className='cloud';
+    const w=Math.random()*100+60,h=30;
+    c.style.cssText=`width:${w}px;height:${h}px;top:${Math.random()*60+5}%;--d:${Math.random()*20+15}s;animation-delay:${-Math.random()*20}s`;
+    mapW.appendChild(c);
+  }
+})();
+</script>
+</body>
+</html>

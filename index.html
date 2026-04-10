@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>기쁨이의 학습 앱 모음 🎈</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nanum+Gothic+Coding:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="data.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #FFF9F0;
+      --surface: #FFFFFF;
+      --border:  #FFE0B2;
+      --text:    #3D2B1F;
+      --muted:   #A08070;
+      --accent:  #FF6B6B;
+      --shadow:  0 4px 20px rgba(0,0,0,0.07);
+      --radius:  22px;
+      --font-h:  'Gaegu', cursive;
+      --font-b:  'Nanum Gothic Coding', monospace;
+    }
+
+    body {
+      font-family: var(--font-b);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Blobs */
+    .blobs { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .blob  { position: absolute; border-radius: 50%; opacity: .16; filter: blur(70px); animation: float 9s ease-in-out infinite; }
+    .b1 { width:450px; height:450px; background:#FF6B6B; top:-120px; left:-120px; }
+    .b2 { width:380px; height:380px; background:#4D96FF; bottom:-80px; right:-80px; animation-delay:3s; }
+    .b3 { width:300px; height:300px; background:#6BCB77; top:45%; left:55%; animation-delay:5.5s; }
+    .b4 { width:220px; height:220px; background:#FFB347; top:15%; right:8%;  animation-delay:2s; }
+    @keyframes float {
+      0%,100% { transform: translateY(0)     scale(1); }
+      50%      { transform: translateY(-28px) scale(1.04); }
+    }
+
+    /* Layout */
+    .wrap { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 0 20px 70px; }
+
+    /* Header */
+    header { text-align: center; padding: 64px 20px 44px; }
+    .badge {
+      display: inline-block;
+      background: var(--accent); color: #fff;
+      font-family: var(--font-h); font-size: .9rem;
+      padding: 4px 18px; border-radius: 99px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 14px rgba(255,107,107,.35);
+      animation: pop .5s cubic-bezier(.36,1.6,.6,1) both;
+    }
+    @keyframes pop { from { transform:scale(.7); opacity:0; } to { transform:scale(1); opacity:1; } }
+
+    h1 {
+      font-family: var(--font-h);
+      font-size: clamp(2.6rem, 7vw, 3.8rem);
+      font-weight: 700; line-height: 1.1;
+      animation: up .5s .1s ease both;
+    }
+    .bounce { display:inline-block; animation: jelly 2.2s 1.2s ease-in-out infinite; }
+    @keyframes jelly {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      30%      { transform: translateY(-10px) rotate(-8deg); }
+      60%      { transform: translateY(-4px)  rotate(6deg); }
+    }
+    .sub { color: var(--muted); font-size: .95rem; margin-top: 10px; animation: up .5s .2s ease both; }
+
+    /* Stat strip */
+    .stats { display:flex; justify-content:center; gap:32px; margin-top:28px; animation: up .5s .3s ease both; }
+    .stat  { display:flex; flex-direction:column; align-items:center; gap:2px; }
+    .snum  { font-family:var(--font-h); font-size:2rem; font-weight:700; color:var(--accent); line-height:1; }
+    .slbl  { font-size:.72rem; color:var(--muted); }
+
+    @keyframes up { from { transform:translateY(22px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+
+    /* Filter */
+    .filters {
+      display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+      margin: 38px 0 32px;
+      animation: up .5s .35s ease both;
+    }
+    .fbtn {
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: 99px; padding: 7px 20px;
+      font-family: var(--font-b); font-size: .88rem;
+      color: var(--muted); cursor: pointer;
+      transition: all .22s;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .fbtn:hover  { border-color:var(--accent); color:var(--accent); transform:translateY(-2px); box-shadow:0 4px 12px rgba(255,107,107,.2); }
+    .fbtn.active { background:var(--accent); border-color:var(--accent); color:#fff; box-shadow:0 4px 14px rgba(255,107,107,.35); }
+
+    /* Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 30px 24px 24px;
+      text-decoration: none; color: inherit;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+      box-shadow: var(--shadow);
+      position: relative; overflow: hidden;
+      transition: transform .28s cubic-bezier(.36,1.6,.6,1), box-shadow .25s, border-color .2s;
+      animation: cardIn .45s ease both;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top:0; left:0; right:0; height:6px;
+      background: var(--cc, var(--accent));
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .card::after {
+      content: '';
+      position: absolute; inset:0;
+      background: radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--cc) 12%, transparent), transparent 70%);
+      opacity: 0; transition: opacity .3s;
+      pointer-events: none;
+    }
+    .card:hover { transform: translateY(-7px) scale(1.015); box-shadow: 0 14px 40px rgba(0,0,0,.11); border-color: var(--cc, var(--accent)); }
+    .card:hover::after { opacity: 1; }
+
+    @keyframes cardIn { from { opacity:0; transform:translateY(18px) scale(.97); } to { opacity:1; transform:none; } }
+
+    .card-emoji { font-size: 2.6rem; line-height: 1; }
+    .card-title { font-family: var(--font-h); font-size: 1.5rem; font-weight: 700; }
+
+    /* Tags */
+    .tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:auto; padding-top:14px; border-top: 1.5px dashed var(--border); width:100%; }
+    .tag  {
+      font-size: .72rem; font-weight: 700;
+      padding: 3px 11px; border-radius: 99px;
+      background: color-mix(in srgb, var(--tc) 15%, #fff);
+      color: color-mix(in srgb, var(--tc) 80%, #000);
+    }
+
+    /* Arrow hint */
+    .arrow {
+      position: absolute; right:20px; bottom:22px;
+      font-size: 1.1rem; color: var(--muted);
+      opacity:0; transform:translateX(-6px);
+      transition: all .22s;
+    }
+    .card:hover .arrow { opacity:1; transform:translateX(0); }
+
+    /* Empty */
+    .empty { grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--muted); }
+    .empty span { display:block; font-size:3rem; margin-bottom:12px; }
+
+    /* Footer */
+    footer { text-align:center; padding-top:52px; font-size:.78rem; color:#CCC; position:relative; z-index:1; }
+    footer a { color:#4D96FF; text-decoration:none; }
+
+    @media (max-width:480px) { .grid { grid-template-columns:1fr; } .stats { gap:18px; } }
+  </style>
+</head>
+<body>
+
+<div class="blobs">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div class="blob b4"></div>
+</div>
+
+<div class="wrap">
+  <header>
+    <div class="badge">✨ 기쁨이의 학습 앱 모음</div>
+    <h1>Joy <span class="bounce">🎈</span></h1>
+    <p class="sub" id="repoDesc"></p>
+    <div class="stats">
+      <div class="stat"><span class="snum" id="stTotal">0</span><span class="slbl">앱 수</span></div>
+      <div class="stat"><span class="snum" id="stCats">0</span><span class="slbl">과목</span></div>
+      <div class="stat"><span class="snum" id="stDate">—</span><span class="slbl">최근 업데이트</span></div>
+    </div>
+  </header>
+
+  <div class="filters" id="filters"></div>
+  <div class="grid"   id="grid"></div>
+</div>
+
+<footer>
+  <p>Made with ❤️ for 기쁨이 &nbsp;·&nbsp;
+    <a href="https://github.com/drumismylife/Joy" target="_blank">GitHub</a>
+  </p>
+</footer>
+
+<script>
+  document.getElementById('repoDesc').textContent = REPO.description;
+  document.getElementById('stTotal').textContent  = apps.length;
+  document.getElementById('stCats').textContent   = CATEGORIES.length - 1;
+  document.getElementById('stDate').textContent   = REPO.lastUpdated.slice(5);
+
+  const catColor = {
+    math: '#FF6B6B',
+    lang: '#4D96FF',
+    word: '#6BCB77',
+    game: '#C77DFF'
+  };
+
+  const filtersEl = document.getElementById('filters');
+
+  CATEGORIES.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'fbtn' + (cat.id === 'all' ? ' active' : '');
+    btn.innerHTML = `${cat.emoji} ${cat.label}`;
+    btn.addEventListener('click', () => {
+      filtersEl.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render(cat.id);
+    });
+    filtersEl.appendChild(btn);
+  });
+
+  function render(catId) {
+    const grid = document.getElementById('grid');
+    const list = getAppsByCategory(catId);
+    grid.innerHTML = '';
+
+    if (!list.length) {
+      grid.innerHTML = '<div class="empty"><span>🧐</span>앱이 없어요. 곧 추가될 거예요!</div>';
+      return;
+    }
+
+    list.forEach((app, i) => {
+      const tagsHtml = app.category.map(cid => {
+        const c = CATEGORIES.find(x => x.id === cid);
+        if (!c) return '';
+        return `<span class="tag" style="--tc:${catColor[cid] || '#999'}">${c.emoji} ${c.label}</span>`;
+      }).join('');
+
+      const a = document.createElement('a');
+      a.className = 'card';
+      a.href = REPO.baseUrl + app.file;
+      a.style.setProperty('--cc', app.color);
+      a.style.animationDelay = `${i * 0.07}s`;
+      a.innerHTML = `
+        <div class="card-emoji">${app.emoji}</div>
+        <div class="card-title">${app.title}</div>
+        <div class="tags">${tagsHtml}</div>
+        <div class="arrow">→</div>
+      `;
+      grid.appendChild(a);
+    });
+  }
+
+  render('all');
+</script>
+</body>
+</html>

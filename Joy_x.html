@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>기쁨이 수학 나라 🌟</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Jua&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c1:#FF6B6B; --c2:#FFD93D; --c3:#6BCB77; --c4:#4D96FF;
+    --c5:#FF9F1C; --c6:#C77DFF; --c7:#FF61A6; --c8:#00C9A7;
+    --bg:#0D1B2A; --panel:#1A2E42; --panel2:#223348;
+    --text:#FFFFFF; --subtext:#A8C8E8;
+    --radius:20px; --shadow:0 8px 32px rgba(0,0,0,0.4);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{
+    font-family:'Nunito',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    overflow-x:hidden;
+    user-select:none;
+  }
+
+  /* ── STARS BG ── */
+  .stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+  .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) ease-in-out infinite var(--delay,0s)}
+  @keyframes twinkle{0%,100%{opacity:.1;transform:scale(1)}50%{opacity:.8;transform:scale(1.5)}}
+
+  /* ── LAYOUT ── */
+  #app{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:16px}
+
+  /* ── HEADER ── */
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--panel);border-radius:var(--radius);
+    padding:14px 20px;margin-bottom:16px;
+    box-shadow:var(--shadow);
+    border:2px solid rgba(255,255,255,.08);
+  }
+  .logo{font-family:'Jua',sans-serif;font-size:1.5rem;background:linear-gradient(135deg,#FFD93D,#FF6B6B);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .stars-count{display:flex;align-items:center;gap:6px;font-size:1.2rem;font-weight:800;color:var(--c2)}
+  .hearts{display:flex;gap:4px;font-size:1.3rem}
+
+  /* ── HOME SCREEN ── */
+  #home{display:block}
+  .welcome{text-align:center;padding:10px 0 20px}
+  .welcome h1{font-family:'Jua',sans-serif;font-size:2rem;margin-bottom:6px;
+    background:linear-gradient(135deg,#6BCB77,#4D96FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .welcome p{color:var(--subtext);font-size:1rem}
+
+  .game-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .game-card{
+    background:var(--panel);border-radius:var(--radius);
+    padding:24px 16px;text-align:center;cursor:pointer;
+    border:3px solid transparent;
+    transition:transform .18s,border-color .18s,box-shadow .18s;
+    box-shadow:var(--shadow);
+    position:relative;overflow:hidden;
+  }
+  .game-card::before{
+    content:'';position:absolute;inset:0;opacity:.06;
+    background:var(--accent,#fff);
+  }
+  .game-card:hover,.game-card:active{transform:translateY(-4px) scale(1.02);border-color:var(--accent,#fff);box-shadow:0 12px 40px rgba(0,0,0,.5)}
+  .game-card .icon{font-size:3rem;margin-bottom:10px;display:block;animation:float 3s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .game-card h2{font-family:'Jua',sans-serif;font-size:1.1rem;margin-bottom:4px}
+  .game-card p{font-size:.8rem;color:var(--subtext);line-height:1.4}
+  .game-card .level-badge{
+    position:absolute;top:10px;right:10px;
+    background:var(--accent,#FFD93D);color:#1A1A1A;
+    font-size:.65rem;font-weight:800;padding:3px 8px;border-radius:20px;
+  }
+  .locked{opacity:.4;cursor:not-allowed}
+  .locked:hover{transform:none!important}
+
+  .progress-bar-wrap{margin-top:6px;background:rgba(255,255,255,.1);border-radius:10px;height:6px;overflow:hidden}
+  .progress-bar{height:100%;border-radius:10px;background:var(--accent,#FFD93D);transition:width .5s}
+
+  /* ── GAME SCREEN ── */
+  #game-screen{display:none}
+  .game-header{
+    display:flex;align-items:center;gap:12px;
+    background:var(--panel);border-radius:var(--radius);
+    padding:12px 16px;margin-bottom:16px;
+    box-shadow:var(--shadow);
+  }
+  .back-btn{
+    background:rgba(255,255,255,.1);border:none;color:#fff;
+    font-size:1.4rem;width:40px;height:40px;border-radius:12px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s;flex-shrink:0;
+  }
+  .back-btn:hover{background:rgba(255,255,255,.2)}
+  .game-title{font-family:'Jua',sans-serif;font-size:1.2rem;flex:1}
+  .score-badge{background:var(--c2);color:#111;font-weight:800;padding:4px 12px;border-radius:20px;font-size:.9rem}
+
+  .game-area{
+    background:var(--panel);border-radius:var(--radius);
+    padding:24px;box-shadow:var(--shadow);
+    min-height:380px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    border:2px solid rgba(255,255,255,.07);
+  }
+
+  /* ── NUMBERBLOCKS ── */
+  .nb-block{
+    display:inline-flex;flex-direction:column;
+    border-radius:8px;margin:4px;
+    overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.4);
+    animation:pop .3s cubic-bezier(.36,1.56,.64,1);
+    cursor:default;
+  }
+  @keyframes pop{from{transform:scale(0) rotate(-10deg)}to{transform:scale(1) rotate(0)}}
+  .nb-cell{
+    width:52px;height:52px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.4rem;font-weight:900;
+    border:2px solid rgba(255,255,255,.25);
+  }
+  .nb-label{
+    text-align:center;font-family:'Jua',sans-serif;font-size:1.1rem;
+    padding:4px 0;background:rgba(0,0,0,.3);color:#fff;
+  }
+
+  /* ── GAME 1: NUMBER TOWER ── */
+  .tower-container{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
+  .tower-question{font-family:'Jua',sans-serif;font-size:1.6rem;margin-bottom:8px;text-align:center;color:var(--c2)}
+  .number-buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:12px}
+  .num-btn{
+    width:60px;height:60px;border-radius:16px;border:3px solid transparent;
+    font-family:'Jua',sans-serif;font-size:1.5rem;cursor:pointer;
+    background:var(--panel2);color:#fff;
+    transition:transform .12s,box-shadow .12s;
+    box-shadow:0 4px 12px rgba(0,0,0,.3);
+  }
+  .num-btn:hover,.num-btn:active{transform:scale(1.12);box-shadow:0 6px 20px rgba(0,0,0,.4)}
+  .num-btn.correct{background:#6BCB77;border-color:#4CAF50;animation:bounce .4s}
+  .num-btn.wrong{background:#FF6B6B;border-color:#E53935;animation:shake .4s}
+  @keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+  /* ── GAME 2: CALC ── */
+  .calc-display{
+    background:var(--bg);border-radius:16px;
+    padding:20px 30px;margin-bottom:20px;
+    font-family:'Jua',sans-serif;font-size:2.5rem;
+    text-align:center;min-width:280px;
+    border:2px solid rgba(255,255,255,.1);
+    letter-spacing:4px;
+  }
+  .calc-display .answer-slot{
+    display:inline-block;min-width:60px;
+    border-bottom:4px solid var(--c2);
+    color:var(--c2);
+  }
+  .answer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:320px}
+  .ans-btn{
+    padding:16px;border-radius:16px;border:3px solid rgba(255,255,255,.15);
+    font-family:'Jua',sans-serif;font-size:1.6rem;
+    background:var(--panel2);color:#fff;cursor:pointer;
+    transition:transform .12s,background .12s;
+  }
+  .ans-btn:hover,.ans-btn:active{transform:scale(1.06);background:rgba(255,255,255,.15)}
+  .ans-btn.correct{background:#6BCB77!important;border-color:#4CAF50}
+  .ans-btn.wrong{background:#FF6B6B!important;border-color:#E53935}
+
+  /* ── GAME 3: GROUP ── */
+  .group-stage{width:100%;max-width:500px}
+  .group-items{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:16px 0}
+  .group-item{
+    font-size:2rem;cursor:pointer;
+    transition:transform .15s;
+    animation:pop .25s cubic-bezier(.36,1.56,.64,1) backwards;
+  }
+  .group-item:hover{transform:scale(1.2)}
+  .group-item.selected{
+    background:rgba(255,217,61,.2);border-radius:8px;
+    outline:3px solid var(--c2);
+  }
+  .group-divider{
+    width:100%;height:3px;background:rgba(255,255,255,.15);
+    border-radius:2px;margin:8px 0;
+  }
+  .group-prompt{font-family:'Jua',sans-serif;font-size:1.2rem;text-align:center;color:var(--subtext);margin-bottom:8px}
+  .group-confirm{
+    margin-top:16px;padding:14px 32px;
+    border-radius:16px;border:none;cursor:pointer;
+    font-family:'Jua',sans-serif;font-size:1.3rem;
+    background:linear-gradient(135deg,var(--c3),var(--c4));
+    color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.3);
+    transition:transform .12s;
+  }
+  .group-confirm:hover{transform:scale(1.05)}
+
+  /* ── GAME 4: NUMBER SENSE ── */
+  .sense-question{
+    font-family:'Jua',sans-serif;font-size:1.4rem;
+    text-align:center;margin-bottom:20px;color:var(--c2);line-height:1.5;
+  }
+  .sense-blocks{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-bottom:20px}
+  .sense-btn{
+    padding:14px 28px;border-radius:16px;border:3px solid rgba(255,255,255,.2);
+    font-family:'Jua',sans-serif;font-size:1.3rem;
+    background:var(--panel2);color:#fff;cursor:pointer;
+    transition:transform .12s;margin:6px;
+  }
+  .sense-btn:hover{transform:scale(1.06);background:rgba(255,255,255,.15)}
+  .sense-btn.correct{background:#6BCB77!important;border-color:#4CAF50}
+  .sense-btn.wrong{background:#FF6B6B!important;border-color:#E53935}
+
+  /* ── FEEDBACK ── */
+  .feedback{
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+    font-family:'Jua',sans-serif;font-size:3rem;
+    pointer-events:none;z-index:100;
+    animation:feedback-anim .8s forwards;
+  }
+  @keyframes feedback-anim{
+    0%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+    100%{opacity:0;transform:translate(-50%,-120%) scale(1.5)}
+  }
+
+  /* ── CELEBRATION ── */
+  .confetti-piece{
+    position:fixed;pointer-events:none;z-index:200;
+    width:10px;height:10px;border-radius:2px;
+    animation:confetti-fall var(--dur,2s) ease-in var(--delay,0s) forwards;
+  }
+  @keyframes confetti-fall{
+    0%{transform:translateY(-20px) rotate(0deg);opacity:1}
+    100%{transform:translateY(110vh) rotate(720deg);opacity:0}
+  }
+
+  /* ── LEVEL UP MODAL ── */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;
+    display:flex;align-items:center;justify-content:center;
+    animation:fadein .3s;
+  }
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  .modal{
+    background:var(--panel);border-radius:24px;padding:32px;text-align:center;
+    max-width:340px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.6);
+    border:3px solid var(--c2);
+    animation:pop .4s cubic-bezier(.36,1.56,.64,1);
+  }
+  .modal h2{font-family:'Jua',sans-serif;font-size:1.8rem;color:var(--c2);margin-bottom:8px}
+  .modal p{color:var(--subtext);margin-bottom:20px}
+  .modal-btn{
+    padding:12px 28px;border-radius:16px;border:none;cursor:pointer;
+    font-family:'Jua',sans-serif;font-size:1.2rem;
+    background:linear-gradient(135deg,var(--c2),var(--c5));
+    color:#111;font-weight:800;
+    transition:transform .12s;
+  }
+  .modal-btn:hover{transform:scale(1.06)}
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:480px){
+    .game-grid{grid-template-columns:1fr 1fr}
+    .nb-cell{width:42px;height:42px;font-size:1.1rem}
+    .calc-display{font-size:2rem}
+    .num-btn{width:52px;height:52px;font-size:1.3rem}
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div id="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">⭐ 수학 나라</div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div class="stars-count">⭐ <span id="total-stars">0</span></div>
+      <div class="hearts" id="hearts-display">❤️❤️❤️</div>
+    </div>
+  </header>
+
+  <!-- HOME -->
+  <div id="home">
+    <div class="welcome">
+      <h1>🌈 기쁨이 수학 나라!</h1>
+      <p>게임을 골라서 수학 마법사가 되어봐요!</p>
+    </div>
+
+    <div class="game-grid">
+      <!-- Game 1 -->
+      <div class="game-card" style="--accent:#FFD93D" onclick="startGame(1)">
+        <div class="level-badge">LV 1</div>
+        <span class="icon">🔢</span>
+        <h2>수 탑 쌓기</h2>
+        <p>순서대로 수를 골라<br>탑을 높이 쌓아요!</p>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="prog1" style="--accent:#FFD93D;width:0%"></div></div>
+      </div>
+
+      <!-- Game 2 -->
+      <div class="game-card" style="--accent:#FF6B6B" onclick="startGame(2)">
+        <div class="level-badge">LV 2</div>
+        <span class="icon">➕</span>
+        <h2>더하고 빼기</h2>
+        <p>덧셈 뺄셈으로<br>별을 모아요!</p>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="prog2" style="--accent:#FF6B6B;width:0%"></div></div>
+      </div>
+
+      <!-- Game 3 -->
+      <div class="game-card" style="--accent:#6BCB77" onclick="startGame(3)">
+        <div class="level-badge">LV 3</div>
+        <span class="icon">🔵</span>
+        <h2>묶음 마법</h2>
+        <p>같은 수로 묶어서<br>곱셈 시작!</p>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="prog3" style="--accent:#6BCB77;width:0%"></div></div>
+      </div>
+
+      <!-- Game 4 -->
+      <div class="game-card" style="--accent:#C77DFF" onclick="startGame(4)">
+        <div class="level-badge">LV 4</div>
+        <span class="icon">🧠</span>
+        <h2>수 감각 퀴즈</h2>
+        <p>크고 작은 수,<br>자릿값을 배워요!</p>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="prog4" style="--accent:#C77DFF;width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="game-screen">
+    <div class="game-header">
+      <button class="back-btn" onclick="goHome()">←</button>
+      <div class="game-title" id="g-title">게임</div>
+      <div class="score-badge">⭐ <span id="g-score">0</span></div>
+    </div>
+    <div class="game-area" id="game-area"></div>
+  </div>
+
+</div>
+
+<script>
+// ── STARS BACKGROUND ──────────────────────────────────────────
+(function(){
+  const container = document.getElementById('stars');
+  for(let i=0;i<60;i++){
+    const s = document.createElement('div');
+    s.className='star';
+    const size = Math.random()*3+1;
+    s.style.cssText=`width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${Math.random()*4+2}s;--delay:${Math.random()*4}s`;
+    container.appendChild(s);
+  }
+})();
+
+// ── STATE ─────────────────────────────────────────────────────
+const state = {
+  totalStars: 0,
+  hearts: 3,
+  gameProgress: [0,0,0,0],
+  currentGame: 0,
+  gameScore: 0,
+};
+
+const NB_COLORS = ['','#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF9F1C','#C77DFF','#FF61A6','#00C9A7','#E8D5B7','#FF4757'];
+const EMOJIS = ['🍎','🌟','🐸','🦋','🌸','🐥','🍦','🎈','🦄','🌈','🍕','🐶','🎵','🚀','🦊','🐨','🍓','🌙','⚡','🎯'];
+
+function getColor(n){ return NB_COLORS[n] || `hsl(${n*37},70%,55%)`; }
+
+// ── NUMBERBLOCK RENDERER ──────────────────────────────────────
+function makeNB(n, small=false){
+  const size = small?36:52;
+  const block = document.createElement('div');
+  block.className='nb-block';
+  const col = getColor(n);
+  for(let i=0;i<n;i++){
+    const cell = document.createElement('div');
+    cell.className='nb-cell';
+    cell.style.cssText=`width:${size}px;height:${size}px;background:${col};font-size:${small?'1rem':'1.4rem'}`;
+    cell.textContent = n<=10 ? ['','1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟'][n] : n;
+    block.appendChild(cell);
+  }
+  const lbl = document.createElement('div');
+  lbl.className='nb-label';
+  lbl.style.fontSize= small?'.85rem':'1.1rem';
+  lbl.textContent=n;
+  block.appendChild(lbl);
+  return block;
+}
+
+// ── UI HELPERS ────────────────────────────────────────────────
+function updateHeader(){
+  document.getElementById('total-stars').textContent = state.totalStars;
+  const h = document.getElementById('hearts-display');
+  h.textContent = '❤️'.repeat(state.hearts) + '🖤'.repeat(3-state.hearts);
+}
+
+function showFeedback(text){
+  const el = document.createElement('div');
+  el.className='feedback';
+  el.textContent=text;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),800);
+}
+
+function celebrate(){
+  const colors=['#FFD93D','#FF6B6B','#6BCB77','#4D96FF','#C77DFF','#FF61A6'];
+  for(let i=0;i<40;i++){
+    const c=document.createElement('div');
+    c.className='confetti-piece';
+    c.style.cssText=`left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};--dur:${Math.random()*1+1.5}s;--delay:${Math.random()*.5}s;border-radius:${Math.random()>.5?'50%':'2px'}`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2500);
+  }
+}
+
+function showModal(title, msg, btnText, cb){
+  const overlay = document.createElement('div');
+  overlay.className='modal-overlay';
+  overlay.innerHTML=`<div class="modal"><h2>${title}</h2><p>${msg}</p><button class="modal-btn">${btnText}</button></div>`;
+  overlay.querySelector('button').onclick=()=>{overlay.remove();if(cb)cb();};
+  document.body.appendChild(overlay);
+}
+
+function updateProgress(gameIdx, score){
+  const pct = Math.min(100, Math.round(score/5*100));
+  const bar = document.getElementById(`prog${gameIdx}`);
+  if(bar) bar.style.width=pct+'%';
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────
+function startGame(n){
+  state.currentGame=n;
+  state.gameScore=0;
+  document.getElementById('home').style.display='none';
+  document.getElementById('game-screen').style.display='block';
+  document.getElementById('g-score').textContent='0';
+  const titles=['','🔢 수 탑 쌓기','➕ 더하고 빼기','🔵 묶음 마법','🧠 수 감각 퀴즈'];
+  document.getElementById('g-title').textContent=titles[n];
+  if(n===1) game1();
+  else if(n===2) game2();
+  else if(n===3) game3();
+  else if(n===4) game4();
+}
+
+function goHome(){
+  document.getElementById('home').style.display='block';
+  document.getElementById('game-screen').style.display='none';
+  updateHeader();
+}
+
+function addScore(pts=1){
+  state.gameScore+=pts;
+  state.totalStars+=pts;
+  document.getElementById('g-score').textContent=state.gameScore;
+  updateHeader();
+  updateProgress(state.currentGame, state.gameScore);
+  if(state.gameScore>0 && state.gameScore%5===0){
+    celebrate();
+    showModal('🌟 대단해요!', `${state.gameScore}점 달성! 정말 잘하고 있어요! ⭐`, '계속하기!', ()=>continueGame());
+  }
+}
+
+function loseHeart(){
+  if(state.hearts>0){
+    state.hearts--;
+    updateHeader();
+    if(state.hearts===0){
+      showModal('💔 다시 도전!', '힘내요! 다시 해볼까요?', '다시 시작!', ()=>{
+        state.hearts=3;
+        state.gameScore=0;
+        document.getElementById('g-score').textContent='0';
+        updateHeader();
+        startGame(state.currentGame);
+      });
+    }
+  }
+}
+
+function continueGame(){
+  if(state.currentGame===1) game1();
+  else if(state.currentGame===2) game2();
+  else if(state.currentGame===3) game3();
+  else if(state.currentGame===4) game4();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// GAME 1: NUMBER TOWER – 순서대로 수 고르기
+// ═══════════════════════════════════════════════════════════════
+function game1(){
+  const area = document.getElementById('game-area');
+  area.innerHTML='';
+
+  // Difficulty: starts small, grows
+  const difficulty = Math.min(Math.floor(state.gameScore/3), 3);
+  const maxNum = [10,20,50,100][difficulty];
+  const start = Math.floor(Math.random()*(maxNum-5))+1;
+  const missingIdx = Math.floor(Math.random()*4)+1; // 1..4
+
+  const sequence = [];
+  for(let i=0;i<6;i++) sequence.push(start+i);
+  const correct = sequence[missingIdx];
+
+  // Distractors
+  const choices = [correct];
+  while(choices.length<6){
+    const d = correct + (Math.floor(Math.random()*9)-4);
+    if(d>0 && !choices.includes(d)) choices.push(d);
+  }
+  choices.sort(()=>Math.random()-.5);
+
+  const tower = document.createElement('div');
+  tower.className='tower-container';
+
+  const q = document.createElement('div');
+  q.className='tower-question';
+  q.innerHTML='빈칸에 알맞은 수는? 🤔';
+  tower.appendChild(q);
+
+  // Show sequence with numberblocks
+  const row = document.createElement('div');
+  row.style.cssText='display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:12px';
+
+  sequence.forEach((n,i)=>{
+    if(i===missingIdx){
+      const blank = document.createElement('div');
+      blank.style.cssText=`width:52px;min-height:${52*n+24}px;border-radius:8px;border:4px dashed ${getColor(n)};display:flex;align-items:center;justify-content:center;font-size:2rem;color:${getColor(n)}`;
+      blank.textContent='?';
+      row.appendChild(blank);
+    } else {
+      if(n<=10) row.appendChild(makeNB(n, n>6));
+      else {
+        const simple = document.createElement('div');
+        simple.style.cssText=`background:${getColor(n%10||10)};border-radius:10px;padding:10px 14px;font-family:'Jua',sans-serif;font-size:1.8rem;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.3);animation:pop .25s cubic-bezier(.36,1.56,.64,1)`;
+        simple.textContent=n;
+        row.appendChild(simple);
+      }
+    }
+  });
+  tower.appendChild(row);
+
+  const btnRow = document.createElement('div');
+  btnRow.className='number-buttons';
+  choices.forEach(c=>{
+    const btn = document.createElement('button');
+    btn.className='num-btn';
+    btn.textContent=c;
+    btn.style.borderColor=getColor(c%10||10);
+    btn.onclick=()=>{
+      if(c===correct){
+        btn.classList.add('correct');
+        showFeedback('🎉 맞아요!');
+        addScore(1);
+        setTimeout(()=>game1(),700);
+      } else {
+        btn.classList.add('wrong');
+        showFeedback('😅 다시!');
+        loseHeart();
+        setTimeout(()=>btn.classList.remove('wrong'),500);
+      }
+    };
+    btnRow.appendChild(btn);
+  });
+  tower.appendChild(btnRow);
+  area.appendChild(tower);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// GAME 2: ADDITION & SUBTRACTION
+// ═══════════════════════════════════════════════════════════════
+function game2(){
+  const area = document.getElementById('game-area');
+  area.innerHTML='';
+
+  const difficulty = Math.min(Math.floor(state.gameScore/3),4);
+  const ranges = [[1,9],[1,9],[1,19],[1,19],[1,49]];
+  const [lo,hi] = ranges[difficulty];
+  const useSubtract = difficulty>=2 && Math.random()>.4;
+
+  let a,b,answer,opSym;
+  if(useSubtract){
+    a = Math.floor(Math.random()*(hi-lo))+lo+1;
+    b = Math.floor(Math.random()*a)+1;
+    answer = a-b;
+    opSym='-';
+  } else {
+    a = Math.floor(Math.random()*(hi-lo))+lo;
+    b = Math.floor(Math.random()*(hi-lo-a))+1;
+    if(b<1)b=1;
+    answer = a+b;
+    opSym='+';
+  }
+
+  // Choices
+  const choices=[answer];
+  while(choices.length<4){
+    const d=answer+(Math.floor(Math.random()*7)-3);
+    if(d>=0&&!choices.includes(d)) choices.push(d);
+  }
+  choices.sort(()=>Math.random()-.5);
+
+  const wrap=document.createElement('div');
+  wrap.style.cssText='display:flex;flex-direction:column;align-items:center;width:100%';
+
+  // Visual blocks
+  if(a<=10 && (opSym==='+'?b<=10:true)){
+    const blocksRow=document.createElement('div');
+    blocksRow.style.cssText='display:flex;align-items:flex-end;gap:8px;margin-bottom:16px';
+    blocksRow.appendChild(makeNB(a));
+    const sym=document.createElement('div');
+    sym.style.cssText='font-family:Jua,sans-serif;font-size:2rem;color:#fff;padding:0 4px';
+    sym.textContent=opSym;
+    blocksRow.appendChild(sym);
+    if(opSym==='+') blocksRow.appendChild(makeNB(b));
+    else {
+      const ghostBlock=document.createElement('div');
+      ghostBlock.style.cssText='opacity:.3';
+      ghostBlock.appendChild(makeNB(b));
+      blocksRow.appendChild(ghostBlock);
+    }
+    wrap.appendChild(blocksRow);
+  }
+
+  // Display
+  const disp=document.createElement('div');
+  disp.className='calc-display';
+  disp.innerHTML=`${a} <span style="color:${opSym==='+'?'#6BCB77':'#FF6B6B'}">${opSym}</span> ${b} = <span class="answer-slot">?</span>`;
+  wrap.appendChild(disp);
+
+  const grid=document.createElement('div');
+  grid.className='answer-grid';
+  choices.forEach(c=>{
+    const btn=document.createElement('button');
+    btn.className='ans-btn';
+    btn.textContent=c;
+    btn.onclick=()=>{
+      if(c===answer){
+        btn.classList.add('correct');
+        disp.querySelector('.answer-slot').textContent=answer;
+        disp.querySelector('.answer-slot').style.color='#6BCB77';
+        showFeedback('✨ 정답!');
+        addScore(1);
+        setTimeout(()=>game2(),600);
+      } else {
+        btn.classList.add('wrong');
+        showFeedback('💪 다시!');
+        loseHeart();
+        setTimeout(()=>btn.classList.remove('wrong'),500);
+      }
+    };
+    grid.appendChild(btn);
+  });
+  wrap.appendChild(grid);
+  area.appendChild(wrap);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// GAME 3: GROUPING (곱셈 씨앗)
+// ═══════════════════════════════════════════════════════════════
+function game3(){
+  const area=document.getElementById('game-area');
+  area.innerHTML='';
+
+  const difficulty=Math.min(Math.floor(state.gameScore/3),3);
+  const groupSizes=[2,3,4,5];
+  const groupSize=groupSizes[Math.floor(Math.random()*Math.min(difficulty+2,4))];
+  const numGroups=Math.floor(Math.random()*3)+2; // 2..4
+  const total=groupSize*numGroups;
+  const emoji=EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
+
+  const wrap=document.createElement('div');
+  wrap.className='group-stage';
+
+  const prompt=document.createElement('div');
+  prompt.className='group-prompt';
+  prompt.innerHTML=`<span style="color:var(--c2);font-size:1.3rem">${emoji}</span>을 <span style="color:var(--c3)">${groupSize}개</span>씩 묶어봐요!<br><span style="color:var(--subtext);font-size:.9rem">(터치해서 ${groupSize}개를 골라요)</span>`;
+  wrap.appendChild(prompt);
+
+  // Items
+  const itemsDiv=document.createElement('div');
+  itemsDiv.className='group-items';
+  const items=[];
+  for(let i=0;i<total;i++){
+    const item=document.createElement('span');
+    item.className='group-item';
+    item.textContent=emoji;
+    item.dataset.idx=i;
+    item.style.setProperty('animation-delay',`${i*0.04}s`);
+    item.onclick=()=>{
+      if(item.classList.contains('selected')){
+        item.classList.remove('selected');
+      } else {
+        const sel=itemsDiv.querySelectorAll('.selected').length;
+        if(sel<groupSize) item.classList.add('selected');
+      }
+      confirmBtn.disabled=itemsDiv.querySelectorAll('.selected').length!==groupSize;
+    };
+    items.push(item);
+    itemsDiv.appendChild(item);
+  }
+  wrap.appendChild(itemsDiv);
+
+  // Selected count
+  const countDisp=document.createElement('div');
+  countDisp.style.cssText='color:var(--c2);font-family:Jua,sans-serif;font-size:1rem;margin-bottom:8px;text-align:center';
+  countDisp.textContent=`선택: 0 / ${groupSize}`;
+
+  itemsDiv.addEventListener('click',()=>{
+    const sel=itemsDiv.querySelectorAll('.selected').length;
+    countDisp.textContent=`선택: ${sel} / ${groupSize}`;
+  });
+  wrap.appendChild(countDisp);
+
+  const confirmBtn=document.createElement('button');
+  confirmBtn.className='group-confirm';
+  confirmBtn.textContent=`✅ ${groupSize}개 묶기!`;
+  confirmBtn.disabled=true;
+
+  let grouped=0;
+  confirmBtn.onclick=()=>{
+    const sel=[...itemsDiv.querySelectorAll('.selected')];
+    // Mark them
+    sel.forEach((el,i)=>{
+      el.style.cssText=`background:hsl(${grouped*60},70%,40%);border-radius:8px;outline:3px solid hsl(${grouped*60},70%,60%);cursor:default;pointer-events:none`;
+    });
+    grouped++;
+    showFeedback(`🎉 ${grouped}묶음!`);
+    addScore(1);
+
+    // Remove selected
+    sel.forEach(el=>el.classList.remove('selected'));
+    countDisp.textContent=`선택: 0 / ${groupSize}`;
+    confirmBtn.disabled=true;
+
+    if(grouped===numGroups){
+      setTimeout(()=>{
+        celebrate();
+        showModal('🌟 완성!',`${groupSize} × ${numGroups} = ${total}\n${groupSize}씩 ${numGroups}묶음 = 모두 ${total}개!`,'다음 문제!',()=>game3());
+      },400);
+    }
+  };
+  wrap.appendChild(confirmBtn);
+  area.appendChild(wrap);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// GAME 4: NUMBER SENSE QUIZ
+// ═══════════════════════════════════════════════════════════════
+function game4(){
+  const area=document.getElementById('game-area');
+  area.innerHTML='';
+
+  const difficulty=Math.min(Math.floor(state.gameScore/3),4);
+  const types=['compare','order','place','odd-even','estimate'];
+  const type=types[Math.floor(Math.random()*(difficulty+2))];
+
+  const wrap=document.createElement('div');
+  wrap.style='width:100%;display:flex;flex-direction:column;align-items:center';
+
+  let question='', choices=[], correct;
+
+  if(type==='compare'){
+    const maxN=[20,50,100,100,1000][difficulty];
+    const a=Math.floor(Math.random()*maxN)+1;
+    const b=Math.floor(Math.random()*maxN)+1;
+    question=`<span style="color:var(--c2)">${a}</span>와 <span style="color:var(--c4)">${b}</span> 중<br>더 큰 수는?`;
+    const ans=a>b?a:b;
+    choices=[a,b];
+    correct=ans;
+
+  } else if(type==='order'){
+    const nums=[];
+    while(nums.length<3) { const n=Math.floor(Math.random()*50)+1; if(!nums.includes(n))nums.push(n); }
+    question=`<span style="color:var(--c3)">${nums[0]}, ${nums[1]}, ${nums[2]}</span><br>가장 작은 수는?`;
+    correct=Math.min(...nums);
+    choices=[...nums].sort(()=>Math.random()-.5);
+
+  } else if(type==='place'){
+    const n=Math.floor(Math.random()*90)+10;
+    const isOnes=Math.random()>.5;
+    if(isOnes){
+      question=`<span style="color:var(--c6)">${n}</span>의 <span style="color:var(--c2)">일의 자리</span> 숫자는?`;
+      correct=n%10;
+    } else {
+      question=`<span style="color:var(--c6)">${n}</span>의 <span style="color:var(--c5)">십의 자리</span> 숫자는?`;
+      correct=Math.floor(n/10);
+    }
+    const wrongSet=[correct];
+    while(wrongSet.length<4){const d=Math.floor(Math.random()*10);if(!wrongSet.includes(d))wrongSet.push(d);}
+    choices=wrongSet.sort(()=>Math.random()-.5);
+
+  } else if(type==='odd-even'){
+    const n=Math.floor(Math.random()*19)+1;
+    question=`<span style="color:var(--c2)">${n}</span>은<br>홀수일까요, 짝수일까요?`;
+    correct=n%2===0?'짝수':'홀수';
+    choices=['홀수','짝수'];
+
+  } else { // estimate
+    const real=Math.floor(Math.random()*90)+10;
+    const emoji2=EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
+    const blocks=document.createElement('div');
+    blocks.className='sense-blocks';
+    for(let i=0;i<real;i++){
+      const s=document.createElement('span');
+      s.style.cssText='font-size:1.2rem';
+      s.textContent=emoji2;
+      blocks.appendChild(s);
+    }
+    wrap.appendChild(blocks);
+    question=`${emoji2} 는 모두 몇 개일까요?`;
+    correct=real;
+    const wrongSet=[real];
+    while(wrongSet.length<4){
+      const d=real+(Math.floor(Math.random()*21)-10);
+      if(d>0&&!wrongSet.includes(d))wrongSet.push(d);
+    }
+    choices=wrongSet.sort(()=>Math.random()-.5);
+  }
+
+  const q=document.createElement('div');
+  q.className='sense-question';
+  q.innerHTML=question;
+  wrap.appendChild(q);
+
+  choices.forEach(c=>{
+    const btn=document.createElement('button');
+    btn.className='sense-btn';
+    btn.textContent=c;
+    btn.onclick=()=>{
+      if(String(c)===String(correct)){
+        btn.classList.add('correct');
+        showFeedback('🧠 맞아요!');
+        addScore(1);
+        setTimeout(()=>game4(),650);
+      } else {
+        btn.classList.add('wrong');
+        showFeedback('💡 다시!');
+        loseHeart();
+        setTimeout(()=>btn.classList.remove('wrong'),500);
+      }
+    };
+    wrap.appendChild(btn);
+  });
+  area.appendChild(wrap);
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+updateHeader();
+</script>
+</body>
+</html>
