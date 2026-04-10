@@ -8,17 +8,18 @@ const REPO = {
   name: "Joy",
   owner: "drumismylife",
   subtitle: "기쁨이의 신나는 학습 놀이터 🎈",
-  description: "수학, 국어, 한자 등 다양한 과목의 학습 앱을 모아두었습니다.",
+  description: "수학, 국어, 영어 등 다양한 과목의 학습 앱을 모아두었습니다.",
   baseUrl: "https://drumismylife.github.io/Joy/",
-  lastUpdated: "2026-03-25"
+  lastUpdated: "2026-04-10"
 };
 
 const CATEGORIES = [
-  { id: "all",  label: "전체",    emoji: "🌟" },
-  { id: "math", label: "수학",    emoji: "🔢" },
-  { id: "lang", label: "국어",    emoji: "📖" },
-  { id: "word", label: "어휘·한자", emoji: "✏️" },
-  { id: "game", label: "게임",    emoji: "🎮" }
+  { id: "all",     label: "전체",    emoji: "🌟" },
+  { id: "math",    label: "수학",    emoji: "🔢" },
+  { id: "lang",    label: "국어",    emoji: "📖" },
+  { id: "english", label: "영어",    emoji: "🌍" },
+  { id: "word",    label: "어휘",    emoji: "✏️" },
+  { id: "game",    label: "게임",    emoji: "🎮" }
 ];
 
 const apps = [
@@ -31,7 +32,7 @@ const apps = [
     emoji: "🔢",
     color: "#FF6B6B",
     difficulty: 2,
-    updatedAt: "2026-03-25"
+    updatedAt: "2026-04-10"
   },
   {
     id: "joy_plus",
@@ -42,29 +43,7 @@ const apps = [
     emoji: "➕",
     color: "#FFB347",
     difficulty: 1,
-    updatedAt: "2026-03-25"
-  },
-  {
-    id: "joy_word",
-    title: "낱말 카드",
-    file: "Joy_word.html",
-    description: "그림과 함께 새로운 낱말을 익혀요. 어휘력 쑥쑥!",
-    category: ["lang", "word"],
-    emoji: "📖",
-    color: "#6BCB77",
-    difficulty: 1,
-    updatedAt: "2026-03-25"
-  },
-  {
-    id: "joy_word2",
-    title: "낱말 퀴즈",
-    file: "Joy_word2.html",
-    description: "배운 낱말을 퀴즈로 확인해요. 몇 개나 맞출 수 있을까?",
-    category: ["lang", "word", "game"],
-    emoji: "✏️",
-    color: "#4D96FF",
-    difficulty: 2,
-    updatedAt: "2026-03-25"
+    updatedAt: "2026-04-10"
   },
   {
     id: "joy_x",
@@ -75,7 +54,62 @@ const apps = [
     emoji: "✖️",
     color: "#C77DFF",
     difficulty: 2,
-    updatedAt: "2026-03-25"
+    updatedAt: "2026-04-10"
+  },
+  {
+    id: "joy_word",
+    title: "낱말 카드",
+    file: "Joy_word.html",
+    description: "그림과 함께 새로운 낱말을 익혀요. 어휘력 쑥쑥!",
+    category: ["lang", "word"],
+    emoji: "📖",
+    color: "#6BCB77",
+    difficulty: 1,
+    updatedAt: "2026-04-10"
+  },
+  {
+    id: "joy_word2",
+    title: "낱말 퀴즈",
+    file: "Joy_word2.html",
+    description: "배운 낱말을 퀴즈로 확인해요. 몇 개나 맞출 수 있을까?",
+    category: ["lang", "word", "game"],
+    emoji: "✏️",
+    color: "#4D96FF",
+    difficulty: 2,
+    updatedAt: "2026-04-10"
+  },
+  {
+    id: "joy_word3",
+    title: "영어 단어 게임",
+    file: "Joy_word3.html",
+    description: "영어 단어를 게임으로 재미있게 익혀요!",
+    category: ["english", "word", "game"],
+    emoji: "🔤",
+    color: "#FF9F43",
+    difficulty: 1,
+    updatedAt: "2026-04-10"
+  },
+  {
+    id: "joy_word4",
+    title: "영어 문장 게임",
+    file: "Joy_word4.html",
+    description: "영어 문장을 듣고 말하고 써봐요. 영어 실력이 쑥쑥!",
+    category: ["english", "word", "game"],
+    emoji: "💬",
+    color: "#48DBFB",
+    difficulty: 2,
+    updatedAt: "2026-04-10"
+  },
+  {
+    id: "voice_assistant",
+    title: "영어 말하기 친구",
+    file: "voice-assistant-v2.html",
+    description: "AI 친구와 영어로 대화해요. 말하기 실력이 늘어나요!",
+    category: ["english", "game"],
+    emoji: "🎙️",
+    color: "#A29BFE",
+    difficulty: 2,
+    updatedAt: "2026-04-10"
   }
 ];
 
@@ -93,5 +127,5 @@ function getAppById(id) {
 }
 
 function getDifficultyLabel(level) {
-  return ["", "⭐ 쉬움", "⭐⭐ 보통", "⭐⭐⭐ 어려움"][level] || "";
+  return ["", "⭐", "⭐⭐", "⭐⭐⭐"][level] || "";
 }

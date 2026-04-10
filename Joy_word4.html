@@ -304,8 +304,38 @@ body::before {
 .cp { position: absolute; border-radius: 2px; animation: cpFall linear forwards; }
 @keyframes cpFall { 0%{opacity:1;transform:translateY(-10px) rotate(0)} 100%{opacity:0;transform:translateY(110vh) rotate(800deg)} }
 </style>
+
+<style id="joy-back-btn-style">
+  #joy-back {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 9999;
+    background: #FF6B6B;
+    color: #fff;
+    border: none;
+    border-radius: 99px;
+    padding: 10px 20px;
+    font-family: 'Gaegu', 'Nanum Gothic', cursive;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(255,107,107,.4);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform .18s, box-shadow .18s;
+    text-decoration: none;
+  }
+  #joy-back:hover  { transform: scale(1.07); box-shadow: 0 6px 20px rgba(255,107,107,.5); }
+  #joy-back:active { transform: scale(.95); }
+</style>
 </head>
 <body>
+<a id="joy-back" href="https://drumismylife.github.io/Joy/" title="메인으로 돌아가기">
+  🏠 메인
+</a>
+
 
 <div class="header">
   <div class="hd-left">
