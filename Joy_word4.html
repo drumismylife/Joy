@@ -303,6 +303,46 @@ body::before {
 .confetti-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 400; overflow: hidden; }
 .cp { position: absolute; border-radius: 2px; animation: cpFall linear forwards; }
 @keyframes cpFall { 0%{opacity:1;transform:translateY(-10px) rotate(0)} 100%{opacity:0;transform:translateY(110vh) rotate(800deg)} }
+
+/* ── DATE SELECT SCREEN ── */
+#dateScreen {
+  position: fixed; inset: 0; z-index: 200;
+  background: #0a1628;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 24px 16px; overflow-y: auto;
+}
+#dateScreen h2 {
+  font-family: 'Nunito', sans-serif;
+  font-size: 22px; font-weight: 900;
+  color: #ffd166; margin-bottom: 6px; text-align: center;
+}
+#dateScreen p {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px; color: #6e8098;
+  margin-bottom: 24px; text-align: center;
+}
+.date-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px; width: 100%; max-width: 480px;
+}
+.date-btn {
+  border: none; border-radius: 18px;
+  padding: 18px 10px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px; font-weight: 900;
+  color: #fff; cursor: pointer;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+  transition: transform .15s, box-shadow .15s;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+}
+.date-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.3); }
+.date-btn .d-count {
+  font-size: 11px; font-weight: 700; opacity: 0.75;
+  font-family: 'Noto Sans KR', sans-serif;
+}
 </style>
 
 <style id="joy-back-btn-style">
@@ -336,15 +376,24 @@ body::before {
   🏠 메인
 </a>
 
+<!-- DATE SELECT SCREEN -->
+<div id="dateScreen">
+  <h2>📅 날짜를 선택하세요</h2>
+  <p>공부할 날짜를 골라서 시작해요!</p>
+  <div class="date-grid" id="dateGrid"></div>
+</div>
 
+<!-- GAME SCREEN -->
+<div id="gameScreen" style="display:none;flex-direction:column;height:100dvh;">
 <div class="header">
   <div class="hd-left">
-    <h1>⭐ Word Quest</h1>
+    <h1>✍️ Sentence Quest</h1>
     <p id="stageLabel">Stage 1</p>
   </div>
   <div class="hd-pills">
     <div class="pill">🎯 <span id="scoreNum">0</span></div>
     <div class="pill">⏱ <span id="timerNum">0</span>s</div>
+    <button class="pill" style="cursor:pointer;background:rgba(255,107,107,0.15);border-color:rgba(255,107,107,0.3);color:#ff6b6b;" onclick="backToDateSelect()">← 날짜</button>
   </div>
 </div>
 
@@ -394,42 +443,61 @@ body::before {
 
 <div id="explosion-layer"></div>
 <div class="confetti-wrap" id="confettiWrap"></div>
+</div><!-- #gameScreen -->
 
 <script>
 // ══════════════════════════════════════════════
 //  SENTENCES — Evan-Moor Grade 2 수준
 // ══════════════════════════════════════════════
+const DATE_GROUPS = [
+  { label:'April 2',  color:'#FF6B6B' },
+  { label:'April 7',  color:'#FF9F43' },
+  { label:'April 9',  color:'#FFC312' },
+  { label:'April 14', color:'#6BCB77' },
+  { label:'April 16', color:'#4D96FF' },
+  { label:'April 21', color:'#A29BFE' },
+  { label:'April 23', color:'#FF6B9D' },
+  { label:'April 28', color:'#00CEC9' },
+  { label:'April 30', color:'#FDCB6E' },
+];
+
 const SENTENCES = [
-  { text: 'MY SISTER IS KIND',       kr: '내 언니는 친절해요.' },
-  { text: 'THE CAT SAT ON A MAT',    kr: '고양이가 매트 위에 앉았어요.' },
-  { text: 'SHE CAN RUN FAST',        kr: '그녀는 빨리 달릴 수 있어요.' },
-  { text: 'WE LIKE TO SING',         kr: '우리는 노래하는 것을 좋아해요.' },
-  { text: 'HE HAS A BIG DOG',        kr: '그는 큰 개를 가지고 있어요.' },
-  { text: 'THE SUN IS HOT',          kr: '태양은 뜨거워요.' },
-  { text: 'I SEE A RED BIRD',        kr: '나는 빨간 새를 봐요.' },
-  { text: 'THE FISH CAN SWIM',       kr: '물고기는 수영할 수 있어요.' },
-  { text: 'SHE HAS LONG HAIR',       kr: '그녀는 긴 머리카락을 가졌어요.' },
-  { text: 'THE FROG CAN JUMP',       kr: '개구리는 점프할 수 있어요.' },
-  { text: 'MY MOM MAKES CAKE',       kr: '엄마가 케이크를 만들어요.' },
-  { text: 'WE PLAY IN THE PARK',     kr: '우리는 공원에서 놀아요.' },
-  { text: 'THE BIRD CAN FLY HIGH',   kr: '새는 높이 날 수 있어요.' },
-  { text: 'IT IS A COLD DAY',        kr: '오늘은 추운 날이에요.' },
-  { text: 'THE PIG IS IN THE MUD',   kr: '돼지가 진흙 속에 있어요.' },
-  { text: 'I LOVE MY FAMILY',        kr: '나는 내 가족을 사랑해요.' },
-  { text: 'THE DOG CAN RUN FAST',    kr: '개는 빨리 달릴 수 있어요.' },
-  { text: 'SHE READS EVERY DAY',     kr: '그녀는 매일 책을 읽어요.' },
-  { text: 'THE STAR IS VERY BIG',    kr: '그 별은 매우 커요.' },
-  { text: 'HE LIKES TO EAT APPLES', kr: '그는 사과 먹는 것을 좋아해요.' },
-  { text: 'THE RAIN FALLS DOWN',     kr: '비가 내려요.' },
-  { text: 'I HAVE TWO GOOD FRIENDS', kr: '나는 좋은 친구가 두 명 있어요.' },
-  { text: 'THE BABY IS SO CUTE',     kr: '아기가 정말 귀여워요.' },
-  { text: 'WE SHARE OUR FOOD',       kr: '우리는 음식을 나눠요.' },
-  { text: 'THE WIND IS VERY COLD',   kr: '바람이 매우 차가워요.' },
-  { text: 'SHE SMILES EVERY DAY',    kr: '그녀는 매일 미소 지어요.' },
-  { text: 'THE FLOWER IS PRETTY',    kr: '꽃이 예뻐요.' },
-  { text: 'I BRUSH MY TEETH',        kr: '나는 이를 닦아요.' },
-  { text: 'THE CAKE IS VERY SWEET',  kr: '케이크가 매우 달아요.' },
-  { text: 'WE CLIMB THE BIG TREE',   kr: '우리는 큰 나무를 올라요.' },
+  // ── April 2 ──
+  { date:'April 2',  text: 'CAN YOU TEACH ME HOW TO WRITE',    kr: '쓰는 방법을 가르쳐 줄 수 있나요?' },
+  { date:'April 2',  text: 'THE KIDS ARE STUDYING FOR THEIR TEST', kr: '아이들이 시험 공부를 하고 있어요.' },
+  { date:'April 2',  text: 'SHE WAS TEACHING US HOW TO SING',  kr: '그녀는 우리에게 노래 부르는 법을 가르쳐 주고 있었어요.' },
+  // ── April 7 ──
+  { date:'April 7',  text: 'WE CAN FEED THE PIGS SOME CORN',   kr: '우리는 돼지에게 옥수수를 줄 수 있어요.' },
+  { date:'April 7',  text: 'I TOOK A SHORT CUT',               kr: '나는 지름길로 갔어요.' },
+  { date:'April 7',  text: 'IT IS A SMALL WORLD',              kr: '세상은 참 좁아요.' },
+  // ── April 9 ──
+  { date:'April 9',  text: 'THE PUPS WERE BORN ON THE FIRST DAY OF MAY', kr: '강아지들은 오월 첫날에 태어났어요.' },
+  { date:'April 9',  text: 'YOUR BAG SHOULD GO UNDER YOUR DESK', kr: '가방은 책상 아래에 두어야 해요.' },
+  { date:'April 9',  text: 'I AM SHORTER THAN YOU',            kr: '나는 너보다 키가 작아요.' },
+  // ── April 14 ──
+  { date:'April 14', text: 'KEEP YOUR BAG UNDER YOUR SEAT',    kr: '가방을 의자 아래에 두세요.' },
+  { date:'April 14', text: 'SHE SEEMS MAD',                   kr: '그녀는 화가 난 것 같아요.' },
+  { date:'April 14', text: 'LET HIM SPEAK',                   kr: '그가 말할 수 있게 해주세요.' },
+  // ── April 16 ──
+  { date:'April 16', text: 'HAVE YOU SEEN THE GLUE',           kr: '풀을 본 적 있나요?' },
+  { date:'April 16', text: 'WE LIVE NEAR THE WATER',           kr: '우리는 물 근처에 살아요.' },
+  { date:'April 16', text: 'IS IT REAL',                       kr: '그게 진짜인가요?' },
+  // ── April 21 ──
+  { date:'April 21', text: 'THE RED BALL IS HIS AND THE OTHER ONE IS MINE', kr: '빨간 공은 그의 것이고 다른 건 내 것이에요.' },
+  { date:'April 21', text: 'GO ON YOUR SIDE OF THE BED',       kr: '침대 네 쪽으로 가세요.' },
+  { date:'April 21', text: 'LIE DOWN ON THE BED',              kr: '침대에 누우세요.' },
+  // ── April 23 ──
+  { date:'April 23', text: 'SOME KIDS CAME OVER TO PLAY LAST WEEK', kr: '지난주에 몇몇 아이들이 놀러 왔어요.' },
+  { date:'April 23', text: 'WHO WAS BORN IN THE MONTH OF MAY', kr: '5월에 태어난 사람은 누구인가요?' },
+  { date:'April 23', text: 'WHAT IS YOUR DATE OF BIRTH',       kr: '생년월일이 어떻게 되나요?' },
+  // ── April 28 ──
+  { date:'April 28', text: 'THIS IS A NICE PLACE',             kr: '이곳은 멋진 장소예요.' },
+  { date:'April 28', text: 'DAD WILL DRIVE THE VAN TO THE CITY', kr: '아빠가 밴을 몰고 도시로 갈 거예요.' },
+  { date:'April 28', text: 'I WILL RACE YOU TO THE SHED',      kr: '창고까지 달리기 시합 해요.' },
+  // ── April 30 ──
+  { date:'April 30', text: 'WE MUST RECYCLE TO PREVENT POLLUTION', kr: '오염을 막으려면 재활용을 해야 해요.' },
+  { date:'April 30', text: 'WE SHOULD REDUCE REUSE AND RECYCLE', kr: '줄이고, 다시 쓰고, 재활용해야 해요.' },
+  { date:'April 30', text: 'WE SHOULD RECYCLE TO PROTECT THE ENVIRONMENT', kr: '환경을 보호하려면 재활용해야 해요.' },
 ];
 
 // 알파벳 색상
@@ -450,18 +518,61 @@ function clr(l) { return COLORS[l] || {bg:'#555',sh:'#333'}; }
 //  STATE
 // ══════════════════════════════════════════════
 const SLOT_COUNT  = 8;
-const MATCH_COUNT = 2; // 2개 모이면 터짐
+const MATCH_COUNT = 2;
 
-let sentence = null;       // 현재 문장 객체
-let letters = [];          // 문장의 글자 배열 (공백 포함)
-let filled = [];           // 각 위치 채워짐 여부
-let nextIdx = 0;           // 다음에 채워야 할 문자 인덱스 (공백 자동 스킵)
+let sentence = null;
+let letters = [];
+let filled = [];
+let nextIdx = 0;
 let tiles = [];
 let slots = Array(SLOT_COUNT).fill(null);
 let score = 0, timerSec = 0, timerInterval;
 let gameActive = false, stageCount = 0;
 let isProcessing = false;
 let usedSentences = new Set();
+let selectedDate = null;
+let dateSentences = [];
+
+// ══════════════════════════════════════════════
+//  DATE SELECT
+// ══════════════════════════════════════════════
+function shadeColor(hex, pct) {
+  const n = parseInt(hex.slice(1), 16);
+  const r = Math.min(255, Math.max(0, (n>>16) + pct));
+  const g = Math.min(255, Math.max(0, ((n>>8)&0xff) + pct));
+  const b = Math.min(255, Math.max(0, (n&0xff) + pct));
+  return `#${((r<<16)|(g<<8)|b).toString(16).padStart(6,'0')}`;
+}
+
+function buildDateScreen() {
+  const grid = document.getElementById('dateGrid');
+  grid.innerHTML = DATE_GROUPS.map(dg => {
+    const count = SENTENCES.filter(s => s.date === dg.label).length;
+    return `<button class="date-btn" style="background:${dg.color};box-shadow:0 4px 0 ${shadeColor(dg.color,-40)};"
+      onclick="selectDate('${dg.label}')">
+      ${dg.label}
+      <span class="d-count">문장 ${count}개</span>
+    </button>`;
+  }).join('');
+}
+
+function selectDate(dateLabel) {
+  selectedDate = dateLabel;
+  dateSentences = SENTENCES.filter(s => s.date === dateLabel);
+  score = 0; stageCount = 0;
+  usedSentences.clear();
+  document.getElementById('dateScreen').style.display = 'none';
+  document.getElementById('gameScreen').style.display = 'flex';
+  initStage();
+}
+
+function backToDateSelect() {
+  clearInterval(timerInterval);
+  gameActive = false;
+  document.getElementById('gameScreen').style.display = 'none';
+  document.getElementById('dateScreen').style.display = 'flex';
+  ['clearPopup','failPopup'].forEach(id => document.getElementById(id).classList.remove('show'));
+}
 
 // ══════════════════════════════════════════════
 //  STAGE INIT
@@ -472,24 +583,21 @@ function initStage() {
   gameActive = true;
   isProcessing = false;
 
-  // 문장 랜덤 선택 (중복 방지)
-  const available = SENTENCES.filter((_, i) => !usedSentences.has(i));
+  // 날짜 문장 중 중복 방지 랜덤 선택
+  const available = dateSentences.filter((_, i) => !usedSentences.has(i));
   if (available.length === 0) usedSentences.clear();
-  const pool = SENTENCES.filter((_, i) => !usedSentences.has(i));
+  const pool = dateSentences.filter((_, i) => !usedSentences.has(i));
   const idx = Math.floor(Math.random() * pool.length);
-  const globalIdx = SENTENCES.indexOf(pool[idx]);
+  const globalIdx = dateSentences.indexOf(pool[idx]);
   usedSentences.add(globalIdx);
   sentence = pool[idx];
 
-  // 문장을 글자 배열로 분해
   letters = sentence.text.split('');
   filled  = Array(letters.length).fill(false);
-
-  // 처음 nextIdx = 첫 번째 알파벳 위치
   nextIdx = 0;
   advanceNextIdx();
 
-  document.getElementById('stageLabel').textContent = `Stage ${stageCount}`;
+  document.getElementById('stageLabel').textContent = `${selectedDate} · Stage ${stageCount}`;
   document.getElementById('scoreNum').textContent = score;
   document.getElementById('timerNum').textContent = 0;
   timerSec = 0;
@@ -875,8 +983,8 @@ function speak(text, rate = 0.8) {
   speechSynthesis.speak(u);
 }
 
-window.addEventListener('load', initStage);
-window.addEventListener('resize', () => { buildTiles(); });
+window.addEventListener('load', buildDateScreen);
+window.addEventListener('resize', () => { if (gameActive) buildTiles(); });
 </script>
 </body>
 </html>
