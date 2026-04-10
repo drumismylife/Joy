@@ -1079,55 +1079,54 @@ function useHint() {
   if (!window.speechSynthesis) return;
   speechSynthesis.cancel();
 
-  remaining.forEach((w, i) => {
-    setTimeout(() => {
-      const voices = speechSynthesis.getVoices();
-      const preferred = voices.find(v => v.lang === 'en-US' && v.name.includes('Samantha'))
-        || voices.find(v => v.lang === 'en-US' && v.name.includes('Female'))
-        || voices.find(v => v.lang === 'en-US')
-        || voices.find(v => v.lang.startsWith('en'));
+  // 첫 번째 미완성 단어 하나만
+  const w = remaining[0];
 
-      // 1) 단어 이름 먼저 읽기
-      const uWord = new SpeechSynthesisUtterance(w.word.toLowerCase());
-      uWord.lang = 'en-US'; uWord.rate = 0.8; uWord.pitch = 1.1;
-      if (preferred) uWord.voice = preferred;
+  const voices = speechSynthesis.getVoices();
+  const preferred = voices.find(v => v.lang === 'en-US' && v.name.includes('Samantha'))
+    || voices.find(v => v.lang === 'en-US' && v.name.includes('Female'))
+    || voices.find(v => v.lang === 'en-US')
+    || voices.find(v => v.lang.startsWith('en'));
 
-      // 2) 영어 설명 읽기 (sentence 필드)
-      const uDesc = new SpeechSynthesisUtterance(w.sentence);
-      uDesc.lang = 'en-US'; uDesc.rate = 0.85; uDesc.pitch = 1.0;
-      if (preferred) uDesc.voice = preferred;
+  // 1) 단어 이름 먼저 읽기
+  const uWord = new SpeechSynthesisUtterance(w.word.toLowerCase());
+  uWord.lang = 'en-US'; uWord.rate = 0.8; uWord.pitch = 1.1;
+  if (preferred) uWord.voice = preferred;
 
-      speechSynthesis.speak(uWord);
-      speechSynthesis.speak(uDesc);
+  // 2) 영어 설명 읽기
+  const uDesc = new SpeechSynthesisUtterance(w.sentence);
+  uDesc.lang = 'en-US'; uDesc.rate = 0.85; uDesc.pitch = 1.0;
+  if (preferred) uDesc.voice = preferred;
 
-      // 단어 카드 강조
-      const wi = stageWords.indexOf(w);
-      const el = document.getElementById('tw-' + wi);
-      if (el) {
-        el.style.transition = 'transform 0.15s, filter 0.15s';
-        el.style.transform = 'scale(1.18)';
-        el.style.filter = 'brightness(1.5)';
-        setTimeout(() => { el.style.transform = ''; el.style.filter = ''; }, 650);
-      }
+  speechSynthesis.speak(uWord);
+  speechSynthesis.speak(uDesc);
 
-      // 다음 차례 글자 타일 반짝임
-      const nextCI = w._filled.findIndex(f => !f);
-      if (nextCI !== -1) {
-        const nextLetter = w.word[nextCI];
-        const matches = tiles.filter(t => !t.removed && !t.covered && t.letter === nextLetter);
-        matches.slice(0, 2).forEach(t => {
-          t.el.style.transition = 'transform 0.15s, box-shadow 0.15s';
-          t.el.style.transform = 'scale(1.25) translateY(-5px)';
-          t.el.style.boxShadow = '0 0 18px ' + t.color.bg + ', 0 0 36px ' + t.color.bg;
-          setTimeout(() => {
-            t.el.style.transition = 'transform 0.2s, box-shadow 0.2s';
-            t.el.style.transform = '';
-            t.el.style.boxShadow = '';
-          }, 900);
-        });
-      }
-    }, i * 1200);
-  });
+  // 단어 카드 강조
+  const wi = stageWords.indexOf(w);
+  const el = document.getElementById('tw-' + wi);
+  if (el) {
+    el.style.transition = 'transform 0.15s, filter 0.15s';
+    el.style.transform = 'scale(1.18)';
+    el.style.filter = 'brightness(1.5)';
+    setTimeout(() => { el.style.transform = ''; el.style.filter = ''; }, 650);
+  }
+
+  // 다음 차례 글자 타일 반짝임
+  const nextCI = w._filled.findIndex(f => !f);
+  if (nextCI !== -1) {
+    const nextLetter = w.word[nextCI];
+    const matches = tiles.filter(t => !t.removed && !t.covered && t.letter === nextLetter);
+    matches.slice(0, 2).forEach(t => {
+      t.el.style.transition = 'transform 0.15s, box-shadow 0.15s';
+      t.el.style.transform = 'scale(1.25) translateY(-5px)';
+      t.el.style.boxShadow = '0 0 18px ' + t.color.bg + ', 0 0 36px ' + t.color.bg;
+      setTimeout(() => {
+        t.el.style.transition = 'transform 0.2s, box-shadow 0.2s';
+        t.el.style.transform = '';
+        t.el.style.boxShadow = '';
+      }, 900);
+    });
+  }
 }
 
 // ══════════════════════════════════════════════
