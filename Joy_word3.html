@@ -352,6 +352,49 @@ body::before {
 .confetti-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 400; overflow: hidden; }
 .cp { position: absolute; border-radius: 2px; animation: cpFall linear forwards; }
 @keyframes cpFall { 0%{opacity:1;transform:translateY(-10px) rotate(0)} 100%{opacity:0;transform:translateY(110vh) rotate(800deg)} }
+
+/* ── DATE SELECT SCREEN ── */
+#dateScreen {
+  position: fixed; inset: 0; z-index: 200;
+  background: #0a1628;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 24px 16px;
+  overflow-y: auto;
+}
+#dateScreen h2 {
+  font-family: 'Nunito', sans-serif;
+  font-size: 22px; font-weight: 900;
+  color: #ffd166; margin-bottom: 6px; text-align: center;
+}
+#dateScreen p {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px; color: #6e8098;
+  margin-bottom: 24px; text-align: center;
+}
+.date-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  width: 100%; max-width: 480px;
+}
+.date-btn {
+  border: none; border-radius: 18px;
+  padding: 18px 10px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px; font-weight: 900;
+  color: #fff; cursor: pointer;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+  transition: transform .15s, box-shadow .15s;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+}
+.date-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.3); }
+.date-btn .d-count {
+  font-size: 11px; font-weight: 700;
+  opacity: 0.75;
+  font-family: 'Noto Sans KR', sans-serif;
+}
 </style>
 
 <style id="joy-back-btn-style">
@@ -385,15 +428,24 @@ body::before {
   🏠 메인
 </a>
 
+<!-- DATE SELECT SCREEN -->
+<div id="dateScreen">
+  <h2>📅 날짜를 선택하세요</h2>
+  <p>공부할 날짜를 골라서 시작해요!</p>
+  <div class="date-grid" id="dateGrid"></div>
+</div>
 
+<!-- GAME SCREEN -->
+<div id="gameScreen" style="display:none;flex-direction:column;height:100dvh;">
 <div class="header">
   <div class="hd-left">
     <h1>⭐ Word Quest</h1>
-    <p id="stageLabel">Stage 1 · 랜덤 4단어</p>
+    <p id="stageLabel">Stage 1</p>
   </div>
   <div class="hd-pills">
     <div class="pill">🎯 <span id="scoreNum">0</span></div>
     <div class="pill">⏱ <span id="timerNum">0</span>s</div>
+    <button class="pill" style="cursor:pointer;background:rgba(255,107,107,0.15);border-color:rgba(255,107,107,0.3);color:#ff6b6b;" onclick="backToDateSelect()">← 날짜</button>
   </div>
 </div>
 
@@ -449,72 +501,79 @@ body::before {
 
 <div id="explosion-layer"></div>
 <div class="confetti-wrap" id="confettiWrap"></div>
+</div><!-- #gameScreen -->
 
 <script>
 // ══════════════════════════════════════════════
 //  WORD DATA
 // ══════════════════════════════════════════════
+const DATE_GROUPS = [
+  { label:'April 2',  color:'#FF6B6B' },
+  { label:'April 7',  color:'#FF9F43' },
+  { label:'April 9',  color:'#FFC312' },
+  { label:'April 14', color:'#6BCB77' },
+  { label:'April 16', color:'#4D96FF' },
+  { label:'April 21', color:'#A29BFE' },
+  { label:'April 23', color:'#FF6B9D' },
+  { label:'April 28', color:'#00CEC9' },
+  { label:'April 30', color:'#FDCB6E' },
+];
+
 const ALL_WORDS = [
-  { word:'SISTER', kr:'언니/누나', emoji:'👧', sentence:'My sister is very kind.' },
-  { word:'MOTHER', kr:'엄마',      emoji:'👩', sentence:'My mother makes yummy food.' },
-  { word:'FATHER', kr:'아빠',      emoji:'👨', sentence:'My father reads books at night.' },
-  { word:'SCHOOL', kr:'학교',      emoji:'🏫', sentence:'I go to school every morning.' },
-  { word:'BASKET', kr:'바구니',    emoji:'🧺', sentence:'Put the apples in the basket.' },
-  { word:'BRIDGE', kr:'다리',      emoji:'🌉', sentence:'We walked over the bridge.' },
-  { word:'MIRROR', kr:'거울',      emoji:'🪞', sentence:'I see my face in the mirror.' },
-  { word:'CASTLE', kr:'성',        emoji:'🏰', sentence:'The princess lives in a castle.' },
-  { word:'ISLAND', kr:'섬',        emoji:'🏝', sentence:'The island has beautiful beaches.' },
-  { word:'GARDEN', kr:'정원',      emoji:'🌷', sentence:'Flowers grow in the garden.' },
-  { word:'MARKET', kr:'시장',      emoji:'🛒', sentence:'Mom buys food at the market.' },
-  { word:'DANCER', kr:'댄서',      emoji:'💃', sentence:'The dancer spins on the stage.' },
-  { word:'HAPPY',  kr:'행복한',    emoji:'😊', sentence:'She is a very happy girl.' },
-  { word:'FUNNY',  kr:'웃긴',      emoji:'😄', sentence:'He tells funny jokes every day.' },
-  { word:'BRAVE',  kr:'용감한',    emoji:'🦁', sentence:'The brave knight fights the dragon.' },
-  { word:'QUIET',  kr:'조용한',    emoji:'🤫', sentence:'Please be quiet in the library.' },
-  { word:'SMART',  kr:'똑똑한',    emoji:'🧠', sentence:'You are a very smart student.' },
-  { word:'SHINY',  kr:'빛나는',    emoji:'✨', sentence:'The shiny star lit up the sky.' },
-  { word:'DIRTY',  kr:'더러운',    emoji:'🪣', sentence:'Wash your dirty hands before eating.' },
-  { word:'CLOUDY', kr:'흐린',      emoji:'☁️', sentence:'It is a cloudy day outside.' },
-  { word:'GENTLE', kr:'부드러운',  emoji:'🕊', sentence:'She has a gentle and kind voice.' },
-  { word:'MIGHTY', kr:'강력한',    emoji:'💪', sentence:'The mighty lion roared loudly.' },
-  { word:'SLEEPY', kr:'졸린',      emoji:'😴', sentence:'I feel very sleepy after lunch.' },
-  { word:'HUNGRY', kr:'배고픈',    emoji:'🍽', sentence:'The hungry puppy ate all its food.' },
-  { word:'DANCE',  kr:'춤추다',    emoji:'💃', sentence:'We love to dance to music.' },
-  { word:'CLIMB',  kr:'오르다',    emoji:'🧗', sentence:'Can you climb that tall tree?' },
-  { word:'SPEAK',  kr:'말하다',    emoji:'🗣', sentence:'Please speak clearly and slowly.' },
-  { word:'WRITE',  kr:'쓰다',      emoji:'✏️', sentence:'I write in my notebook every day.' },
-  { word:'CHASE',  kr:'쫓다',      emoji:'🏃', sentence:'The dog loves to chase the ball.' },
-  { word:'SMILE',  kr:'웃다',      emoji:'😁', sentence:'Smile and the world smiles back.' },
-  { word:'SHARE',  kr:'나누다',    emoji:'🤝', sentence:'Always share your toys with friends.' },
-  { word:'LISTEN', kr:'듣다',      emoji:'👂', sentence:'Listen carefully to your teacher.' },
-  { word:'TRAVEL', kr:'여행하다',  emoji:'✈️', sentence:'I want to travel around the world.' },
-  { word:'CREATE', kr:'만들다',    emoji:'🎨', sentence:'Let us create something beautiful today.' },
-  { word:'FOLLOW', kr:'따르다',    emoji:'👣', sentence:'Follow the path through the forest.' },
-  { word:'TICKLE', kr:'간지럽히다',emoji:'🤣', sentence:'Do not tickle me! I will laugh.' },
-  { word:'NEVER',  kr:'절대 안',   emoji:'🚫', sentence:'I will never give up my dream.' },
-  { word:'AGAIN',  kr:'다시',      emoji:'🔄', sentence:'Let us try again one more time.' },
-  { word:'EARLY',  kr:'일찍',      emoji:'🌅', sentence:'Birds sing early in the morning.' },
-  { word:'OFTEN',  kr:'자주',      emoji:'📅', sentence:'We often play in the park together.' },
-  { word:'ABOVE',  kr:'위에',      emoji:'⬆️', sentence:'The clouds float above the mountain.' },
-  { word:'BELOW',  kr:'아래에',    emoji:'⬇️', sentence:'Fish swim below the water surface.' },
-  { word:'ALWAYS', kr:'항상',      emoji:'♾', sentence:'Always be kind to your friends.' },
-  { word:'BEFORE', kr:'~전에',     emoji:'⏮', sentence:'Wash hands before every meal.' },
-  { word:'BEHIND', kr:'뒤에',      emoji:'👀', sentence:'Hide behind the big oak tree.' },
-  { word:'INSIDE', kr:'안에',      emoji:'📦', sentence:'Stay inside when it is raining hard.' },
-  { word:'AROUND', kr:'주변에',    emoji:'🔃', sentence:'Look around before you cross the street.' },
-  { word:'ACROSS', kr:'건너서',    emoji:'🌉', sentence:'We swam across the cool river.' },
-  { word:'PLANT',  kr:'식물',      emoji:'🌱', sentence:'Water the plant every morning.' },
-  { word:'WATER',  kr:'물',        emoji:'💧', sentence:'Drink lots of water every day.' },
-  { word:'LIGHT',  kr:'빛',        emoji:'💡', sentence:'Turn on the light in the dark room.' },
-  { word:'EARTH',  kr:'지구',      emoji:'🌍', sentence:'We must take care of the earth.' },
-  { word:'MONEY',  kr:'돈',        emoji:'💰', sentence:'Save your money to buy something nice.' },
-  { word:'NIGHT',  kr:'밤',        emoji:'🌙', sentence:'Stars come out at night.' },
-  { word:'STORY',  kr:'이야기',    emoji:'📖', sentence:'She reads a story before bedtime.' },
-  { word:'PLACE',  kr:'장소',      emoji:'📍', sentence:'This is my favorite place to read.' },
-  { word:'THING',  kr:'물건',      emoji:'📦', sentence:'What is that strange thing over there?' },
-  { word:'BUNCH',  kr:'묶음',      emoji:'🍇', sentence:'I bought a bunch of grapes today.' },
-  { word:'CHECK',  kr:'확인',      emoji:'✅', sentence:'Check your answers before turning in.' },
-  { word:'BLANK',  kr:'빈칸',      emoji:'⬜', sentence:'Fill in the blank with the right word.' },
+  // ── April 2 ──
+  { date:'April 2',  word:'BRANCH',  kr:'나뭇가지',  emoji:'🌿', sentence:'A branch is a part of a tree growing out from the trunk.' },
+  { date:'April 2',  word:'BRAVE',   kr:'용감한',    emoji:'🦁', sentence:'A brave person is someone who is not afraid of danger.' },
+  { date:'April 2',  word:'DASH',    kr:'빠르게 가다', emoji:'💨', sentence:'Dash means to move quickly, or a small amount of something.' },
+  { date:'April 2',  word:'EVENING', kr:'저녁',      emoji:'🌆', sentence:'Evening is the part of the day between late afternoon and early nighttime.' },
+  { date:'April 2',  word:'GREEDY',  kr:'욕심 많은', emoji:'🤑', sentence:'Greedy means wanting more of something than what he or she needs.' },
+  // ── April 7 ──
+  { date:'April 7',  word:'PASS',    kr:'통과하다',  emoji:'🎫', sentence:'Pass means to go by something, or a piece of paper that says the person holding it can do something.' },
+  { date:'April 7',  word:'PRESENT', kr:'선물/현재', emoji:'🎁', sentence:'Present is something that is given to someone out of kindness, or being in a particular place.' },
+  { date:'April 7',  word:'STREAM',  kr:'시냇물',    emoji:'🏞', sentence:'A stream is a body of flowing water that is not very wide or deep.' },
+  { date:'April 7',  word:'TRAIL',   kr:'오솔길',    emoji:'🌲', sentence:'A trail is a path for people to follow, especially in the woods.' },
+  { date:'April 7',  word:'WISE',    kr:'현명한',    emoji:'🦉', sentence:'Wise means showing good sense and judgement.' },
+  // ── April 9 ──
+  { date:'April 9',  word:'BENCH',   kr:'벤치',      emoji:'🪑', sentence:'A bench is a long seat for a few people to sit on.' },
+  { date:'April 9',  word:'BRIDGE',  kr:'다리',      emoji:'🌉', sentence:'A bridge is a structure built above and across water.' },
+  { date:'April 9',  word:'CROSS',   kr:'건너다',    emoji:'🚶', sentence:'Cross means to go from one side to the other, or angry or not pleased.' },
+  { date:'April 9',  word:'CROWD',   kr:'군중',      emoji:'👥', sentence:'A crowd is a lot of people all together in one place.' },
+  { date:'April 9',  word:'DEEP',    kr:'깊은',      emoji:'🌊', sentence:'Deep means going a long way down from the surface.' },
+  // ── April 14 ──
+  { date:'April 14', word:'FRESH',   kr:'신선한',    emoji:'🍃', sentence:'Fresh means clean or new.' },
+  { date:'April 14', word:'FROWN',   kr:'찡그리다',  emoji:'😠', sentence:'Frown means to move your eyebrows together and wrinkle your forehead, or an unhappy look on your face.' },
+  { date:'April 14', word:'SIGNAL',  kr:'신호',      emoji:'🚦', sentence:'A signal is an action or sign that sends a message.' },
+  { date:'April 14', word:'TRAVEL',  kr:'여행하다',  emoji:'✈️', sentence:'Travel means to go from one place to another.' },
+  { date:'April 14', word:'WORRY',   kr:'걱정하다',  emoji:'😟', sentence:'Worry means to feel that something bad may happen.' },
+  // ── April 16 ──
+  { date:'April 16', word:'PRESENT', kr:'선물/현재', emoji:'🎁', sentence:'Present is something that is given to someone out of kindness, or being in a particular place.' },
+  { date:'April 16', word:'WISE',    kr:'현명한',    emoji:'🦉', sentence:'Wise means showing good sense and judgement.' },
+  { date:'April 16', word:'CROSS',   kr:'건너다',    emoji:'🚶', sentence:'Cross means to go from one side to the other, or angry or not pleased.' },
+  { date:'April 16', word:'FROWN',   kr:'찡그리다',  emoji:'😠', sentence:'Frown means to move your eyebrows together and wrinkle your forehead.' },
+  { date:'April 16', word:'SIGNAL',  kr:'신호',      emoji:'🚦', sentence:'A signal is an action or sign that sends a message.' },
+  // ── April 21 ──
+  { date:'April 21', word:'BEACH',   kr:'해변',      emoji:'🏖', sentence:'Beach is land near the water. It is usually sandy.' },
+  { date:'April 21', word:'CENTER',  kr:'가운데',    emoji:'🎯', sentence:'A center is a place that is in the middle of something.' },
+  { date:'April 21', word:'FINALLY', kr:'마침내',    emoji:'🎉', sentence:'Finally means at last.' },
+  { date:'April 21', word:'IDEA',    kr:'생각/아이디어', emoji:'💡', sentence:'An idea is a thought or a plan. It is something that you think of.' },
+  { date:'April 21', word:'OCEAN',   kr:'바다',      emoji:'🌊', sentence:'The ocean is the large body of salt water covering most of the Earth.' },
+  // ── April 23 ──
+  { date:'April 23', word:'SEASHELL',kr:'조개껍데기', emoji:'🐚', sentence:'A seashell is the shell of a sea animal such as an oyster or a clam.' },
+  { date:'April 23', word:'STACK',   kr:'쌓다',      emoji:'📚', sentence:'A stack is a neat pile of something, or to pile things on top of another.' },
+  { date:'April 23', word:'TINY',    kr:'아주 작은', emoji:'🐜', sentence:'Tiny means very small.' },
+  { date:'April 23', word:'WAVE',    kr:'파도/흔들다', emoji:'🌊', sentence:'Wave means to move your hand back and forth, or a long bump of water moving through the ocean.' },
+  { date:'April 23', word:'WONDER',  kr:'궁금하다',  emoji:'🤔', sentence:'Wonder means to be curious about something.' },
+  // ── April 28 ──
+  { date:'April 28', word:'ARRIVE',  kr:'도착하다',  emoji:'🏁', sentence:'Arrive means to reach the place you set out for.' },
+  { date:'April 28', word:'CLEAR',   kr:'맑은/분명한', emoji:'☀️', sentence:'Clear means not cloudy or dark, being able to see through something easily.' },
+  { date:'April 28', word:'ENORMOUS',kr:'거대한',    emoji:'🐘', sentence:'Enormous means very big.' },
+  { date:'April 28', word:'EXACTLY', kr:'정확히',    emoji:'✅', sentence:'Exactly means looking or happening in the same way.' },
+  { date:'April 28', word:'FLOAT',   kr:'떠다니다',  emoji:'🎈', sentence:'Float means to stay on top of water or in the air.' },
+  // ── April 30 ──
+  { date:'April 30', word:'MIDNIGHT',kr:'자정',      emoji:'🌙', sentence:'Midnight is twelve o\'clock at night.' },
+  { date:'April 30', word:'RAINBOW', kr:'무지개',    emoji:'🌈', sentence:'A rainbow is made of long stripes of color in the sky.' },
+  { date:'April 30', word:'SNOWSTORM',kr:'눈보라',   emoji:'❄️', sentence:'A snowstorm is a lot of snow falling at once.' },
+  { date:'April 30', word:'WEEKEND', kr:'주말',      emoji:'🎉', sentence:'The weekend is made up of the two days of the week: Saturday and Sunday.' },
+  { date:'April 30', word:'WHISPER', kr:'속삭이다',  emoji:'🤫', sentence:'Whisper means to speak in a very soft and quiet voice.' },
 ];
 
 // 알파벳 색상 팔레트
@@ -545,6 +604,48 @@ let score = 0, timerSec = 0, timerInterval;
 let gameActive = false, stageCount = 0;
 let popupQueue = [];
 let isProcessingTriple = false;
+let selectedDate = null;
+let dateWords = [];
+
+// ══════════════════════════════════════════════
+//  DATE SELECT
+// ══════════════════════════════════════════════
+function buildDateScreen() {
+  const grid = document.getElementById('dateGrid');
+  grid.innerHTML = DATE_GROUPS.map(dg => {
+    const count = ALL_WORDS.filter(w => w.date === dg.label).length;
+    return `<button class="date-btn" style="background:${dg.color};box-shadow:0 4px 0 ${shadeColor(dg.color,-40)};"
+      onclick="selectDate('${dg.label}')">
+      ${dg.label}
+      <span class="d-count">단어 ${count}개</span>
+    </button>`;
+  }).join('');
+}
+
+function shadeColor(hex, pct) {
+  const n = parseInt(hex.slice(1), 16);
+  const r = Math.min(255, Math.max(0, (n>>16) + pct));
+  const g = Math.min(255, Math.max(0, ((n>>8)&0xff) + pct));
+  const b = Math.min(255, Math.max(0, (n&0xff) + pct));
+  return `#${((r<<16)|(g<<8)|b).toString(16).padStart(6,'0')}`;
+}
+
+function selectDate(dateLabel) {
+  selectedDate = dateLabel;
+  dateWords = ALL_WORDS.filter(w => w.date === dateLabel);
+  score = 0; stageCount = 0;
+  document.getElementById('dateScreen').style.display = 'none';
+  document.getElementById('gameScreen').style.display = 'flex';
+  initStage();
+}
+
+function backToDateSelect() {
+  clearInterval(timerInterval);
+  gameActive = false;
+  document.getElementById('gameScreen').style.display = 'none';
+  document.getElementById('dateScreen').style.display = 'flex';
+  ['wordPopup','clearPopup','failPopup'].forEach(id => document.getElementById(id).classList.remove('show'));
+}
 
 // ══════════════════════════════════════════════
 //  STAGE INIT
@@ -557,13 +658,16 @@ function initStage() {
   gameActive = true;
   isProcessingTriple = false;
 
-  // 4개 랜덤 선택
-  stageWords = [...ALL_WORDS].sort(() => Math.random() - 0.5).slice(0, WORDS_PER_STAGE);
+  // 날짜 단어 전부 사용 (5개 이하면 전부, 많으면 랜덤 WORDS_PER_STAGE개)
+  const pool = dateWords.length <= WORDS_PER_STAGE
+    ? [...dateWords]
+    : [...dateWords].sort(() => Math.random() - 0.5).slice(0, WORDS_PER_STAGE);
+  stageWords = pool;
 
   // _filled: 각 단어의 각 글자 채워짐 여부
   stageWords.forEach(w => { w._filled = Array(w.word.length).fill(false); });
 
-  document.getElementById('stageLabel').textContent = `Stage ${stageCount} · 랜덤 ${WORDS_PER_STAGE}단어`;
+  document.getElementById('stageLabel').textContent = `${selectedDate} · Stage ${stageCount}`;
   document.getElementById('scoreNum').textContent = score;
   document.getElementById('timerNum').textContent = 0;
   timerSec = 0;
@@ -977,17 +1081,24 @@ function useHint() {
 
   remaining.forEach((w, i) => {
     setTimeout(() => {
-      // TTS 발음
-      const u = new SpeechSynthesisUtterance(w.word.toLowerCase());
-      u.lang = 'en-US'; u.rate = 0.8; u.pitch = 1.0; u.volume = 1.0;
-      // 영어 여성 음성 우선 선택 (더 또렷함)
       const voices = speechSynthesis.getVoices();
       const preferred = voices.find(v => v.lang === 'en-US' && v.name.includes('Samantha'))
         || voices.find(v => v.lang === 'en-US' && v.name.includes('Female'))
         || voices.find(v => v.lang === 'en-US')
         || voices.find(v => v.lang.startsWith('en'));
-      if (preferred) u.voice = preferred;
-      speechSynthesis.speak(u);
+
+      // 1) 단어 이름 먼저 읽기
+      const uWord = new SpeechSynthesisUtterance(w.word.toLowerCase());
+      uWord.lang = 'en-US'; uWord.rate = 0.8; uWord.pitch = 1.1;
+      if (preferred) uWord.voice = preferred;
+
+      // 2) 영어 설명 읽기 (sentence 필드)
+      const uDesc = new SpeechSynthesisUtterance(w.sentence);
+      uDesc.lang = 'en-US'; uDesc.rate = 0.85; uDesc.pitch = 1.0;
+      if (preferred) uDesc.voice = preferred;
+
+      speechSynthesis.speak(uWord);
+      speechSynthesis.speak(uDesc);
 
       // 단어 카드 강조
       const wi = stageWords.indexOf(w);
@@ -1015,7 +1126,7 @@ function useHint() {
           }, 900);
         });
       }
-    }, i * 850);
+    }, i * 1200);
   });
 }
 
@@ -1065,8 +1176,8 @@ function speak(text) {
 }
 
 // ── START ──
-window.addEventListener('load', initStage);
-window.addEventListener('resize', () => { buildTiles(); });
+window.addEventListener('load', buildDateScreen);
+window.addEventListener('resize', () => { if (gameActive) buildTiles(); });
 </script>
 </body>
 </html>
