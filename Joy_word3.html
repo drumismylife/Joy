@@ -478,7 +478,7 @@ body::before {
     <div class="cl-title">Stage Clear! 🎉</div>
     <div class="cl-sub"   id="clSub"></div>
     <div class="cl-stats">
-      <div class="cstat"><div class="cn">4</div><div class="cl">단어 완성</div></div>
+      <div class="cstat"><div class="cn" id="clWords">0</div><div class="cl">단어 완성</div></div>
       <div class="cstat"><div class="cn" id="clTime">0s</div><div class="cl">클리어 시간</div></div>
       <div class="cstat"><div class="cn" id="clScore">0</div><div class="cl">점수</div></div>
     </div>
@@ -503,78 +503,71 @@ body::before {
 <div class="confetti-wrap" id="confettiWrap"></div>
 </div><!-- #gameScreen -->
 
+<script src="data/word3_data.js"></script>
 <script>
-// ══════════════════════════════════════════════
-//  WORD DATA
-// ══════════════════════════════════════════════
-const DATE_GROUPS = [
-  { label:'April 2',  color:'#FF6B6B' },
-  { label:'April 7',  color:'#FF9F43' },
-  { label:'April 9',  color:'#FFC312' },
-  { label:'April 14', color:'#6BCB77' },
-  { label:'April 16', color:'#4D96FF' },
-  { label:'April 21', color:'#A29BFE' },
-  { label:'April 23', color:'#FF6B9D' },
-  { label:'April 28', color:'#00CEC9' },
-  { label:'April 30', color:'#FDCB6E' },
-];
-
-const ALL_WORDS = [
-  // ── April 2 ──
-  { date:'April 2',  word:'BRANCH',  kr:'나뭇가지',  emoji:'🌿', sentence:'A branch is a part of a tree growing out from the trunk.' },
-  { date:'April 2',  word:'BRAVE',   kr:'용감한',    emoji:'🦁', sentence:'A brave person is someone who is not afraid of danger.' },
-  { date:'April 2',  word:'DASH',    kr:'빠르게 가다', emoji:'💨', sentence:'Dash means to move quickly, or a small amount of something.' },
-  { date:'April 2',  word:'EVENING', kr:'저녁',      emoji:'🌆', sentence:'Evening is the part of the day between late afternoon and early nighttime.' },
-  { date:'April 2',  word:'GREEDY',  kr:'욕심 많은', emoji:'🤑', sentence:'Greedy means wanting more of something than what he or she needs.' },
-  // ── April 7 ──
-  { date:'April 7',  word:'PASS',    kr:'통과하다',  emoji:'🎫', sentence:'Pass means to go by something, or a piece of paper that says the person holding it can do something.' },
-  { date:'April 7',  word:'PRESENT', kr:'선물/현재', emoji:'🎁', sentence:'Present is something that is given to someone out of kindness, or being in a particular place.' },
-  { date:'April 7',  word:'STREAM',  kr:'시냇물',    emoji:'🏞', sentence:'A stream is a body of flowing water that is not very wide or deep.' },
-  { date:'April 7',  word:'TRAIL',   kr:'오솔길',    emoji:'🌲', sentence:'A trail is a path for people to follow, especially in the woods.' },
-  { date:'April 7',  word:'WISE',    kr:'현명한',    emoji:'🦉', sentence:'Wise means showing good sense and judgement.' },
-  // ── April 9 ──
-  { date:'April 9',  word:'BENCH',   kr:'벤치',      emoji:'🪑', sentence:'A bench is a long seat for a few people to sit on.' },
-  { date:'April 9',  word:'BRIDGE',  kr:'다리',      emoji:'🌉', sentence:'A bridge is a structure built above and across water.' },
-  { date:'April 9',  word:'CROSS',   kr:'건너다',    emoji:'🚶', sentence:'Cross means to go from one side to the other, or angry or not pleased.' },
-  { date:'April 9',  word:'CROWD',   kr:'군중',      emoji:'👥', sentence:'A crowd is a lot of people all together in one place.' },
-  { date:'April 9',  word:'DEEP',    kr:'깊은',      emoji:'🌊', sentence:'Deep means going a long way down from the surface.' },
-  // ── April 14 ──
-  { date:'April 14', word:'FRESH',   kr:'신선한',    emoji:'🍃', sentence:'Fresh means clean or new.' },
-  { date:'April 14', word:'FROWN',   kr:'찡그리다',  emoji:'😠', sentence:'Frown means to move your eyebrows together and wrinkle your forehead, or an unhappy look on your face.' },
-  { date:'April 14', word:'SIGNAL',  kr:'신호',      emoji:'🚦', sentence:'A signal is an action or sign that sends a message.' },
-  { date:'April 14', word:'TRAVEL',  kr:'여행하다',  emoji:'✈️', sentence:'Travel means to go from one place to another.' },
-  { date:'April 14', word:'WORRY',   kr:'걱정하다',  emoji:'😟', sentence:'Worry means to feel that something bad may happen.' },
-  // ── April 16 ──
-  { date:'April 16', word:'PRESENT', kr:'선물/현재', emoji:'🎁', sentence:'Present is something that is given to someone out of kindness, or being in a particular place.' },
-  { date:'April 16', word:'WISE',    kr:'현명한',    emoji:'🦉', sentence:'Wise means showing good sense and judgement.' },
-  { date:'April 16', word:'CROSS',   kr:'건너다',    emoji:'🚶', sentence:'Cross means to go from one side to the other, or angry or not pleased.' },
-  { date:'April 16', word:'FROWN',   kr:'찡그리다',  emoji:'😠', sentence:'Frown means to move your eyebrows together and wrinkle your forehead.' },
-  { date:'April 16', word:'SIGNAL',  kr:'신호',      emoji:'🚦', sentence:'A signal is an action or sign that sends a message.' },
-  // ── April 21 ──
-  { date:'April 21', word:'BEACH',   kr:'해변',      emoji:'🏖', sentence:'Beach is land near the water. It is usually sandy.' },
-  { date:'April 21', word:'CENTER',  kr:'가운데',    emoji:'🎯', sentence:'A center is a place that is in the middle of something.' },
-  { date:'April 21', word:'FINALLY', kr:'마침내',    emoji:'🎉', sentence:'Finally means at last.' },
-  { date:'April 21', word:'IDEA',    kr:'생각/아이디어', emoji:'💡', sentence:'An idea is a thought or a plan. It is something that you think of.' },
-  { date:'April 21', word:'OCEAN',   kr:'바다',      emoji:'🌊', sentence:'The ocean is the large body of salt water covering most of the Earth.' },
-  // ── April 23 ──
-  { date:'April 23', word:'SEASHELL',kr:'조개껍데기', emoji:'🐚', sentence:'A seashell is the shell of a sea animal such as an oyster or a clam.' },
-  { date:'April 23', word:'STACK',   kr:'쌓다',      emoji:'📚', sentence:'A stack is a neat pile of something, or to pile things on top of another.' },
-  { date:'April 23', word:'TINY',    kr:'아주 작은', emoji:'🐜', sentence:'Tiny means very small.' },
-  { date:'April 23', word:'WAVE',    kr:'파도/흔들다', emoji:'🌊', sentence:'Wave means to move your hand back and forth, or a long bump of water moving through the ocean.' },
-  { date:'April 23', word:'WONDER',  kr:'궁금하다',  emoji:'🤔', sentence:'Wonder means to be curious about something.' },
-  // ── April 28 ──
-  { date:'April 28', word:'ARRIVE',  kr:'도착하다',  emoji:'🏁', sentence:'Arrive means to reach the place you set out for.' },
-  { date:'April 28', word:'CLEAR',   kr:'맑은/분명한', emoji:'☀️', sentence:'Clear means not cloudy or dark, being able to see through something easily.' },
-  { date:'April 28', word:'ENORMOUS',kr:'거대한',    emoji:'🐘', sentence:'Enormous means very big.' },
-  { date:'April 28', word:'EXACTLY', kr:'정확히',    emoji:'✅', sentence:'Exactly means looking or happening in the same way.' },
-  { date:'April 28', word:'FLOAT',   kr:'떠다니다',  emoji:'🎈', sentence:'Float means to stay on top of water or in the air.' },
-  // ── April 30 ──
-  { date:'April 30', word:'MIDNIGHT',kr:'자정',      emoji:'🌙', sentence:'Midnight is twelve o\'clock at night.' },
-  { date:'April 30', word:'RAINBOW', kr:'무지개',    emoji:'🌈', sentence:'A rainbow is made of long stripes of color in the sky.' },
-  { date:'April 30', word:'SNOWSTORM',kr:'눈보라',   emoji:'❄️', sentence:'A snowstorm is a lot of snow falling at once.' },
-  { date:'April 30', word:'WEEKEND', kr:'주말',      emoji:'🎉', sentence:'The weekend is made up of the two days of the week: Saturday and Sunday.' },
-  { date:'April 30', word:'WHISPER', kr:'속삭이다',  emoji:'🤫', sentence:'Whisper means to speak in a very soft and quiet voice.' },
-];
+// data/word3_data.js 로드 실패 시 인라인 폴백
+if (typeof DATE_GROUPS === 'undefined') {
+  var SLOT_COUNT = 9;
+  var WORDS_PER_STAGE = 4;
+  var DATE_GROUPS = [
+    { label:'April 2',  color:'#FF6B6B' },
+    { label:'April 7',  color:'#FF9F43' },
+    { label:'April 9',  color:'#FFC312' },
+    { label:'April 14', color:'#6BCB77' },
+    { label:'April 16', color:'#4D96FF' },
+    { label:'April 21', color:'#A29BFE' },
+    { label:'April 23', color:'#FF6B9D' },
+    { label:'April 28', color:'#00CEC9' },
+    { label:'April 30', color:'#FDCB6E' },
+  ];
+  var ALL_WORDS = [
+    { date:'April 2',  word:'BRANCH',  kr:'나뭇가지',  emoji:'🌿', sentence:'A branch is a part of a tree growing out from the trunk.' },
+    { date:'April 2',  word:'BRAVE',   kr:'용감한',    emoji:'🦁', sentence:'A brave person is someone who is not afraid of danger.' },
+    { date:'April 2',  word:'DASH',    kr:'빠르게 가다', emoji:'💨', sentence:'Dash means to move quickly, or a small amount of something.' },
+    { date:'April 2',  word:'EVENING', kr:'저녁',      emoji:'🌆', sentence:'Evening is the part of the day between late afternoon and early nighttime.' },
+    { date:'April 2',  word:'GREEDY',  kr:'욕심 많은', emoji:'🤑', sentence:'Greedy means wanting more of something than what he or she needs.' },
+    { date:'April 7',  word:'PASS',    kr:'통과하다',  emoji:'🎫', sentence:'Pass means to go by something, or a piece of paper that says the person holding it can do something.' },
+    { date:'April 7',  word:'PRESENT', kr:'선물/현재', emoji:'🎁', sentence:'Present is something that is given to someone out of kindness, or being in a particular place.' },
+    { date:'April 7',  word:'STREAM',  kr:'시냇물',    emoji:'🏞', sentence:'A stream is a body of flowing water that is not very wide or deep.' },
+    { date:'April 7',  word:'TRAIL',   kr:'오솔길',    emoji:'🌲', sentence:'A trail is a path for people to follow, especially in the woods.' },
+    { date:'April 7',  word:'WISE',    kr:'현명한',    emoji:'🦉', sentence:'Wise means showing good sense and judgement.' },
+    { date:'April 9',  word:'BENCH',   kr:'벤치',      emoji:'🪑', sentence:'A bench is a long seat for a few people to sit on.' },
+    { date:'April 9',  word:'BRIDGE',  kr:'다리',      emoji:'🌉', sentence:'A bridge is a structure built above and across water.' },
+    { date:'April 9',  word:'CROSS',   kr:'건너다',    emoji:'🚶', sentence:'Cross means to go from one side to the other, or angry or not pleased.' },
+    { date:'April 9',  word:'CROWD',   kr:'군중',      emoji:'👥', sentence:'A crowd is a lot of people all together in one place.' },
+    { date:'April 9',  word:'DEEP',    kr:'깊은',      emoji:'🌊', sentence:'Deep means going a long way down from the surface.' },
+    { date:'April 14', word:'FRESH',   kr:'신선한',    emoji:'🍃', sentence:'Fresh means clean or new.' },
+    { date:'April 14', word:'FROWN',   kr:'찡그리다',  emoji:'😠', sentence:'Frown means to move your eyebrows together and wrinkle your forehead, or an unhappy look on your face.' },
+    { date:'April 14', word:'SIGNAL',  kr:'신호',      emoji:'🚦', sentence:'A signal is an action or sign that sends a message.' },
+    { date:'April 14', word:'TRAVEL',  kr:'여행하다',  emoji:'✈️', sentence:'Travel means to go from one place to another.' },
+    { date:'April 14', word:'WORRY',   kr:'걱정하다',  emoji:'😟', sentence:'Worry means to feel that something bad may happen.' },
+    { date:'April 16', word:'PRESENT', kr:'선물/현재', emoji:'🎁', sentence:'Present is something that is given to someone out of kindness, or being in a particular place.' },
+    { date:'April 16', word:'WISE',    kr:'현명한',    emoji:'🦉', sentence:'Wise means showing good sense and judgement.' },
+    { date:'April 16', word:'CROSS',   kr:'건너다',    emoji:'🚶', sentence:'Cross means to go from one side to the other, or angry or not pleased.' },
+    { date:'April 16', word:'FROWN',   kr:'찡그리다',  emoji:'😠', sentence:'Frown means to move your eyebrows together and wrinkle your forehead.' },
+    { date:'April 16', word:'SIGNAL',  kr:'신호',      emoji:'🚦', sentence:'A signal is an action or sign that sends a message.' },
+    { date:'April 21', word:'BEACH',   kr:'해변',      emoji:'🏖', sentence:'Beach is land near the water. It is usually sandy.' },
+    { date:'April 21', word:'CENTER',  kr:'가운데',    emoji:'🎯', sentence:'A center is a place that is in the middle of something.' },
+    { date:'April 21', word:'FINALLY', kr:'마침내',    emoji:'🎉', sentence:'Finally means at last.' },
+    { date:'April 21', word:'IDEA',    kr:'생각/아이디어', emoji:'💡', sentence:'An idea is a thought or a plan. It is something that you think of.' },
+    { date:'April 21', word:'OCEAN',   kr:'바다',      emoji:'🌊', sentence:'The ocean is the large body of salt water covering most of the Earth.' },
+    { date:'April 23', word:'SEASHELL',kr:'조개껍데기', emoji:'🐚', sentence:'A seashell is the shell of a sea animal such as an oyster or a clam.' },
+    { date:'April 23', word:'STACK',   kr:'쌓다',      emoji:'📚', sentence:'A stack is a neat pile of something, or to pile things on top of another.' },
+    { date:'April 23', word:'TINY',    kr:'아주 작은', emoji:'🐜', sentence:'Tiny means very small.' },
+    { date:'April 23', word:'WAVE',    kr:'파도/흔들다', emoji:'🌊', sentence:'Wave means to move your hand back and forth, or a long bump of water moving through the ocean.' },
+    { date:'April 23', word:'WONDER',  kr:'궁금하다',  emoji:'🤔', sentence:'Wonder means to be curious about something.' },
+    { date:'April 28', word:'ARRIVE',  kr:'도착하다',  emoji:'🏁', sentence:'Arrive means to reach the place you set out for.' },
+    { date:'April 28', word:'CLEAR',   kr:'맑은/분명한', emoji:'☀️', sentence:'Clear means not cloudy or dark, being able to see through something easily.' },
+    { date:'April 28', word:'ENORMOUS',kr:'거대한',    emoji:'🐘', sentence:'Enormous means very big.' },
+    { date:'April 28', word:'EXACTLY', kr:'정확히',    emoji:'✅', sentence:'Exactly means looking or happening in the same way.' },
+    { date:'April 28', word:'FLOAT',   kr:'떠다니다',  emoji:'🎈', sentence:'Float means to stay on top of water or in the air.' },
+    { date:'April 30', word:'MIDNIGHT',kr:'자정',      emoji:'🌙', sentence:'Midnight is twelve o\'clock at night.' },
+    { date:'April 30', word:'RAINBOW', kr:'무지개',    emoji:'🌈', sentence:'A rainbow is made of long stripes of color in the sky.' },
+    { date:'April 30', word:'SNOWSTORM',kr:'눈보라',   emoji:'❄️', sentence:'A snowstorm is a lot of snow falling at once.' },
+    { date:'April 30', word:'WEEKEND', kr:'주말',      emoji:'🎉', sentence:'The weekend is made up of the two days of the week: Saturday and Sunday.' },
+    { date:'April 30', word:'WHISPER', kr:'속삭이다',  emoji:'🤫', sentence:'Whisper means to speak in a very soft and quiet voice.' },
+  ];
+}
 
 // 알파벳 색상 팔레트
 const COLORS = {
@@ -593,8 +586,7 @@ function clr(l) { return COLORS[l] || {bg:'#555',sh:'#333'}; }
 // ══════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════
-const SLOT_COUNT = 9;
-const WORDS_PER_STAGE = 4;
+// SLOT_COUNT, WORDS_PER_STAGE는 data/word3_data.js에서 로드됨
 
 let stageWords = [];
 let completedWords = new Set();
@@ -606,6 +598,8 @@ let popupQueue = [];
 let isProcessingTriple = false;
 let selectedDate = null;
 let dateWords = [];
+let reservePool = [];   // 보드에 표시 못한 예비 타일
+let tileIdCounter = 0;  // 고유 ID 카운터
 
 // ══════════════════════════════════════════════
 //  DATE SELECT
@@ -728,34 +722,48 @@ function markWordDone(wi) {
 
 // ══════════════════════════════════════════════
 //  BUILD TILES
-//  타일 수 = 전체 알파벳 수(중복 포함) × 3
+//  전체 pool = 알파벳 × 3배, 보드에 들어가는 만큼만 표시
+//  나머지는 reservePool에 보관 → 타일 제거 시 자동 보충
 // ══════════════════════════════════════════════
 function buildTiles() {
   const board = document.getElementById('board');
   const wrap  = document.getElementById('boardWrap');
   board.innerHTML = '';
   tiles = [];
+  tileIdCounter = 0;
 
   // 모든 단어의 알파벳 × 3배 pool 생성
-  let pool = [];
+  let fullPool = [];
   stageWords.forEach(w => {
     w.word.split('').forEach(letter => {
       for (let k = 0; k < 3; k++) {
-        pool.push({ letter, emoji: w.emoji });
+        fullPool.push({ letter, emoji: w.emoji });
       }
     });
   });
-
-  // 셔플
-  pool = pool.sort(() => Math.random() - 0.5);
+  fullPool = fullPool.sort(() => Math.random() - 0.5);
 
   const bw = wrap.clientWidth - 8;
   const bh = wrap.clientHeight - 8;
-  const count = pool.length;
 
-  // 셀 크기: 보드 면적 대비 자연스러운 크기
-  const CELL = Math.min(54, Math.max(36, Math.floor(Math.sqrt((bw * bh) / count) * 0.85)));
+  // 보드에 올릴 수 있는 최대 타일 수 계산
+  // CELL 크기를 전체 pool 기준으로 계산하되, 실제 배치 가능 수로 제한
+  const totalCount = fullPool.length;
+  const CELL = Math.min(54, Math.max(36, Math.floor(Math.sqrt((bw * bh) / totalCount) * 0.85)));
   const cols = Math.floor(bw / (CELL + 2));
+  const rows = Math.floor(bh / (CELL + 2));
+  const maxOnBoard = cols * rows * 3; // 레이어 3개까지 허용
+
+  const onBoardPool = fullPool.slice(0, maxOnBoard);
+  reservePool = fullPool.slice(maxOnBoard);
+
+  placeTilesOnBoard(onBoardPool, CELL, bw, bh, cols);
+  updateCoverage();
+}
+
+function placeTilesOnBoard(pool, CELL, bw, bh, cols) {
+  const board = document.getElementById('board');
+  const count = pool.length;
 
   pool.forEach((item, i) => {
     const layer = Math.floor(i * 3 / count); // 0, 1, 2
@@ -770,7 +778,7 @@ function buildTiles() {
     const x = Math.max(0, Math.min(bw - CELL, baseX + jx));
     const y = Math.max(0, Math.min(bh - CELL, baseY + jy));
 
-    const id = `t${i}`;
+    const id = `t${tileIdCounter++}`;
     const c = clr(item.letter);
 
     const el = document.createElement('button');
@@ -786,7 +794,25 @@ function buildTiles() {
 
     tiles.push({ id, letter: item.letter, emoji: item.emoji, x, y, w: CELL, h: CELL, layer, color: c, el, removed: false });
   });
+}
 
+// 예비 풀에서 타일 보충
+function replenishTiles() {
+  if (reservePool.length === 0) return;
+
+  const wrap = document.getElementById('boardWrap');
+  const bw = wrap.clientWidth - 8;
+  const bh = wrap.clientHeight - 8;
+
+  const activeTiles = tiles.filter(t => !t.removed);
+  if (activeTiles.length === 0) return;
+
+  const CELL = activeTiles[0].w;
+  const cols = Math.floor(bw / (CELL + 2));
+
+  // 한 번에 최대 9개 보충 (트리플 3세트분)
+  const batch = reservePool.splice(0, Math.min(9, reservePool.length));
+  placeTilesOnBoard(batch, CELL, bw, bh, cols);
   updateCoverage();
 }
 
@@ -830,6 +856,10 @@ function onTileClick(id) {
     renderSlots();
     updateCoverage();
     updateOverflow();
+    // 보드 타일이 적으면 예비 풀에서 보충
+    if (tiles.filter(t => !t.removed).length < 6 && reservePool.length > 0) {
+      replenishTiles();
+    }
     checkTriple();
   }, 170);
 }
@@ -1036,7 +1066,7 @@ function closeWordPopup() {
   document.getElementById('wordPopup').classList.remove('show');
   setTimeout(() => {
     if (popupQueue.length > 0) flushPopup();
-    else if (completedWords.size === WORDS_PER_STAGE) showClear();
+    else if (completedWords.size === stageWords.length) showClear();
   }, 200);
 }
 
@@ -1052,6 +1082,7 @@ function showClear() {
   document.getElementById('clSub').textContent   = msg;
   document.getElementById('clTime').textContent  = t + 's';
   document.getElementById('clScore').textContent = score;
+  document.getElementById('clWords').textContent = stageWords.length;
   document.getElementById('clearPopup').classList.add('show');
   launchConfetti();
 }

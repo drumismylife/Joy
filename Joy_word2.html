@@ -406,72 +406,9 @@ body::before {
 
 <div class="confetti-wrap" id="confettiWrap"></div>
 
+<script src="data/word2_data.js"></script>
 <script>
-// ══════════════════════════════════════════════
-//  ALL WORDS DATA
-// ══════════════════════════════════════════════
-const ALL_WORDS = [
-  { word:'SISTER', kr:'언니/누나', emoji:'👧', sentence:'My sister is very kind.' },
-  { word:'MOTHER', kr:'엄마',      emoji:'👩', sentence:'My mother makes yummy food.' },
-  { word:'FATHER', kr:'아빠',      emoji:'👨', sentence:'My father reads books at night.' },
-  { word:'SCHOOL', kr:'학교',      emoji:'🏫', sentence:'I go to school every morning.' },
-  { word:'BASKET', kr:'바구니',    emoji:'🧺', sentence:'Put the apples in the basket.' },
-  { word:'BRIDGE', kr:'다리',      emoji:'🌉', sentence:'We walked over the bridge.' },
-  { word:'MIRROR', kr:'거울',      emoji:'🪞', sentence:'I see my face in the mirror.' },
-  { word:'CASTLE', kr:'성',        emoji:'🏰', sentence:'The princess lives in a castle.' },
-  { word:'ISLAND', kr:'섬',        emoji:'🏝', sentence:'The island has beautiful beaches.' },
-  { word:'GARDEN', kr:'정원',      emoji:'🌷', sentence:'Flowers grow in the garden.' },
-  { word:'MARKET', kr:'시장',      emoji:'🛒', sentence:'Mom buys food at the market.' },
-  { word:'DANCER', kr:'댄서',      emoji:'💃', sentence:'The dancer spins on the stage.' },
-  { word:'HAPPY',  kr:'행복한',    emoji:'😊', sentence:'She is a very happy girl.' },
-  { word:'FUNNY',  kr:'웃긴',      emoji:'😄', sentence:'He tells funny jokes every day.' },
-  { word:'BRAVE',  kr:'용감한',    emoji:'🦁', sentence:'The brave knight fights the dragon.' },
-  { word:'QUIET',  kr:'조용한',    emoji:'🤫', sentence:'Please be quiet in the library.' },
-  { word:'SMART',  kr:'똑똑한',    emoji:'🧠', sentence:'You are a very smart student.' },
-  { word:'SHINY',  kr:'빛나는',    emoji:'✨', sentence:'The shiny star lit up the sky.' },
-  { word:'DIRTY',  kr:'더러운',    emoji:'🪣', sentence:'Wash your dirty hands before eating.' },
-  { word:'CLOUDY', kr:'흐린',      emoji:'☁️', sentence:'It is a cloudy day outside.' },
-  { word:'GENTLE', kr:'부드러운',  emoji:'🕊', sentence:'She has a gentle and kind voice.' },
-  { word:'MIGHTY', kr:'강력한',    emoji:'💪', sentence:'The mighty lion roared loudly.' },
-  { word:'SLEEPY', kr:'졸린',      emoji:'😴', sentence:'I feel very sleepy after lunch.' },
-  { word:'HUNGRY', kr:'배고픈',    emoji:'🍽', sentence:'The hungry puppy ate all its food.' },
-  { word:'DANCE',  kr:'춤추다',    emoji:'💃', sentence:'We love to dance to music.' },
-  { word:'CLIMB',  kr:'오르다',    emoji:'🧗', sentence:'Can you climb that tall tree?' },
-  { word:'SPEAK',  kr:'말하다',    emoji:'🗣', sentence:'Please speak clearly and slowly.' },
-  { word:'WRITE',  kr:'쓰다',      emoji:'✏️', sentence:'I write in my notebook every day.' },
-  { word:'CHASE',  kr:'쫓다',      emoji:'🏃', sentence:'The dog loves to chase the ball.' },
-  { word:'SMILE',  kr:'웃다',      emoji:'😁', sentence:'Smile and the world smiles back.' },
-  { word:'SHARE',  kr:'나누다',    emoji:'🤝', sentence:'Always share your toys with friends.' },
-  { word:'LISTEN', kr:'듣다',      emoji:'👂', sentence:'Listen carefully to your teacher.' },
-  { word:'TRAVEL', kr:'여행하다',  emoji:'✈️', sentence:'I want to travel around the world.' },
-  { word:'CREATE', kr:'만들다',    emoji:'🎨', sentence:'Let us create something beautiful today.' },
-  { word:'FOLLOW', kr:'따르다',    emoji:'👣', sentence:'Follow the path through the forest.' },
-  { word:'TICKLE', kr:'간지럽히다',emoji:'🤣', sentence:'Do not tickle me! I will laugh.' },
-  { word:'NEVER',  kr:'절대 안',   emoji:'🚫', sentence:'I will never give up my dream.' },
-  { word:'AGAIN',  kr:'다시',      emoji:'🔄', sentence:'Let us try again one more time.' },
-  { word:'EARLY',  kr:'일찍',      emoji:'🌅', sentence:'Birds sing early in the morning.' },
-  { word:'OFTEN',  kr:'자주',      emoji:'📅', sentence:'We often play in the park together.' },
-  { word:'ABOVE',  kr:'위에',      emoji:'⬆️', sentence:'The clouds float above the mountain.' },
-  { word:'BELOW',  kr:'아래에',    emoji:'⬇️', sentence:'Fish swim below the water surface.' },
-  { word:'ALWAYS', kr:'항상',      emoji:'♾', sentence:'Always be kind to your friends.' },
-  { word:'BEFORE', kr:'~전에',     emoji:'⏮', sentence:'Wash hands before every meal.' },
-  { word:'BEHIND', kr:'뒤에',      emoji:'👀', sentence:'Hide behind the big oak tree.' },
-  { word:'INSIDE', kr:'안에',      emoji:'📦', sentence:'Stay inside when it is raining hard.' },
-  { word:'AROUND', kr:'주변에',    emoji:'🔃', sentence:'Look around before you cross the street.' },
-  { word:'ACROSS', kr:'건너서',    emoji:'🌉', sentence:'We swam across the cool river.' },
-  { word:'PLANT',  kr:'식물',      emoji:'🌱', sentence:'Water the plant every morning.' },
-  { word:'WATER',  kr:'물',        emoji:'💧', sentence:'Drink lots of water every day.' },
-  { word:'LIGHT',  kr:'빛',        emoji:'💡', sentence:'Turn on the light in the dark room.' },
-  { word:'EARTH',  kr:'지구',      emoji:'🌍', sentence:'We must take care of the earth.' },
-  { word:'MONEY',  kr:'돈',        emoji:'💰', sentence:'Save your money to buy something nice.' },
-  { word:'NIGHT',  kr:'밤',        emoji:'🌙', sentence:'Stars come out at night.' },
-  { word:'STORY',  kr:'이야기',    emoji:'📖', sentence:'She reads a story before bedtime.' },
-  { word:'PLACE',  kr:'장소',      emoji:'📍', sentence:'This is my favorite place to read.' },
-  { word:'THING',  kr:'물건',      emoji:'📦', sentence:'What is that strange thing over there?' },
-  { word:'BUNCH',  kr:'묶음',      emoji:'🍇', sentence:'I bought a bunch of grapes today.' },
-  { word:'CHECK',  kr:'확인',      emoji:'✅', sentence:'Check your answers before turning in.' },
-  { word:'BLANK',  kr:'빈칸',      emoji:'⬜', sentence:'Fill in the blank with the right word.' },
-];
+// ALL_WORDS, WORDS_PER_STAGE는 data/word2_data.js에서 로드됨
 
 // 알파벳별 타일 색상
 const LETTER_COLORS = {
@@ -491,7 +428,7 @@ function getColor(l) { return LETTER_COLORS[l] || {bg:'#555',sh:'#333'}; }
 //  GAME STATE
 // ══════════════════════════════════════════════
 let SLOT_MAX = 7; // dynamically set per stage
-const WORDS_PER_STAGE = 4;
+// WORDS_PER_STAGE는 data/word2_data.js에서 로드됨
 
 let stageWords = [];
 let completedWords = new Set();

@@ -423,7 +423,9 @@ body { font-family: var(--font); color: #fff; touch-action: manipulation; }
   </div>
 </div>
 
+<script src="data/math_data.js"></script>
 <script>
+// EMOJIS는 data/math_data.js에서 로드됨
 // ════════════════════════════════════════════════════════
 //  BG PARTICLE CANVAS
 // ════════════════════════════════════════════════════════
@@ -671,7 +673,7 @@ function genMultiplyProblem() {
   return {expr,ans,choices:choices.sort(()=>Math.random()-.5),visual,timeLimit:14};
 }
 
-const EMOJIS=['🍎','🌟','🐸','🦋','🌸','🐥','🍦','🎈','🦄','🌈','🍕','🐶','🎵','🚀','🦊'];
+// EMOJIS는 data/math_data.js에서 로드됨
 
 function genProblem() {
   if(G.currentWorld==='multiply') return genMultiplyProblem();
