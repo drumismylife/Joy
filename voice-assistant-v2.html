@@ -12,161 +12,114 @@
 
     /* ── Setup Screen ── */
     #setup-screen{position:fixed;inset:0;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;align-items:center;justify-content:center;z-index:100}
-    .setup-card{background:#fff;border-radius:24px;padding:40px 32px;width:min(400px,90vw);box-shadow:0 20px 60px rgba(0,0,0,.3)}
-    .setup-logo{font-size:3rem;text-align:center;margin-bottom:8px}
-    .setup-title{font-size:1.4rem;font-weight:700;text-align:center;color:#1a1a2e;margin-bottom:4px}
-    .setup-sub{font-size:.85rem;color:#666;text-align:center;margin-bottom:28px}
-    .setup-label{font-size:.8rem;font-weight:600;color:#555;margin-bottom:6px;display:block}
-    .setup-input{width:100%;padding:12px 16px;border:2px solid #e5e7eb;border-radius:12px;font-size:.9rem;font-family:monospace;color:#333;transition:border-color .2s}
-    .setup-input:focus{outline:none;border-color:#667eea}
-    .setup-note{font-size:.76rem;color:#999;margin-top:8px;margin-bottom:24px;line-height:1.5}
-    .setup-note a{color:#667eea}
-    .setup-btn{width:100%;padding:14px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;transition:opacity .2s}
-    .setup-btn:active{opacity:.85}
-    .setup-error{color:#ef4444;font-size:.8rem;margin-top:10px;display:none;text-align:center}
+    .card{background:#fff;border-radius:24px;padding:40px 32px;width:min(400px,90vw);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+    .card-logo{font-size:3rem;text-align:center;margin-bottom:8px}
+    .card-title{font-size:1.4rem;font-weight:700;text-align:center;color:#1a1a2e;margin-bottom:4px}
+    .card-sub{font-size:.85rem;color:#666;text-align:center;margin-bottom:28px}
+    .field-label{font-size:.8rem;font-weight:600;color:#555;margin-bottom:6px;display:block}
+    .field-input{width:100%;padding:12px 16px;border:2px solid #e5e7eb;border-radius:12px;font-size:.9rem;font-family:monospace;color:#333;transition:border-color .2s}
+    .field-input:focus{outline:none;border-color:#667eea}
+    .field-note{font-size:.76rem;color:#999;margin-top:8px;margin-bottom:24px;line-height:1.5}
+    .field-note a{color:#667eea}
+    .btn-primary{width:100%;padding:14px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer}
+    .btn-primary:active{opacity:.85}
+    .setup-err{color:#ef4444;font-size:.8rem;margin-top:10px;text-align:center;display:none}
 
     /* ── Main Screen ── */
     #main-screen{display:flex;flex-direction:column;height:100dvh}
 
     /* Header */
-    .header{background:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 4px rgba(0,0,0,.1);z-index:10;flex-shrink:0}
+    .header{background:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 4px rgba(0,0,0,.1);flex-shrink:0;z-index:10}
     .header-title{font-size:1rem;font-weight:700;color:#1a1a2e}
     .profile-toggle{display:flex;background:#f3f4f6;border-radius:20px;padding:3px;gap:2px}
     .profile-btn{padding:5px 12px;border:none;border-radius:16px;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;background:transparent;color:#888}
     .profile-btn.active{background:#fff;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.15)}
 
-    /* Status bar */
-    .status-bar{background:#fafafa;border-bottom:1px solid #e5e7eb;padding:7px 14px;display:flex;align-items:center;gap:8px;flex-shrink:0}
-    .status-dot{width:8px;height:8px;border-radius:50%;background:#9ca3af;flex-shrink:0;transition:background .3s}
-    .status-dot.connected{background:#10b981}
-    .status-dot.connecting{background:#f59e0b;animation:blink 1s infinite}
-    .status-dot.error{background:#ef4444}
-    .status-text{font-size:.78rem;color:#6b7280;flex:1}
-    .action-btn{padding:4px 12px;border:none;border-radius:10px;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s}
-    .action-btn.connect{background:#667eea;color:#fff}
-    .action-btn.disconnect{background:#f3f4f6;color:#ef4444;border:1px solid #fca5a5}
-    .action-btn:active{opacity:.8}
-
-    /* Chat area */
+    /* Chat */
     .chat-area{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch}
 
     /* Bubbles */
     .brow{display:flex;align-items:flex-start}
     .brow.user{justify-content:flex-end}
-    .brow.ai{justify-content:flex-start}
     .bavatar{width:28px;height:28px;border-radius:50%;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-right:8px;margin-top:2px}
-    .bubble{max-width:78%;padding:11px 15px;border-radius:18px;font-size:.9rem;line-height:1.55;word-break:break-word}
+    .bubble{max-width:78%;padding:11px 15px;border-radius:18px;font-size:.9rem;line-height:1.6;word-break:break-word}
     .bubble.user{background:#DCF8C6;border-bottom-right-radius:4px;color:#1a1a2e}
     .bubble.ai{background:#fff;border-bottom-left-radius:4px;color:#1a1a2e;box-shadow:0 1px 3px rgba(0,0,0,.1)}
     .bubble.err{background:#FEE2E2;color:#991B1B}
     .bubble.sys{background:#EFF6FF;color:#1e40af;font-size:.82rem;text-align:center;border-radius:12px;align-self:center;max-width:90%;padding:8px 16px}
-    /* Loading dots */
     .ldots{display:flex;gap:5px;align-items:center;padding:4px 2px}
     .ldot{width:7px;height:7px;border-radius:50%;background:#9ca3af;animation:bounce 1.4s infinite}
     .ldot:nth-child(2){animation-delay:.2s}
     .ldot:nth-child(3){animation-delay:.4s}
 
     /* Bottom */
-    .bottom{background:#fff;padding:14px 20px 28px;box-shadow:0 -1px 4px rgba(0,0,0,.1);flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:10px}
-    .ai-talking{display:none;align-items:center;gap:8px;font-size:.8rem;color:#667eea;font-weight:500;height:20px}
-    .waves{display:flex;gap:3px;align-items:center}
-    .wbar{width:3px;border-radius:2px;background:#667eea;animation:wave .8s ease-in-out infinite}
-    .wbar:nth-child(1){height:6px;animation-delay:0s}
-    .wbar:nth-child(2){height:14px;animation-delay:.1s}
-    .wbar:nth-child(3){height:10px;animation-delay:.2s}
-    .wbar:nth-child(4){height:18px;animation-delay:.15s}
-    .wbar:nth-child(5){height:6px;animation-delay:.05s}
-    .mic-btn{width:76px;height:76px;border-radius:50%;border:none;font-size:2.2rem;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.18)}
-    .mic-btn.off{background:#f3f4f6;color:#9ca3af;cursor:not-allowed;box-shadow:none}
+    .bottom{background:#fff;padding:14px 20px 32px;box-shadow:0 -1px 4px rgba(0,0,0,.1);flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:10px}
+    .mic-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px}
+    .mic-btn{width:80px;height:80px;border-radius:50%;border:none;font-size:2.4rem;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.2)}
     .mic-btn.ready{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
-    .mic-btn.on{background:#ef4444;color:#fff;animation:ripple 1.5s infinite}
-    .mic-btn:active:not(.off){transform:scale(.92)}
-    .mic-lbl{font-size:.78rem;color:#6b7280;font-weight:500;height:18px}
+    .mic-btn.recording{background:#ef4444;color:#fff;animation:ripple 1.5s infinite}
+    .mic-btn.processing{background:#e5e7eb;color:#9ca3af;cursor:not-allowed;box-shadow:none}
+    .mic-btn.speaking{background:#3b82f6;color:#fff}
+    .mic-btn:active:not(.processing){transform:scale(.92)}
+    .mic-lbl{font-size:.78rem;font-weight:500;color:#6b7280;text-align:center}
+    .rec-timer{font-size:.72rem;color:#ef4444;font-weight:600;display:none}
 
-    /* Animations */
-    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-    @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
-    @keyframes wave{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1.3)}}
-    @keyframes ripple{0%{box-shadow:0 0 0 0 rgba(239,68,68,.45)}70%{box-shadow:0 0 0 18px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
-    .hidden{display:none!important}
-
-    /* ── Settings Modal ── */
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center}
-    .modal-sheet{background:#fff;border-radius:24px 24px 0 0;padding:28px 24px 40px;width:100%;max-width:500px}
+    /* Settings Modal */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+    .modal-sheet{background:#fff;border-radius:24px 24px 0 0;padding:28px 24px 44px;width:100%;max-width:500px}
     .modal-title{font-size:1rem;font-weight:700;color:#1a1a2e;margin-bottom:16px}
     .modal-label{font-size:.78rem;font-weight:600;color:#555;margin-bottom:5px;display:block}
     .modal-input{width:100%;padding:10px 14px;border:2px solid #e5e7eb;border-radius:10px;font-size:.82rem;font-family:monospace;color:#333;margin-bottom:8px}
     .modal-input:focus{outline:none;border-color:#667eea}
-    .modal-hint{font-size:.72rem;color:#9ca3af;margin-bottom:16px;line-height:1.5}
+    .modal-hint{font-size:.72rem;color:#9ca3af;margin-bottom:12px;line-height:1.5}
     .modal-presets{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
     .preset-btn{padding:8px 12px;background:#f3f4f6;border:1.5px solid #e5e7eb;border-radius:8px;font-size:.75rem;font-family:monospace;color:#374151;cursor:pointer;text-align:left;transition:all .15s}
-    .preset-btn:active{background:#ede9fe;border-color:#667eea;color:#4c1d95}
-    .modal-actions{display:flex;gap:10px}
+    .preset-btn:active{background:#ede9fe;border-color:#667eea}
+    .modal-row{display:flex;gap:8px}
     .modal-save{flex:1;padding:12px;background:#667eea;color:#fff;border:none;border-radius:12px;font-size:.9rem;font-weight:700;cursor:pointer}
-    .modal-cancel{padding:12px 20px;background:#f3f4f6;color:#374151;border:none;border-radius:12px;font-size:.9rem;font-weight:600;cursor:pointer}
-    .gear-btn{background:none;border:none;font-size:1.1rem;cursor:pointer;padding:2px 4px;border-radius:6px;color:#9ca3af;transition:color .2s}
-    .gear-btn:active{color:#667eea}
+    .modal-cancel{padding:12px 18px;background:#f3f4f6;color:#374151;border:none;border-radius:12px;font-size:.9rem;font-weight:600;cursor:pointer}
+    .gear-btn{background:none;border:none;font-size:1.1rem;cursor:pointer;color:#9ca3af;padding:4px}
+    .model-tag{font-size:.68rem;color:#9ca3af;margin-top:2px}
+
+    /* Animations */
+    @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
+    @keyframes ripple{0%{box-shadow:0 0 0 0 rgba(239,68,68,.45)}70%{box-shadow:0 0 0 20px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+    .hidden{display:none!important}
   </style>
 </head>
 <body>
 
-<!-- ═══ Setup Screen ═══ -->
+<!-- ═══ Setup ═══ -->
 <div id="setup-screen">
-  <div class="setup-card">
-    <div class="setup-logo">🗣️</div>
-    <div class="setup-title">영어 말하기 친구</div>
-    <div class="setup-sub">Gemini Live — 실시간 AI 음성 대화</div>
-    <label class="setup-label" for="key-input">Gemini API 키</label>
-    <input id="key-input" type="password" class="setup-input" placeholder="AIza..." autocomplete="off" autocorrect="off" spellcheck="false">
-    <div class="setup-note">
-      API 키는 이 기기에만 저장됩니다. 서버로 전송되지 않아요.<br>
-      키 발급: <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio →</a>
+  <div class="card">
+    <div class="card-logo">🗣️</div>
+    <div class="card-title">영어 말하기 친구</div>
+    <div class="card-sub">마이크로 말하면 Gemini AI가 영어로 도와줘요</div>
+    <label class="field-label" for="key-inp">Gemini API 키</label>
+    <input id="key-inp" type="password" class="field-input" placeholder="AIza..." autocomplete="off" autocorrect="off" spellcheck="false">
+    <div class="field-note">
+      API 키는 이 기기에만 저장됩니다.<br>
+      발급: <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio →</a>
     </div>
-    <button class="setup-btn" onclick="saveKey()">시작하기 🚀</button>
-    <div id="setup-err" class="setup-error"></div>
+    <button class="btn-primary" onclick="saveKey()">시작하기 🚀</button>
+    <div id="setup-err" class="setup-err"></div>
   </div>
 </div>
 
-<!-- ═══ Main Screen ═══ -->
+<!-- ═══ Main ═══ -->
 <div id="main-screen" class="hidden">
 
   <!-- Header -->
   <div class="header">
-    <div class="header-title">🗣️ 영어 말하기 친구</div>
-    <div class="profile-toggle">
-      <button id="btn-joy" class="profile-btn active" onclick="switchProfile('joy')">🌸 기쁨이</button>
-      <button id="btn-dad" class="profile-btn" onclick="switchProfile('dad')">👨 아빠</button>
+    <div>
+      <div class="header-title">🗣️ 영어 말하기 친구</div>
+      <div id="model-tag" class="model-tag"></div>
     </div>
-  </div>
-
-  <!-- Status bar -->
-  <div class="status-bar">
-    <div id="sdot" class="status-dot"></div>
-    <span id="stxt" class="status-text">연결 안됨</span>
-    <button class="gear-btn" onclick="openSettings()" title="모델 설정">⚙️</button>
-    <button id="action-btn" class="action-btn connect" onclick="connectLive()">연결하기</button>
-  </div>
-
-  <!-- Settings Modal -->
-  <div id="settings-modal" class="modal-overlay hidden" onclick="closeSettingsOutside(event)">
-    <div class="modal-sheet">
-      <div class="modal-title">⚙️ Gemini Live 설정</div>
-      <label class="modal-label">모델 이름</label>
-      <input id="model-input" class="modal-input" placeholder="models/gemini-2.0-flash-live-001">
-      <div class="modal-hint">
-        내 API 키로 사용 가능한 Live 모델을 조회하거나, 아래 프리셋 중 하나를 선택하세요.
-      </div>
-      <button class="modal-save" style="margin-bottom:10px;background:#10b981" onclick="fetchLiveModels()">🔍 내 API 키 지원 모델 조회</button>
-      <div id="model-list-result" style="font-size:.72rem;color:#374151;background:#f3f4f6;border-radius:8px;padding:8px;margin-bottom:10px;display:none;max-height:120px;overflow-y:auto;font-family:monospace;white-space:pre-wrap"></div>
-      <div class="modal-presets">
-        <button class="preset-btn" onclick="pickModel('models/gemini-2.5-flash-preview-native-audio-dialog')">models/gemini-2.5-flash-preview-native-audio-dialog</button>
-        <button class="preset-btn" onclick="pickModel('models/gemini-3.0-flash-live')">models/gemini-3.0-flash-live</button>
-        <button class="preset-btn" onclick="pickModel('models/gemini-3-flash-live')">models/gemini-3-flash-live</button>
-        <button class="preset-btn" onclick="pickModel('models/gemini-2.0-flash-live-001')">models/gemini-2.0-flash-live-001</button>
-      </div>
-      <div class="modal-actions">
-        <button class="modal-cancel" onclick="closeSettings()">취소</button>
-        <button class="modal-save" onclick="saveSettings()">저장</button>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="gear-btn" onclick="openSettings()" title="설정">⚙️</button>
+      <div class="profile-toggle">
+        <button id="btn-joy" class="profile-btn active" onclick="switchProfile('joy')">🌸 기쁨이</button>
+        <button id="btn-dad" class="profile-btn" onclick="switchProfile('dad')">👨 아빠</button>
       </div>
     </div>
   </div>
@@ -174,116 +127,117 @@
   <!-- Chat -->
   <div class="chat-area" id="chat"></div>
 
-  <!-- Bottom controls -->
+  <!-- Bottom -->
   <div class="bottom">
-    <div id="ai-talking" class="ai-talking">
-      <div class="waves">
-        <div class="wbar"></div><div class="wbar"></div>
-        <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
-      </div>
-      <span>AI 말하는 중...</span>
+    <div class="mic-wrap">
+      <button id="mic-btn" class="mic-btn ready" onclick="toggleMic()">🎤</button>
+      <div id="mic-lbl" class="mic-lbl">탭하여 말하기</div>
+      <div id="rec-timer" class="rec-timer"></div>
     </div>
-    <button id="mic-btn" class="mic-btn off" onclick="toggleMic()">🎤</button>
-    <div id="mic-lbl" class="mic-lbl">연결 후 사용 가능</div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal-bg hidden" onclick="outsideClose(event)">
+    <div class="modal-sheet">
+      <div class="modal-title">⚙️ 설정</div>
+      <label class="modal-label">Gemini 모델</label>
+      <input id="model-inp" class="modal-input" placeholder="gemini-3.1-flash-lite-preview">
+      <div class="modal-hint">아래 프리셋을 탭하여 선택하세요 (gemini-3.1-flash-lite-preview 권장)</div>
+      <div class="modal-presets">
+        <button class="preset-btn" onclick="pickModel('gemini-3.1-flash-lite-preview')">gemini-3.1-flash-lite-preview ✅ 권장</button>
+        <button class="preset-btn" onclick="pickModel('gemini-2.5-flash-preview-05-20')">gemini-2.5-flash-preview-05-20</button>
+        <button class="preset-btn" onclick="pickModel('gemini-2.0-flash')">gemini-2.0-flash</button>
+        <button class="preset-btn" onclick="pickModel('gemini-2.0-flash-lite')">gemini-2.0-flash-lite</button>
+      </div>
+      <label class="modal-label">API 키 변경</label>
+      <input id="key-change-inp" type="password" class="modal-input" placeholder="새 API 키 (변경 시에만 입력)">
+      <div class="modal-row">
+        <button class="modal-cancel" onclick="closeSettings()">취소</button>
+        <button class="modal-save" onclick="saveSettings()">저장</button>
+      </div>
+    </div>
   </div>
 
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════
+/* ══════════════════════════════════════════
    CONSTANTS
-═══════════════════════════════════════════════ */
-const WS_BASE = 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent';
-const DEFAULT_MODEL = 'models/gemini-2.5-flash-preview-native-audio-dialog';
+══════════════════════════════════════════ */
+const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 
-/* ═══════════════════════════════════════════════
-   SYSTEM PROMPTS
-═══════════════════════════════════════════════ */
-const JOY_PROMPT = `You are 기쁨이's warm and playful English teacher. 기쁨이 is 6 years old and learning English in Korea. You speak via voice (audio).
+/* ══════════════════════════════════════════
+   SYSTEM PROMPTS  (plain text, no JSON)
+══════════════════════════════════════════ */
+const JOY_PROMPT = `You are 기쁨이's warm and playful English teacher. 기쁨이 is 6 years old and learning English in Korea. The user sends voice audio — understand what was said and respond conversationally.
 
 Rules:
-- When 기쁨이 speaks Korean: explain briefly in simple Korean, then say the English expression clearly and slowly. Repeat the English word or phrase at least once.
-- When 기쁨이 speaks English: praise her warmly and respond with simple English.
+- If they speak Korean: briefly explain in simple Korean, then say the English expression clearly and a bit slowly. Repeat the English word or phrase at least once.
+- If they speak English: praise warmly and respond simply in English.
 - Only use Grade 1 vocabulary: cat, dog, water, school, happy, big, small, go, come, eat, play, etc.
-- Keep every response very short — 2 to 3 sentences maximum.
-- Be extremely warm, fun and encouraging. Sometimes say "기쁨아".
+- Keep every response to 2–3 short sentences maximum.
+- Be extremely warm, fun, and encouraging. Sometimes say "기쁨아".
+- Respond in plain conversational text only — no JSON, no markdown, no bullet points.
 - Example: "오, 고양이! 영어로는 cat이에요! Cat! 같이 말해봐요, cat!"`;
 
-const DAD_PROMPT = `You are a friendly English conversation partner and coach for a Korean adult. You speak via voice (audio).
+const DAD_PROMPT = `You are a friendly English conversation partner and coach for a Korean adult. The user sends voice audio — understand what was said and respond conversationally.
 
 Rules:
-- When he speaks Korean: explain briefly in Korean, then give the natural English expression.
-- When he speaks English with errors: gently offer a more natural phrasing — say "You could also say..." Never say wrong or incorrect.
-- When his English sounds natural and fluent: respond entirely in English for immersion.
-- Adult vocabulary level. Conversational and genuine.
+- If they speak Korean: briefly explain in Korean, then give the natural English expression.
+- If they speak English with errors: gently offer a more natural phrasing — say "You could also say..." Never say wrong or incorrect.
+- If their English sounds natural and fluent: respond entirely in English for immersion.
+- Adult vocabulary. Conversational and genuine.
 - Keep responses to 3–5 sentences.
-- Occasionally highlight natural expressions, collocations, or idioms.`;
+- Respond in plain conversational text only — no JSON, no markdown.`;
 
-/* ═══════════════════════════════════════════════
+/* ══════════════════════════════════════════
    STATE
-═══════════════════════════════════════════════ */
+══════════════════════════════════════════ */
 const S = {
-  profile: localStorage.getItem('elf_profile') || 'joy',
-  apiKey:  localStorage.getItem('elf_apikey')  || '',
-  model:   localStorage.getItem('elf_model')   || DEFAULT_MODEL,
-  ws: null,
-  conn: 'idle',   // idle | connecting | connected | error
-  micOn: false,
-  aiTalking: false,
-  // Audio capture
-  capCtx: null,
-  capStream: null,
-  capProc: null,
-  capSrc: null,
-  // Audio playback
-  pbCtx: null,
-  pbNext: 0,
-  // Text accumulation
-  aiTextBuf: '',
-  loadingBubble: null,
+  profile:  localStorage.getItem('elf_profile') || 'joy',
+  apiKey:   localStorage.getItem('elf_apikey')  || '',
+  model:    localStorage.getItem('elf_model')   || 'gemini-3.1-flash-lite-preview',
+  micState: 'ready',   // ready | recording | processing | speaking
+  recorder: null,
+  audioChunks: [],
+  recInterval: null,
+  recSecs: 0,
+  chatHistory: [],    // [{role, parts:[{text}]}] — text only, max 12 items
 };
 
-/* ═══════════════════════════════════════════════
-   SETUP / KEY
-═══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   SETUP
+══════════════════════════════════════════ */
 function saveKey() {
-  const k = document.getElementById('key-input').value.trim();
-  if (!k || !k.startsWith('AIza')) {
-    showSetupErr('API 키 형식이 올바르지 않아요 (AIza... 로 시작해야 합니다)');
-    return;
-  }
+  const k = document.getElementById('key-inp').value.trim();
+  if (!k.startsWith('AIza')) { showSetupErr('API 키 형식이 올바르지 않아요 (AIza... 로 시작해야 합니다)'); return; }
   S.apiKey = k;
   localStorage.setItem('elf_apikey', k);
   goMain();
 }
 function showSetupErr(msg) {
   const el = document.getElementById('setup-err');
-  el.textContent = msg;
-  el.style.display = 'block';
+  el.textContent = msg; el.style.display = 'block';
 }
-
-/* ═══════════════════════════════════════════════
-   SCREEN TRANSITIONS
-═══════════════════════════════════════════════ */
 function goMain() {
   document.getElementById('setup-screen').classList.add('hidden');
   document.getElementById('main-screen').classList.remove('hidden');
   applyProfile(S.profile);
-  sysBubble('연결 버튼을 눌러 Gemini Live에 연결하세요 🔌');
+  updateModelTag();
+  sysBubble(S.profile === 'joy'
+    ? '안녕! 🌸 마이크 버튼을 탭하고 말해보세요!'
+    : '안녕하세요! 👨 마이크 버튼을 탭하고 말해보세요!');
 }
 
-/* ═══════════════════════════════════════════════
+/* ══════════════════════════════════════════
    PROFILE
-═══════════════════════════════════════════════ */
+══════════════════════════════════════════ */
 function switchProfile(p) {
   if (S.profile === p) return;
   S.profile = p;
   localStorage.setItem('elf_profile', p);
   applyProfile(p);
-  if (S.conn === 'connected') {
-    disconnectLive();
-    setTimeout(connectLive, 400);
-  }
+  S.chatHistory = [];
   clearChat();
 }
 function applyProfile(p) {
@@ -291,305 +245,200 @@ function applyProfile(p) {
   document.getElementById('btn-dad').classList.toggle('active', p === 'dad');
 }
 
-/* ═══════════════════════════════════════════════
-   GEMINI LIVE — CONNECT / DISCONNECT
-═══════════════════════════════════════════════ */
-function connectLive() {
-  if (S.conn === 'connecting' || S.conn === 'connected') return;
-  setConn('connecting', '연결 중...');
-
-  let ws;
-  try {
-    ws = new WebSocket(`${WS_BASE}?key=${S.apiKey}`);
-  } catch(e) {
-    setConn('error', '연결 실패');
-    errBubble('WebSocket을 열 수 없어요. API 키를 확인해주세요.');
-    return;
-  }
-  S.ws = ws;
-
-  ws.onopen = () => {
-    const prompt = S.profile === 'joy' ? JOY_PROMPT : DAD_PROMPT;
-    const voice  = S.profile === 'joy' ? 'Aoede' : 'Charon';
-    ws.send(JSON.stringify({
-      setup: {
-        model: S.model,
-        generation_config: {
-          response_modalities: ['AUDIO', 'TEXT'],
-          speech_config: {
-            voice_config: { prebuilt_voice_config: { voice_name: voice } }
-          }
-        },
-        system_instruction: { parts: [{ text: prompt }] }
-      }
-    }));
-  };
-
-  ws.onmessage = onWSMessage;
-
-  ws.onerror = () => {
-    // onerror alone doesn't give detail — onclose follows with the code
-    console.warn('WS error event');
-  };
-
-  ws.onclose = (ev) => {
-    console.log('WS closed', ev.code, ev.reason);
-    const was = S.conn;
-    stopMic();
-    S.ws = null;
-    setConn('idle', '연결 안됨');
-    if (was === 'connected') {
-      sysBubble('연결이 끊겼어요. 다시 연결해주세요.');
-      return;
-    }
-    if (was !== 'connecting') return;
-
-    // Parse the reason if it contains JSON error from Gemini
-    let detail = '';
-    try {
-      const r = JSON.parse(ev.reason);
-      detail = r?.error?.message || r?.message || '';
-    } catch(_) {
-      detail = ev.reason || '';
-    }
-    const codeInfo = `(코드 ${ev.code}${detail ? ': ' + detail : ''})`;
-
-    if (ev.code === 1006) {
-      errBubble(`연결이 거부됐어요. API 키 또는 모델명을 확인해주세요 ⚙️\n${codeInfo}`);
-    } else if (ev.code === 1008) {
-      // 1008 = Policy violation — usually wrong model or no Live API access
-      if (detail.toLowerCase().includes('not found') || detail.includes('404')) {
-        errBubble(`모델을 찾을 수 없어요. ⚙️ 설정에서 다른 모델을 시도해보세요.\n${codeInfo}`);
-      } else {
-        errBubble(`Gemini Live 접근 권한이 없어요. API 키가 Live API를 지원하는지 확인해주세요.\n${codeInfo}`);
-      }
-    } else if (ev.code === 1011) {
-      errBubble(`서버 오류가 발생했어요. 잠시 후 다시 시도해주세요.\n${codeInfo}`);
-    } else {
-      errBubble(`연결에 실패했어요. ${codeInfo}`);
-    }
-  };
-}
-
-function disconnectLive() {
-  stopMic();
-  if (S.ws) { try { S.ws.close(1000); } catch(_){} S.ws = null; }
-  setConn('idle', '연결 안됨');
-}
-
-/* ═══════════════════════════════════════════════
-   WebSocket MESSAGE HANDLER
-═══════════════════════════════════════════════ */
-function onWSMessage(ev) {
-  let data;
-  try { data = JSON.parse(ev.data); } catch(e) { return; }
-
-  /* ── Server-side error message ── */
-  if (data.error) {
-    const msg = data.error.message || JSON.stringify(data.error);
-    console.error('Gemini error:', data.error);
-    errBubble(`오류: ${msg}`);
-    return;
-  }
-
-  /* ── Setup complete ── */
-  if ('setupComplete' in data) {
-    setConn('connected', '연결됨 ✓');
-    const name = S.profile === 'joy' ? '기쁨이 🌸' : '아빠 👨';
-    sysBubble(`${name} 모드 연결 완료! 🎉 마이크 버튼을 눌러 말해보세요.`);
-    return;
-  }
-
-  /* ── Server content ── */
-  if (data.serverContent) {
-    const sc = data.serverContent;
-
-    /* AI response parts (audio + text) */
-    if (sc.modelTurn?.parts) {
-      if (!S.aiTalking) {
-        S.aiTalking = true;
-        showAITalking(true);
-        if (!S.loadingBubble) S.loadingBubble = addLoadingBubble();
-      }
-      for (const part of sc.modelTurn.parts) {
-        if (part.inlineData?.data) scheduleAudio(part.inlineData.data);
-        if (part.text)              S.aiTextBuf += part.text;
-      }
-    }
-
-    /* Input transcript — what the user said */
-    const inTx =
-      sc.inputTranscription?.text ||
-      sc.inputTranscription ||
-      sc.inputTranscript?.text ||
-      sc.inputTranscript;
-    if (inTx && typeof inTx === 'string' && inTx.trim()) {
-      addUserBubble(inTx.trim());
-    }
-
-    /* Turn complete — flush text bubble */
-    if (sc.turnComplete) {
-      S.aiTalking = false;
-      if (S.loadingBubble) {
-        const txt = S.aiTextBuf.trim();
-        replaceLoading(S.loadingBubble, txt || '🔊');
-        S.loadingBubble = null;
-      }
-      S.aiTextBuf = '';
-      const delay = S.pbCtx
-        ? Math.max(0, (S.pbNext - S.pbCtx.currentTime) * 1000 + 400)
-        : 400;
-      setTimeout(() => { if (!S.aiTalking) showAITalking(false); }, delay);
-    }
-
-    /* Interrupted (user barge-in) */
-    if (sc.interrupted) {
-      S.aiTalking = false;
-      showAITalking(false);
-      if (S.loadingBubble) { S.loadingBubble.remove(); S.loadingBubble = null; }
-      S.aiTextBuf = '';
-      S.pbNext = 0;
-    }
-  }
-}
-
-/* ═══════════════════════════════════════════════
-   MICROPHONE
-═══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   MIC — TOGGLE
+══════════════════════════════════════════ */
 async function toggleMic() {
-  if (S.conn !== 'connected') return;
-  S.micOn ? stopMic() : await startMic();
+  if (S.micState === 'processing' || S.micState === 'speaking') return;
+  if (S.micState === 'recording') {
+    stopRecording();
+  } else {
+    await startRecording();
+  }
 }
 
-async function startMic() {
+async function startRecording() {
   try {
-    S.capStream = await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-    });
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-    S.capCtx = new AudioContext();
-    await S.capCtx.resume();
-    const sysRate = S.capCtx.sampleRate;
+    // Detect best supported MIME type
+    const mime =
+      MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' :
+      MediaRecorder.isTypeSupported('audio/webm')             ? 'audio/webm' :
+      MediaRecorder.isTypeSupported('audio/mp4')              ? 'audio/mp4'  : '';
 
-    S.capSrc  = S.capCtx.createMediaStreamSource(S.capStream);
-    S.capProc = S.capCtx.createScriptProcessor(4096, 1, 1);
+    S.audioChunks = [];
+    S.recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : {});
 
-    S.capProc.onaudioprocess = (e) => {
-      if (!S.micOn || !S.ws || S.ws.readyState !== WebSocket.OPEN) return;
-      const f32     = e.inputBuffer.getChannelData(0);
-      const samples = sysRate !== 16000 ? downsample(f32, sysRate, 16000) : f32;
-      const pcm16   = toPCM16(samples);
-      const b64     = toB64(pcm16.buffer);
-      S.ws.send(JSON.stringify({
-        realtime_input: {
-          media_chunks: [{ data: b64, mime_type: 'audio/pcm;rate=16000' }]
-        }
-      }));
+    S.recorder.ondataavailable = (e) => { if (e.data.size > 0) S.audioChunks.push(e.data); };
+
+    S.recorder.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop());
+      const blobType = S.recorder.mimeType || mime || 'audio/webm';
+      const blob = new Blob(S.audioChunks, { type: blobType });
+      await sendToGemini(blob);
     };
 
-    S.capSrc.connect(S.capProc);
-    S.capProc.connect(S.capCtx.destination);
+    S.recorder.start(100);  // collect data every 100ms
+    setMicState('recording');
 
-    S.micOn = true;
-    setMic('on');
+    // Recording timer
+    S.recSecs = 0;
+    updateTimer();
+    S.recInterval = setInterval(() => {
+      S.recSecs++;
+      updateTimer();
+      if (S.recSecs >= 60) stopRecording(); // auto-stop at 60s
+    }, 1000);
 
   } catch(err) {
     console.error('Mic error:', err);
-    let msg = '마이크를 열 수 없어요.';
-    if (err.name === 'NotAllowedError') msg = '마이크 권한이 필요해요. 브라우저 설정에서 허용해주세요.';
-    else if (err.name === 'NotFoundError') msg = '마이크를 찾을 수 없어요.';
-    errBubble(msg);
+    if (err.name === 'NotAllowedError') errBubble('마이크 권한이 필요해요. 브라우저 설정에서 허용해주세요.');
+    else if (err.name === 'NotFoundError') errBubble('마이크를 찾을 수 없어요.');
+    else errBubble('마이크 오류: ' + err.message);
   }
 }
 
-function stopMic() {
-  S.micOn = false;
-  if (S.capProc)  { try { S.capProc.disconnect();  } catch(_){} S.capProc  = null; }
-  if (S.capSrc)   { try { S.capSrc.disconnect();   } catch(_){} S.capSrc   = null; }
-  if (S.capStream){ S.capStream.getTracks().forEach(t => t.stop()); S.capStream = null; }
-  if (S.capCtx)   { try { S.capCtx.close(); }       catch(_){} S.capCtx   = null; }
-  if (S.conn === 'connected') setMic('ready');
-}
-
-/* ═══════════════════════════════════════════════
-   AUDIO UTILITIES
-═══════════════════════════════════════════════ */
-function downsample(f32, from, to) {
-  const ratio = from / to;
-  const len   = Math.floor(f32.length / ratio);
-  const out   = new Float32Array(len);
-  for (let i = 0; i < len; i++) out[i] = f32[Math.floor(i * ratio)];
-  return out;
-}
-
-function toPCM16(f32) {
-  const out = new Int16Array(f32.length);
-  for (let i = 0; i < f32.length; i++) {
-    const s = Math.max(-1, Math.min(1, f32[i]));
-    out[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+function stopRecording() {
+  clearInterval(S.recInterval);
+  document.getElementById('rec-timer').style.display = 'none';
+  if (S.recorder && S.recorder.state !== 'inactive') {
+    S.recorder.stop();
+    setMicState('processing');
   }
-  return out;
 }
 
-function toB64(buf) {
-  const bytes = new Uint8Array(buf);
-  let bin = '';
-  const chunk = 8192;
-  for (let i = 0; i < bytes.length; i += chunk)
-    bin += String.fromCharCode(...bytes.subarray(i, i + chunk));
-  return btoa(bin);
+function updateTimer() {
+  const el = document.getElementById('rec-timer');
+  el.style.display = 'block';
+  const m = Math.floor(S.recSecs / 60).toString().padStart(2,'0');
+  const s = (S.recSecs % 60).toString().padStart(2,'0');
+  el.textContent = `${m}:${s}`;
 }
 
-function fromB64(b64) {
-  const bin   = atob(b64);
-  const bytes = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-  return bytes;
-}
+/* ══════════════════════════════════════════
+   GEMINI API — AUDIO INPUT
+══════════════════════════════════════════ */
+async function sendToGemini(audioBlob) {
+  // Show user bubble (placeholder)
+  const userRow = addUserBubble('🎤 음성 메시지');
+  // Show loading bubble
+  const loadRow = addLoadingBubble();
 
-/* ═══════════════════════════════════════════════
-   AUDIO PLAYBACK (scheduled queue — gapless)
-═══════════════════════════════════════════════ */
-function ensurePB() {
-  if (!S.pbCtx || S.pbCtx.state === 'closed') {
-    S.pbCtx = new AudioContext();
-    S.pbNext = 0;
-  }
-  if (S.pbCtx.state === 'suspended') S.pbCtx.resume();
-}
-
-function scheduleAudio(b64) {
   try {
-    ensurePB();
-    const bytes = fromB64(b64);
-    const pcm16 = new Int16Array(bytes.buffer);
-    const SR    = 24000; // Gemini output sample rate
+    const base64Audio = await blobToBase64(audioBlob);
+    // Clean MIME type (remove codecs suffix)
+    const cleanMime = audioBlob.type.split(';')[0] || 'audio/webm';
 
-    const buf = S.pbCtx.createBuffer(1, pcm16.length, SR);
-    const ch  = buf.getChannelData(0);
-    for (let i = 0; i < pcm16.length; i++) ch[i] = pcm16[i] / 32768;
+    // Build contents: history + current audio
+    const contents = [
+      ...S.chatHistory,
+      {
+        role: 'user',
+        parts: [{ inlineData: { mimeType: cleanMime, data: base64Audio } }]
+      }
+    ];
 
-    const src = S.pbCtx.createBufferSource();
-    src.buffer = buf;
-    src.connect(S.pbCtx.destination);
+    const body = {
+      contents,
+      systemInstruction: {
+        parts: [{ text: S.profile === 'joy' ? JOY_PROMPT : DAD_PROMPT }]
+      },
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 800
+      }
+    };
 
-    const now   = S.pbCtx.currentTime;
-    const start = Math.max(now + 0.05, S.pbNext);
-    src.start(start);
-    S.pbNext = start + buf.duration;
-  } catch(e) {
-    console.error('Playback error:', e);
+    const res = await fetch(`${API_BASE}/${S.model}:generateContent?key=${S.apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || `HTTP ${res.status}`);
+
+    const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+    if (!aiText) throw new Error('응답이 비어 있어요.');
+
+    // Update bubbles
+    replaceLoading(loadRow, aiText);
+
+    // Update history (text only, no audio blobs)
+    S.chatHistory.push(
+      { role: 'user',  parts: [{ text: '🎤 음성 입력' }] },
+      { role: 'model', parts: [{ text: aiText }] }
+    );
+    if (S.chatHistory.length > 12) S.chatHistory = S.chatHistory.slice(-12);
+
+    // Speak response
+    setMicState('speaking');
+    speak(aiText, S.profile, () => setMicState('ready'));
+
+  } catch(err) {
+    console.error('Gemini error:', err);
+    replaceLoading(loadRow, null);
+    errBubble('오류: ' + err.message);
+    setMicState('ready');
   }
 }
 
-/* ═══════════════════════════════════════════════
-   UI HELPERS
-═══════════════════════════════════════════════ */
-const chatEl = () => document.getElementById('chat');
-function scrollBottom() {
-  const c = chatEl();
-  requestAnimationFrame(() => { c.scrollTop = c.scrollHeight; });
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
 }
+
+/* ══════════════════════════════════════════
+   TTS — 한국어/영어 분리 발화
+══════════════════════════════════════════ */
+function speak(text, profile, onDone) {
+  window.speechSynthesis.cancel();
+  const segments = splitKoEn(text);
+  if (segments.length === 0) { onDone?.(); return; }
+
+  let i = 0;
+  function next() {
+    if (i >= segments.length) { onDone?.(); return; }
+    const seg = segments[i++];
+    const u = new SpeechSynthesisUtterance(seg.text);
+    u.lang  = seg.lang;
+    u.rate  = seg.lang === 'en-US' ? (profile === 'joy' ? 0.75 : 0.88) : 0.85;
+    u.pitch = profile === 'joy' ? 1.1 : 1.0;
+    u.onend = next;
+    u.onerror = next;  // skip on error
+    window.speechSynthesis.speak(u);
+  }
+  next();
+}
+
+function splitKoEn(text) {
+  if (!text) return [];
+  // Split on sentence boundaries
+  const raw = text.split(/(?<=[.!?。\n])\s*/);
+  const segments = [];
+  for (const s of raw) {
+    const t = s.trim();
+    if (!t) continue;
+    const korean = (t.match(/[가-힣]/g) || []).length;
+    const total  = t.replace(/\s/g, '').length;
+    segments.push({
+      text: t,
+      lang: total > 0 && korean / total > 0.15 ? 'ko-KR' : 'en-US'
+    });
+  }
+  return segments;
+}
+
+/* ══════════════════════════════════════════
+   UI HELPERS
+══════════════════════════════════════════ */
+const chatEl = () => document.getElementById('chat');
+function scrollBottom() { requestAnimationFrame(() => { chatEl().scrollTop = chatEl().scrollHeight; }); }
 
 function addUserBubble(text) {
   const row = document.createElement('div');
@@ -600,25 +449,27 @@ function addUserBubble(text) {
   row.appendChild(b);
   chatEl().appendChild(row);
   scrollBottom();
+  return row;
 }
 
 function addLoadingBubble() {
   const row = document.createElement('div');
-  row.className = 'brow ai';
+  row.className = 'brow';
   const av = document.createElement('div');
   av.className = 'bavatar';
   av.textContent = S.profile === 'joy' ? '🌸' : '🤖';
   const b = document.createElement('div');
   b.className = 'bubble ai';
   b.innerHTML = '<div class="ldots"><div class="ldot"></div><div class="ldot"></div><div class="ldot"></div></div>';
-  row.appendChild(av);
-  row.appendChild(b);
+  row.appendChild(av); row.appendChild(b);
   chatEl().appendChild(row);
   scrollBottom();
   return row;
 }
 
 function replaceLoading(rowEl, text) {
+  if (!rowEl) return;
+  if (text === null) { rowEl.remove(); return; }
   const b = rowEl.querySelector('.bubble');
   if (b) { b.textContent = text; scrollBottom(); }
 }
@@ -633,7 +484,7 @@ function sysBubble(text) {
 
 function errBubble(text) {
   const row = document.createElement('div');
-  row.className = 'brow ai';
+  row.className = 'brow';
   const b = document.createElement('div');
   b.className = 'bubble err';
   b.textContent = text;
@@ -645,111 +496,69 @@ function errBubble(text) {
 function clearChat() {
   chatEl().innerHTML = '';
   sysBubble(S.profile === 'joy'
-    ? '기쁨이 모드 🌸 — 연결하면 영어 친구와 대화할 수 있어요!'
-    : '아빠 모드 👨 — 연결하면 영어 대화를 시작할 수 있어요!');
+    ? '기쁨이 모드 🌸 마이크 버튼을 탭하고 영어로 뭔가 물어보세요!'
+    : '아빠 모드 👨 마이크 버튼을 탭하고 말해보세요!');
 }
 
-function showAITalking(show) {
-  document.getElementById('ai-talking').style.display = show ? 'flex' : 'none';
-}
-
-/* ─── Status bar ─── */
-function setConn(conn, text) {
-  S.conn = conn;
-  const dot = document.getElementById('sdot');
-  const stxt = document.getElementById('stxt');
-  const btn  = document.getElementById('action-btn');
-
-  dot.className = 'status-dot' +
-    (conn === 'connected'  ? ' connected'  :
-     conn === 'connecting' ? ' connecting' :
-     conn === 'error'      ? ' error'      : '');
-  stxt.textContent = text;
-
-  if (conn === 'connected') {
-    btn.textContent = '연결 끊기';
-    btn.className = 'action-btn disconnect';
-    btn.onclick = disconnectLive;
-    setMic('ready');
-  } else {
-    btn.textContent = '연결하기';
-    btn.className = 'action-btn connect';
-    btn.onclick = connectLive;
-    setMic('off');
-  }
-}
-
-/* ─── Mic button ─── */
-function setMic(s) {
+function setMicState(state) {
+  S.micState = state;
   const btn = document.getElementById('mic-btn');
   const lbl = document.getElementById('mic-lbl');
-  btn.className = 'mic-btn ' + s;
-  switch(s) {
-    case 'off':   btn.textContent = '🎤'; lbl.textContent = '연결 후 사용 가능'; break;
-    case 'ready': btn.textContent = '🎤'; lbl.textContent = '탭하여 말하기'; break;
-    case 'on':    btn.textContent = '🎙️'; lbl.textContent = '듣는 중... (탭하여 멈추기)'; break;
+  btn.className = 'mic-btn ' + state;
+  switch(state) {
+    case 'ready':      btn.textContent = '🎤'; lbl.textContent = '탭하여 말하기'; break;
+    case 'recording':  btn.textContent = '🎙️'; lbl.textContent = '녹음 중... (탭하여 전송)'; break;
+    case 'processing': btn.textContent = '⏳'; lbl.textContent = 'AI 생각 중...'; break;
+    case 'speaking':   btn.textContent = '🔊'; lbl.textContent = '읽는 중... (탭하여 중지)'; break;
   }
 }
 
-/* ═══════════════════════════════════════════════
+/* ══════════════════════════════════════════
    SETTINGS MODAL
-═══════════════════════════════════════════════ */
+══════════════════════════════════════════ */
 function openSettings() {
-  document.getElementById('model-input').value = S.model;
+  document.getElementById('model-inp').value = S.model;
+  document.getElementById('key-change-inp').value = '';
   document.getElementById('settings-modal').classList.remove('hidden');
 }
 function closeSettings() {
   document.getElementById('settings-modal').classList.add('hidden');
 }
-function closeSettingsOutside(e) {
+function outsideClose(e) {
   if (e.target === document.getElementById('settings-modal')) closeSettings();
 }
 function pickModel(name) {
-  document.getElementById('model-input').value = name;
+  document.getElementById('model-inp').value = name;
 }
-async function fetchLiveModels() {
-  const el = document.getElementById('model-list-result');
-  el.style.display = 'block';
-  el.textContent = '조회 중...';
-  try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${S.apiKey}&pageSize=100`);
-    const data = await res.json();
-    if (data.error) { el.textContent = '오류: ' + data.error.message; return; }
-    const live = (data.models || []).filter(m =>
-      (m.supportedGenerationMethods || []).some(x => x.toLowerCase().includes('bidi'))
-    );
-    if (live.length === 0) {
-      el.textContent = '⚠️ 이 API 키로 BidiGenerateContent를 지원하는 모델이 없어요.\n(Live API 접근 권한이 없을 수 있어요)';
-    } else {
-      el.textContent = '✅ 지원 모델:\n' + live.map(m => m.name).join('\n');
-    }
-  } catch(e) {
-    el.textContent = '조회 실패: ' + e.message;
-  }
-}
-
 function saveSettings() {
-  const m = document.getElementById('model-input').value.trim();
-  if (!m) return;
-  S.model = m;
-  localStorage.setItem('elf_model', m);
+  const m = document.getElementById('model-inp').value.trim();
+  const k = document.getElementById('key-change-inp').value.trim();
+  if (m) { S.model = m; localStorage.setItem('elf_model', m); }
+  if (k && k.startsWith('AIza')) { S.apiKey = k; localStorage.setItem('elf_apikey', k); }
+  updateModelTag();
   closeSettings();
-  sysBubble(`모델 변경됨: ${m}`);
-  // Reconnect if already connected
-  if (S.conn === 'connected') {
-    disconnectLive();
-    setTimeout(connectLive, 400);
-  }
+  sysBubble(`설정 저장됨 — 모델: ${S.model}`);
+}
+function updateModelTag() {
+  document.getElementById('model-tag').textContent = S.model;
 }
 
-/* ═══════════════════════════════════════════════
+/* ══════════════════════════════════════════
    INIT
-═══════════════════════════════════════════════ */
+══════════════════════════════════════════ */
 (function init() {
   if (S.apiKey) goMain();
-  document.getElementById('key-input').addEventListener('keydown', e => {
+  document.getElementById('key-inp').addEventListener('keydown', e => {
     if (e.key === 'Enter') saveKey();
   });
+
+  // Stop TTS when mic tapped during speaking
+  document.getElementById('mic-btn').addEventListener('click', () => {
+    if (S.micState === 'speaking') {
+      window.speechSynthesis.cancel();
+      setMicState('ready');
+    }
+  }, true);
 })();
 </script>
 </body>
