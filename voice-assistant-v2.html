@@ -387,6 +387,41 @@ body {
 .mic-label { font-size: .62rem; font-weight: 700; letter-spacing: .5px; }
 .mic-hint  { font-size: .78rem; color: var(--muted); text-align: center; }
 
+/* ── 텍스트 입력 영역 ────────────────────── */
+.text-input-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: 480px;
+}
+.text-input {
+  flex: 1;
+  padding: 11px 15px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 50px;
+  font-size: .95rem;
+  font-family: inherit;
+  outline: none;
+  background: #f9fafb;
+  transition: border-color .2s;
+  color: var(--text);
+}
+.text-input:focus { border-color: var(--accent); background: #fff; }
+.text-send-btn {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .15s, opacity .2s;
+}
+.text-send-btn:active { transform: scale(.9); }
+.text-send-btn:disabled { opacity: .4; cursor: default; }
+
 /* ── PWA 독립 모드 ───────────────────────── */
 @media all and (display-mode: standalone) {
   body { background: var(--bg); }
@@ -442,8 +477,16 @@ body {
   <!-- 인식 중 임시 텍스트 -->
   <div class="interim-bar" id="interimBar"></div>
 
-  <!-- 하단 마이크 -->
+  <!-- 하단 입력 영역 -->
   <div class="mic-area">
+    <!-- 텍스트 입력 -->
+    <div class="text-input-row">
+      <input type="text" class="text-input" id="textInput"
+        placeholder="타이핑으로 입력해도 돼요..."
+        autocomplete="off" autocorrect="off" spellcheck="false">
+      <button class="text-send-btn" id="sendBtn" onclick="sendText()">➤</button>
+    </div>
+    <!-- 마이크 버튼 -->
     <button class="mic-btn" id="micBtn" onclick="toggleMic()">
       <span class="mic-icon" id="micIcon">🎤</span>
       <span class="mic-label" id="micLabel">말하기</span>
@@ -549,6 +592,9 @@ const state = {
 
   document.getElementById('apiKeyInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') saveApiKey();
+  });
+  document.getElementById('textInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') sendText();
   });
 })();
 
@@ -796,6 +842,9 @@ function setMic(s) {
   if (s === 'listening')  { icon.textContent = '🎙️'; label.textContent = '듣는중'; setStatus('listening', '듣는중...'); }
   else if (s === 'processing') { icon.textContent = '⏳'; label.textContent = '생각중'; setStatus('thinking', '생각중...'); }
   else                    { icon.textContent = '🎤'; label.textContent = '말하기'; setStatus('ready', '준비됨'); }
+  // 텍스트 전송 버튼도 연동
+  const sendBtn = document.getElementById('sendBtn');
+  if (sendBtn) sendBtn.disabled = (s !== 'ready');
 }
 
 /* ════════════════════════════════════════════
@@ -934,6 +983,19 @@ async function speakAll(segments) {
   state.isSpeaking = false;
   if (!state.isListening && !state.isProcessing) setStatus('ready', '준비됨');
 }
+
+/* ════════════════════════════════════════════
+   텍스트 입력 전송
+════════════════════════════════════════════ */
+function sendText() {
+  if (state.isProcessing || state.isSpeaking) return;
+  const input = document.getElementById('textInput');
+  const text = (input.value || '').trim();
+  if (!text) return;
+  input.value = '';
+  handleInput(text);
+}
+
 </script>
 </body>
 </html>
