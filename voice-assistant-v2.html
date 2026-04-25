@@ -340,13 +340,13 @@ body {
 
 /* ── 하단 마이크 영역 ────────────────────── */
 .mic-area {
-  padding: 10px 20px calc(var(--safe-bot) + 14px);
+  padding: 10px 16px calc(var(--safe-bot) + 10px);
   background: var(--card);
   border-top: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   flex-shrink: 0;
 }
 .mic-btn {
@@ -479,19 +479,19 @@ body {
 
   <!-- 하단 입력 영역 -->
   <div class="mic-area">
-    <!-- 텍스트 입력 -->
+    <!-- 텍스트 입력 (주 입력) -->
     <div class="text-input-row">
       <input type="text" class="text-input" id="textInput"
-        placeholder="타이핑으로 입력해도 돼요..."
+        placeholder="여기에 입력하거나 🎤 눌러서 말해요"
         autocomplete="off" autocorrect="off" spellcheck="false">
       <button class="text-send-btn" id="sendBtn" onclick="sendText()">➤</button>
     </div>
-    <!-- 마이크 버튼 -->
+    <!-- 마이크 버튼 (보조) -->
     <button class="mic-btn" id="micBtn" onclick="toggleMic()">
       <span class="mic-icon" id="micIcon">🎤</span>
       <span class="mic-label" id="micLabel">말하기</span>
     </button>
-    <span class="mic-hint" id="micHint">탭해서 영어로 말해보세요!</span>
+    <span class="mic-hint" id="micHint">🎤 안 되면 위 입력창에 타이핑하세요</span>
   </div>
 
 </div><!-- #screen-main -->
@@ -850,18 +850,49 @@ function setMic(s) {
 /* ════════════════════════════════════════════
    음성 인식 (Web Speech API)
 ════════════════════════════════════════════ */
-let recognition = null;
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 function initRecognition() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) return;
+  // 지원 여부만 확인. 실제 객체는 매 호출마다 새로 생성 (iOS Safari 재사용 버그 방지)
+  if (!SR) {
+    document.getElementById('micBtn').style.opacity = '0.4';
+    document.getElementById('micBtn').title = '이 브라우저는 음성 인식 미지원';
+  }
+}
 
-  recognition = new SR();
-  recognition.lang = 'ko-KR';       // 한글/영어 혼용 모두 인식됨
-  recognition.continuous = false;
-  recognition.interimResults = true;
+function toggleMic() {
+  if (state.isProcessing || state.isSpeaking) return;
+  if (state.isListening) {
+    state._recognition && state._recognition.stop();
+    setMic('ready');
+  } else {
+    startListen();
+  }
+}
 
-  recognition.onresult = e => {
+function startListen() {
+  if (!SR) {
+    addMicGuide('이 브라우저는 음성 인식을 지원하지 않아요. 아래 텍스트 입력창을 사용해주세요! ⌨️');
+    return;
+  }
+
+  // TTS 중단
+  window.speechSynthesis.cancel();
+  state.isSpeaking = false;
+  document.getElementById('interimBar').textContent = '';
+
+  // iOS Safari: 매번 새 객체 생성 (재사용 시 오류 발생)
+  const rec = new SR();
+  state._recognition = rec;
+  rec.lang = 'ko-KR';
+  rec.continuous = false;
+  rec.interimResults = true;
+
+  rec.onstart = () => {
+    setMic('listening');
+  };
+
+  rec.onresult = e => {
     let interim = '', final = '';
     for (const r of e.results) {
       if (r.isFinal) final += r[0].transcript;
@@ -871,40 +902,45 @@ function initRecognition() {
     if (final) handleInput(final.trim());
   };
 
-  recognition.onend = () => {
-    // 처리 중이 아닐 때만 ready 상태로
+  rec.onend = () => {
     if (!state.isProcessing) setMic('ready');
   };
 
-  recognition.onerror = e => {
-    if (e.error !== 'no-speech' && e.error !== 'aborted') {
-      addErrorBubble('음성 인식 오류: ' + e.error);
-    }
-    if (!state.isProcessing) setMic('ready');
-  };
-}
-
-function toggleMic() {
-  if (state.isProcessing || state.isSpeaking) return;
-  if (state.isListening) {
-    recognition && recognition.stop();
+  rec.onerror = e => {
     setMic('ready');
-  } else {
-    startListen();
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      addMicGuide(
+        '🎙️ 마이크 권한이 필요해요!\n\n' +
+        '① Safari 설정 → 개인 정보 보호 → 마이크\n' +
+        '   또는\n' +
+        '② iPhone 설정 → Safari → 마이크 → 허용\n\n' +
+        '설정 후 다시 🎤 버튼을 눌러보세요.'
+      );
+    } else if (e.error === 'network') {
+      addMicGuide('인터넷 연결을 확인하고 다시 🎤 버튼을 눌러보세요.');
+    } else if (e.error !== 'no-speech' && e.error !== 'aborted') {
+      addMicGuide(`음성 인식 오류: ${e.error}\n아래 텍스트 입력창을 사용해주세요.`);
+    }
+  };
+
+  try {
+    rec.start();
+    // onstart 이벤트가 오기 전에 UI 선행 업데이트
+    setMic('listening');
+  } catch(e) {
+    setMic('ready');
+    addMicGuide('음성 인식을 시작할 수 없어요. 텍스트 입력창을 사용해주세요.');
   }
 }
 
-function startListen() {
-  if (!recognition) {
-    addErrorBubble('이 브라우저는 음성 인식을 지원하지 않아요.\nSafari 를 사용해주세요.');
-    return;
-  }
-  // 진행 중 TTS 중단
-  window.speechSynthesis.cancel();
-  state.isSpeaking = false;
-  document.getElementById('interimBar').textContent = '';
-  try { recognition.start(); } catch(e) { /* already started */ }
-  setMic('listening');
+function addMicGuide(msg) {
+  const row = document.createElement('div');
+  row.className = 'bubble-row ai';
+  row.innerHTML = `
+    <div class="bubble-avatar" style="background:#fef9c3">💡</div>
+    <div class="bubble ai-msg t-system" style="white-space:pre-line">${esc(msg)}</div>`;
+  document.getElementById('chatArea').appendChild(row);
+  scrollBot();
 }
 
 /* ════════════════════════════════════════════
