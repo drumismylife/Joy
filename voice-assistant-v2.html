@@ -157,10 +157,10 @@
         아래 모델 중 하나를 탭하여 선택하세요. 모델이 없다는 오류가 나오면 다른 모델을 시도해보세요.
       </div>
       <div class="modal-presets">
-        <button class="preset-btn" onclick="pickModel('models/gemini-2.5-flash-preview-native-audio-dialog')">models/gemini-2.5-flash-preview-native-audio-dialog ✅ 권장 (1M)</button>
-        <button class="preset-btn" onclick="pickModel('models/gemini-3.0-flash-live-001')">models/gemini-3.0-flash-live-001 (150K)</button>
-        <button class="preset-btn" onclick="pickModel('models/gemini-3-flash-live')">models/gemini-3-flash-live (150K)</button>
-        <button class="preset-btn" onclick="pickModel('models/gemini-2.0-flash-live-001')">models/gemini-2.0-flash-live-001</button>
+        <button class="preset-btn" onclick="pickModel('models/gemini-2.5-flash-preview-native-audio-dialog')">models/gemini-2.5-flash-preview-native-audio-dialog ✅ 권장</button>
+        <button class="preset-btn" onclick="pickModel('models/gemini-3.0-flash-live')">models/gemini-3.0-flash-live (Gemini 3 Flash Live)</button>
+        <button class="preset-btn" onclick="pickModel('models/gemini-3-flash-live')">models/gemini-3-flash-live</button>
+        <button class="preset-btn" onclick="pickModel('gemini-2.5-flash-preview-native-audio-dialog')">gemini-2.5-flash-preview-native-audio-dialog (models/ 없이)</button>
       </div>
       <div class="modal-actions">
         <button class="modal-cancel" onclick="closeSettings()">취소</button>
@@ -191,7 +191,7 @@
 /* ═══════════════════════════════════════════════
    CONSTANTS
 ═══════════════════════════════════════════════ */
-const WS_BASE = 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent';
+const WS_BASE = 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent';
 const DEFAULT_MODEL = 'models/gemini-2.5-flash-preview-native-audio-dialog';
 
 /* ═══════════════════════════════════════════════
