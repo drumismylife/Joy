@@ -681,8 +681,7 @@ async function callGeminiAPI(userText) {
       contents,
       generationConfig: {
         temperature: 0.7,
-        maxOutputTokens: 700,
-        responseMimeType: 'application/json'
+        maxOutputTokens: 1500
       }
     })
   });
@@ -740,11 +739,31 @@ function buildTts(p) {
 }
 
 function makeFallback(raw) {
-  const clean = raw.replace(/[*#`]/g, '').trim().slice(0, 200);
+  // JSON이 잘렸거나 파싱 실패해도 내용을 최대한 추출
+  const eng   = (raw.match(/"english"\s*:\s*"([^"]+)"/)   || [])[1];
+  const pron  = (raw.match(/"pronunciation"\s*:\s*"([^"]+)"/) || [])[1];
+  const note  = (raw.match(/"korean_note"\s*:\s*"([^"]+)"/)   || [])[1];
+  const praise= (raw.match(/"praise"\s*:\s*"([^"]+)"/)         || [])[1];
+
+  if (eng || note) {
+    // 부분적으로라도 추출 성공
+    const segs = [];
+    if (note) segs.push({ lang: 'ko-KR', text: note, rate: 0.85 });
+    if (eng)  segs.push({ lang: 'en-US', text: eng,  rate: state.profile === 'joy' ? 0.68 : 0.88 });
+    if (pron) segs.push({ lang: 'ko-KR', text: pron, rate: 0.76 });
+    return {
+      type: 'conversation',
+      display: { english: eng || '', pronunciation: pron || null, korean_note: note || null },
+      tts_segments: segs,
+      praise: praise || null
+    };
+  }
+
+  // 완전 실패 → 안내 메시지만
   return {
     type: 'conversation',
-    display: { english: '', pronunciation: null, korean_note: clean },
-    tts_segments: [{ lang: 'ko-KR', text: clean, rate: 0.9 }],
+    display: { english: '', pronunciation: null, korean_note: '다시 한 번 말해볼까요? 😊' },
+    tts_segments: [{ lang: 'ko-KR', text: '다시 한 번 말해볼까요?', rate: 0.9 }],
     praise: null
   };
 }
