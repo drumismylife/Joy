@@ -19,6 +19,13 @@ const DATE_GROUPS = [
   { label:'April 23', color:'#FF6B9D' },
   { label:'April 28', color:'#00CEC9' },
   { label:'April 30', color:'#FDCB6E' },
+  { label:'May 7',    color:'#26de81' },
+  { label:'May 12',   color:'#fd9644' },
+  { label:'May 14',   color:'#45aaf2' },
+  { label:'May 19',   color:'#a55eea' },
+  { label:'May 21',   color:'#fc5c65' },
+  { label:'May 26',   color:'#2bcbba' },
+  { label:'May 28',   color:'#f7b731' },
 ];
 
 const SENTENCES = [
@@ -58,4 +65,32 @@ const SENTENCES = [
   { date:'April 30', text: 'WE MUST RECYCLE TO PREVENT POLLUTION', kr: '오염을 막으려면 재활용을 해야 해요.' },
   { date:'April 30', text: 'WE SHOULD REDUCE REUSE AND RECYCLE', kr: '줄이고, 다시 쓰고, 재활용해야 해요.' },
   { date:'April 30', text: 'WE SHOULD RECYCLE TO PROTECT THE ENVIRONMENT', kr: '환경을 보호하려면 재활용해야 해요.' },
+  // ── May 7 ──
+  { date:'May 7',  text: 'MAY IS FINALLY HERE AND EVERYTHING LOOKS SO GREEN', kr: '드디어 5월이 왔고 모든 것이 정말 초록빛이에요.' },
+  { date:'May 7',  text: 'IT IS A PERFECT DAY TO PLAY OUTSIDE',               kr: '밖에서 놀기에 완벽한 날이에요.' },
+  { date:'May 7',  text: 'FLOWERS ARE BLOOMING EVERYWHERE',                   kr: '꽃들이 사방에 피어나고 있어요.' },
+  // ── May 12 ──
+  { date:'May 12', text: 'IT WAS AN ENLIGHTENING EXPERIENCE',                 kr: '그것은 깨달음을 주는 경험이었어요.' },
+  { date:'May 12', text: 'ISNT IT CUTE WITH ITS SOFT FUR',                    kr: '부드러운 털을 가진 게 귀엽지 않나요?' },
+  { date:'May 12', text: 'THROUGH THIS LESSON IVE LEARNED MANY THINGS',       kr: '이 수업을 통해 많은 것을 배웠어요.' },
+  // ── May 14 ──
+  { date:'May 14', text: 'OUR DOG IS AFRAID OF THUNDER',                      kr: '우리 개는 천둥을 무서워해요.' },
+  { date:'May 14', text: 'SNOW BEGAN TO FALL QUIETLY',                        kr: '눈이 조용히 내리기 시작했어요.' },
+  { date:'May 14', text: 'THE SMALL BIRD FLAPPED ITS WINGS',                  kr: '작은 새가 날개를 퍼덕였어요.' },
+  // ── May 19 ──
+  { date:'May 19', text: 'JAMES WAITED NERVOUSLY FOR HIS RACE',               kr: '제임스는 긴장하며 경주를 기다렸어요.' },
+  { date:'May 19', text: 'THE GIRL PEERED OVER THE FENCE',                    kr: '소녀가 울타리 너머를 들여다봤어요.' },
+  { date:'May 19', text: 'THE ORANGE IS PERFECTLY ROUND',                     kr: '오렌지는 완벽하게 둥글어요.' },
+  // ── May 21 ──
+  { date:'May 21', text: 'THE MOTHER BIRD BROUGHT WORMS FOR ITS BABIES',      kr: '어미 새가 새끼들을 위해 벌레를 가져왔어요.' },
+  { date:'May 21', text: 'THE ANIMAL BLOCKED THE ROAD',                       kr: '동물이 길을 막았어요.' },
+  { date:'May 21', text: 'THE FARMERS HARVEST THEIR POTATOES',                kr: '농부들이 감자를 수확해요.' },
+  // ── May 26 ──
+  { date:'May 26', text: 'I GOT A REWARD FOR DOING WELL',                     kr: '잘 해서 상을 받았어요.' },
+  { date:'May 26', text: 'THEY TUGGED ON THE ROPE',                           kr: '그들은 밧줄을 잡아당겼어요.' },
+  { date:'May 26', text: 'WE WEAR BELTS AROUND OUR WAISTS',                   kr: '우리는 허리에 벨트를 착용해요.' },
+  // ── May 28 ──
+  { date:'May 28', text: 'CHICKENS ROAM FREELY ON THE GREEN FIELD',           kr: '닭들이 초록 들판을 자유롭게 돌아다녀요.' },
+  { date:'May 28', text: 'THE GIRLS WERE EXCITED ABOUT THEIR NEW TOY',        kr: '여자아이들은 새 장난감에 신이 났어요.' },
+  { date:'May 28', text: 'MY HAIR FEELS SO SMOOTH AFTER BRUSHING IT',         kr: '머리를 빗고 나니 정말 부드러워요.' },
 ];
