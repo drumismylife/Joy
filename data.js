@@ -10,13 +10,12 @@ const REPO = {
   subtitle: "기쁨이의 신나는 학습 놀이터 🎈",
   description: "수학, 국어, 영어 등 다양한 과목의 학습 앱을 모아두었습니다.",
   baseUrl: "https://drumismylife.github.io/Joy/",
-  lastUpdated: "2026-04-10"
+  lastUpdated: "2026-04-25"
 };
 
 const CATEGORIES = [
   { id: "all",     label: "전체",    emoji: "🌟" },
   { id: "math",    label: "수학",    emoji: "🔢" },
-  { id: "lang",    label: "국어",    emoji: "📖" },
   { id: "english", label: "영어",    emoji: "🌍" },
   { id: "word",    label: "어휘",    emoji: "✏️" },
   { id: "game",    label: "게임",    emoji: "🎮" }
@@ -24,59 +23,70 @@ const CATEGORIES = [
 
 const apps = [
   {
-    id: "joy_math",
-    title: "수학 모험",
-    file: "Joy_math.html",
-    description: "사칙연산부터 수열까지, 레벨을 올리며 수학 실력을 키워요!",
-    category: ["math", "game"],
-    emoji: "🔢",
-    color: "#FF6B6B",
-    difficulty: 2,
-    updatedAt: "2026-04-10"
-  },
-  {
-    id: "joy_plus",
-    title: "덧셈 마스터",
-    file: "Joy_plus.html",
-    description: "덧셈을 빠르고 정확하게! 귀여운 캐릭터와 함께하는 덧셈 훈련.",
+    id: "joy_add",
+    title: "덧셈 모험",
+    file: "Joy_add.html",
+    description: "토끼와 함께 덧셈을 배워요! 사과밭부터 성까지 모험을 떠나봐요.",
     category: ["math", "game"],
     emoji: "➕",
-    color: "#FFB347",
+    color: "#FF6B9D",
     difficulty: 1,
-    updatedAt: "2026-04-10"
+    updatedAt: "2026-04-25"
   },
   {
-    id: "joy_x",
-    title: "곱셈 챌린지",
-    file: "Joy_x.html",
-    description: "구구단을 신나게 외워요. 스테이지 클리어에 도전!",
+    id: "joy_sub",
+    title: "뺄셈 모험",
+    file: "Joy_sub.html",
+    description: "토끼와 함께 뺄셈을 배워요! 사탕 가게에서 마법의 성까지 도전!",
+    category: ["math", "game"],
+    emoji: "➖",
+    color: "#4D96FF",
+    difficulty: 1,
+    updatedAt: "2026-04-25"
+  },
+  {
+    id: "joy_mul",
+    title: "곱셈 모험",
+    file: "Joy_mul.html",
+    description: "토끼와 구구단을 배워요! 2단부터 혼합까지 단계별 도전!",
     category: ["math", "game"],
     emoji: "✖️",
-    color: "#C77DFF",
+    color: "#A29BFE",
     difficulty: 2,
-    updatedAt: "2026-04-10"
+    updatedAt: "2026-04-25"
   },
   {
-    id: "joy_word",
-    title: "낱말 카드",
-    file: "Joy_word.html",
-    description: "그림과 함께 새로운 낱말을 익혀요. 어휘력 쑥쑥!",
-    category: ["lang", "word"],
-    emoji: "📖",
-    color: "#6BCB77",
+    id: "joy_div",
+    title: "나눗셈 모험",
+    file: "Joy_div.html",
+    description: "토끼와 나눗셈을 배워요! 바구니에 똑같이 나눠봐요.",
+    category: ["math", "game"],
+    emoji: "➗",
+    color: "#26de81",
+    difficulty: 2,
+    updatedAt: "2026-04-25"
+  },
+  {
+    id: "joy_num",
+    title: "수 개념",
+    file: "Joy_num.html",
+    description: "크기 비교, 순서, 홀짝, 10 만들기까지! 수 개념을 탄탄히 다져요.",
+    category: ["math", "game"],
+    emoji: "🔢",
+    color: "#fd9644",
     difficulty: 1,
-    updatedAt: "2026-04-10"
+    updatedAt: "2026-04-25"
   },
   {
-    id: "joy_word2",
-    title: "낱말 퀴즈",
-    file: "Joy_word2.html",
-    description: "배운 낱말을 퀴즈로 확인해요. 몇 개나 맞출 수 있을까?",
-    category: ["lang", "word", "game"],
-    emoji: "✏️",
-    color: "#4D96FF",
-    difficulty: 2,
-    updatedAt: "2026-04-10"
+    id: "joy_think",
+    title: "사고력 수학",
+    file: "Joy_think.html",
+    description: "패턴, 도형, 저울, 거꾸로 연산까지! 사고력을 키워봐요.",
+    category: ["math", "game"],
+    emoji: "💡",
+    color: "#f7b731",
+    difficulty: 3,
+    updatedAt: "2026-04-25"
   },
   {
     id: "joy_word3",
@@ -87,7 +97,7 @@ const apps = [
     emoji: "🔤",
     color: "#FF9F43",
     difficulty: 1,
-    updatedAt: "2026-04-10"
+    updatedAt: "2026-04-25"
   },
   {
     id: "joy_word4",
@@ -98,7 +108,7 @@ const apps = [
     emoji: "💬",
     color: "#48DBFB",
     difficulty: 2,
-    updatedAt: "2026-04-10"
+    updatedAt: "2026-04-25"
   },
   {
     id: "voice_assistant",
