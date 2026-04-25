@@ -18,6 +18,13 @@ var DATE_GROUPS = [
   { label:'April 23', color:'#FF6B9D' },
   { label:'April 28', color:'#00CEC9' },
   { label:'April 30', color:'#FDCB6E' },
+  { label:'May 7',    color:'#26de81' },
+  { label:'May 12',   color:'#fd9644' },
+  { label:'May 14',   color:'#45aaf2' },
+  { label:'May 19',   color:'#a55eea' },
+  { label:'May 21',   color:'#fc5c65' },
+  { label:'May 26',   color:'#2bcbba' },
+  { label:'May 28',   color:'#f7b731' },
 ];
 
 var ALL_WORDS = [
@@ -75,4 +82,46 @@ var ALL_WORDS = [
   { date:'April 30', word:'SNOWSTORM',kr:'눈보라',   emoji:'❄️', sentence:'A snowstorm is a lot of snow falling at once.' },
   { date:'April 30', word:'WEEKEND', kr:'주말',      emoji:'🎉', sentence:'The weekend is made up of the two days of the week: Saturday and Sunday.' },
   { date:'April 30', word:'WHISPER', kr:'속삭이다',  emoji:'🤫', sentence:'Whisper means to speak in a very soft and quiet voice.' },
+  // ── May 7 ──
+  { date:'May 7',  word:'STACK',   kr:'쌓다/더미',        emoji:'📚', sentence:'A stack is a neat pile of something; to stack means to pile things on top of another.' },
+  { date:'May 7',  word:'WONDER',  kr:'궁금해하다',       emoji:'🤔', sentence:'Wonder means to be curious about something.' },
+  { date:'May 7',  word:'ARRIVE',  kr:'도착하다',         emoji:'🏁', sentence:'Arrive means to reach the place you set out for.' },
+  { date:'May 7',  word:'EXACTLY', kr:'정확히',           emoji:'✅', sentence:'Exactly means looking or happening in the same way.' },
+  { date:'May 7',  word:'FLOAT',   kr:'떠다니다',         emoji:'🎈', sentence:'Float means to stay on top of water or in the air.' },
+  // ── May 12 ──
+  { date:'May 12', word:'BRIGHT',  kr:'밝은',             emoji:'☀️', sentence:'Bright means giving a lot of light.' },
+  { date:'May 12', word:'CHEW',    kr:'씹다',             emoji:'🦷', sentence:'Chew means to break food into small pieces with your teeth.' },
+  { date:'May 12', word:'FLOUR',   kr:'밀가루',           emoji:'🌾', sentence:'Flour is a powder made from grain, used to make bread, cakes, and pies.' },
+  { date:'May 12', word:'FOREST',  kr:'숲',               emoji:'🌲', sentence:'A forest is a large area that has trees and plants.' },
+  { date:'May 12', word:'HOUR',    kr:'한 시간',          emoji:'⏰', sentence:'An hour is an amount of time that is sixty minutes long.' },
+  // ── May 14 ──
+  { date:'May 14', word:'INN',     kr:'여관',             emoji:'🏨', sentence:'An inn is a small place where a person can eat a meal and stay for the night.' },
+  { date:'May 14', word:'ISLAND',  kr:'섬',               emoji:'🏝️', sentence:'An island is a piece of land with water all around it.' },
+  { date:'May 14', word:'NIBBLE',  kr:'조금씩 먹다',      emoji:'🐭', sentence:'Nibble means to eat it with very small bites.' },
+  { date:'May 14', word:'PALE',    kr:'창백한',           emoji:'🤍', sentence:'Pale means having very little color.' },
+  { date:'May 14', word:'WARN',    kr:'경고하다',         emoji:'⚠️', sentence:'Warn means to tell someone about possible danger.' },
+  // ── May 19 ──
+  { date:'May 19', word:'AGREE',   kr:'동의하다',         emoji:'🤝', sentence:'Agree means to think the same way as another person.' },
+  { date:'May 19', word:'BARE',    kr:'맨/아무것도 없는', emoji:'🍂', sentence:'Bare means not covered with anything.' },
+  { date:'May 19', word:'FAMOUS',  kr:'유명한',           emoji:'⭐', sentence:'Famous means known by many people.' },
+  { date:'May 19', word:'FEAST',   kr:'잔치',             emoji:'🍽️', sentence:'A feast is a very large meal on a special day.' },
+  { date:'May 19', word:'GENTLE',  kr:'부드러운',         emoji:'🕊️', sentence:'Gentle means very soft and mild.' },
+  // ── May 21 ──
+  { date:'May 21', word:'HERO',    kr:'영웅',             emoji:'🦸', sentence:'A hero is a person you look up to for doing something good and brave.' },
+  { date:'May 21', word:'LEADER',  kr:'지도자',           emoji:'👑', sentence:'A leader is a person who shows people where to go or how to do something.' },
+  { date:'May 21', word:'NOTICE',  kr:'알아채다',         emoji:'👀', sentence:'Notice means to see something; a notice is a sign put up for people to read.' },
+  { date:'May 21', word:'SEARCH',  kr:'찾다',             emoji:'🔍', sentence:'Search means to look for something.' },
+  { date:'May 21', word:'WEAK',    kr:'약한',             emoji:'😔', sentence:'Weak means not feeling strong.' },
+  // ── May 26 ──
+  { date:'May 26', word:'AGREE',   kr:'동의하다',         emoji:'🤝', sentence:'Agree means to think the same way as another person.' },
+  { date:'May 26', word:'BARE',    kr:'맨/아무것도 없는', emoji:'🍂', sentence:'Bare means not covered with anything.' },
+  { date:'May 26', word:'FAMOUS',  kr:'유명한',           emoji:'⭐', sentence:'Famous means known by many people.' },
+  { date:'May 26', word:'NOTICE',  kr:'알아채다',         emoji:'👀', sentence:'Notice means to see something; a notice is a sign put up for people to read.' },
+  { date:'May 26', word:'SEARCH',  kr:'찾다',             emoji:'🔍', sentence:'Search means to look for something.' },
+  // ── May 28 ──
+  { date:'May 28', word:'ALARM',   kr:'알람/경보',        emoji:'⏰', sentence:'An alarm is something that wakes people or warns them of danger.' },
+  { date:'May 28', word:'COLLECT', kr:'모으다',           emoji:'🧺', sentence:'Collect means to gather things together.' },
+  { date:'May 28', word:'DAMP',    kr:'축축한',           emoji:'💧', sentence:'Damp means a little wet or moist.' },
+  { date:'May 28', word:'INSECT',  kr:'곤충',             emoji:'🐛', sentence:'An insect is a small animal with three main body parts, six legs, wings, and no backbone.' },
+  { date:'May 28', word:'PLANT',   kr:'식물/심다',        emoji:'🌱', sentence:'A plant is a living thing that grows in soil or in water; to plant means to put a seed into the ground so it can grow.' },
 ];
