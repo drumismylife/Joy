@@ -53,16 +53,22 @@
     .ldot:nth-child(3){animation-delay:.4s}
 
     /* Bottom */
-    .bottom{background:#fff;padding:14px 20px 32px;box-shadow:0 -1px 4px rgba(0,0,0,.1);flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:10px}
-    .mic-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px}
-    .mic-btn{width:80px;height:80px;border-radius:50%;border:none;font-size:2.4rem;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+    .bottom{background:#fff;padding:14px 20px 20px;box-shadow:0 -1px 4px rgba(0,0,0,.1);flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:10px}
+    .mic-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px}
+    .mic-btn{width:76px;height:76px;border-radius:50%;border:none;font-size:2.2rem;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.2)}
     .mic-btn.ready{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
     .mic-btn.recording{background:#ef4444;color:#fff;animation:ripple 1.5s infinite}
     .mic-btn.processing{background:#e5e7eb;color:#9ca3af;cursor:not-allowed;box-shadow:none}
     .mic-btn.speaking{background:#3b82f6;color:#fff}
     .mic-btn:active:not(.processing){transform:scale(.92)}
-    .mic-lbl{font-size:.78rem;font-weight:500;color:#6b7280;text-align:center}
+    .mic-lbl{font-size:.76rem;font-weight:500;color:#6b7280;text-align:center}
     .rec-timer{font-size:.72rem;color:#ef4444;font-weight:600;display:none}
+    /* Text input row */
+    .text-row{display:flex;gap:8px;width:100%;max-width:500px}
+    .text-inp{flex:1;padding:10px 14px;border:2px solid #e5e7eb;border-radius:24px;font-size:.88rem;color:#333;outline:none;transition:border-color .2s;background:#fafafa}
+    .text-inp:focus{border-color:#667eea;background:#fff}
+    .text-send{padding:10px 16px;background:#667eea;color:#fff;border:none;border-radius:24px;font-size:.88rem;font-weight:600;cursor:pointer;white-space:nowrap}
+    .text-send:active{opacity:.8}
 
     /* Settings Modal */
     .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center}
@@ -134,6 +140,10 @@
       <div id="mic-lbl" class="mic-lbl">탭하여 말하기</div>
       <div id="rec-timer" class="rec-timer"></div>
     </div>
+    <div class="text-row">
+      <input id="text-inp" class="text-inp" type="text" placeholder="또는 여기에 텍스트로 입력..." autocomplete="off">
+      <button class="text-send" onclick="sendText()">전송</button>
+    </div>
   </div>
 
   <!-- Settings Modal -->
@@ -169,26 +179,43 @@ const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 /* ══════════════════════════════════════════
    SYSTEM PROMPTS  (plain text, no JSON)
 ══════════════════════════════════════════ */
-const JOY_PROMPT = `You are 기쁨이's warm and playful English teacher. 기쁨이 is 6 years old and learning English in Korea. The user sends voice audio — understand what was said and respond conversationally.
+const JOY_PROMPT = `You are 기쁨이's warm and playful English teacher. 기쁨이 is 6 years old and learning English in Korea.
 
-Rules:
-- If they speak Korean: briefly explain in simple Korean, then say the English expression clearly and a bit slowly. Repeat the English word or phrase at least once.
-- If they speak English: praise warmly and respond simply in English.
-- Only use Grade 1 vocabulary: cat, dog, water, school, happy, big, small, go, come, eat, play, etc.
-- Keep every response to 2–3 short sentences maximum.
-- Be extremely warm, fun, and encouraging. Sometimes say "기쁨아".
-- Respond in plain conversational text only — no JSON, no markdown, no bullet points.
-- Example: "오, 고양이! 영어로는 cat이에요! Cat! 같이 말해봐요, cat!"`;
+IMPORTANT — Response format (always follow this exactly):
+Line 1: "나: [transcribe exactly what the user said in their original language]"
+Line 2: (blank line)
+Line 3+: [your teaching response]
 
-const DAD_PROMPT = `You are a friendly English conversation partner and coach for a Korean adult. The user sends voice audio — understand what was said and respond conversationally.
+Teaching rules:
+- Korean input → briefly explain in Korean, then say the English expression clearly and slowly. Repeat the English once.
+- English input → praise warmly and respond simply in English.
+- Only Grade 1 vocabulary: cat, dog, water, school, happy, big, small, go, come, eat, play, etc.
+- Max 2–3 short sentences. Be very warm. Sometimes say "기쁨아".
+- Plain text only — no JSON, no markdown, no bullet points.
 
-Rules:
-- If they speak Korean: briefly explain in Korean, then give the natural English expression.
-- If they speak English with errors: gently offer a more natural phrasing — say "You could also say..." Never say wrong or incorrect.
-- If their English sounds natural and fluent: respond entirely in English for immersion.
-- Adult vocabulary. Conversational and genuine.
-- Keep responses to 3–5 sentences.
-- Respond in plain conversational text only — no JSON, no markdown.`;
+Example:
+나: 고양이 영어로 뭐야?
+
+오, 고양이! 영어로는 cat이에요! Cat! 같이 말해봐요, cat!`;
+
+const DAD_PROMPT = `You are a friendly English conversation partner and coach for a Korean adult.
+
+IMPORTANT — Response format (always follow this exactly):
+Line 1: "나: [transcribe exactly what the user said in their original language]"
+Line 2: (blank line)
+Line 3+: [your coaching response]
+
+Coaching rules:
+- Korean input → brief Korean explanation, then natural English expression.
+- English with errors → "You could also say..." (never say "wrong").
+- Natural English → respond entirely in English (immersion).
+- Adult vocabulary, conversational. 3–5 sentences.
+- Plain text only — no JSON, no markdown.
+
+Example:
+나: 오늘 날씨 정말 좋다
+
+맞아요, 이럴 때 쓰기 좋은 표현이에요. "What a beautiful day!" 또는 "The weather is gorgeous today!" 둘 다 자연스러워요.`;
 
 /* ══════════════════════════════════════════
    STATE
@@ -203,6 +230,7 @@ const S = {
   recInterval: null,
   recSecs: 0,
   chatHistory: [],    // [{role, parts:[{text}]}] — text only, max 12 items
+  ttsUnlocked: false,
 };
 
 /* ══════════════════════════════════════════
@@ -248,8 +276,25 @@ function applyProfile(p) {
 /* ══════════════════════════════════════════
    MIC — TOGGLE
 ══════════════════════════════════════════ */
+function unlockTTS() {
+  // iOS Safari: speechSynthesis must be triggered from a synchronous user gesture.
+  // Speak a silent utterance on first tap to unlock audio for later async calls.
+  if (!S.ttsUnlocked) {
+    const u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0;
+    window.speechSynthesis.speak(u);
+    S.ttsUnlocked = true;
+  }
+}
+
 async function toggleMic() {
-  if (S.micState === 'processing' || S.micState === 'speaking') return;
+  unlockTTS(); // must be called synchronously during user gesture
+  if (S.micState === 'processing') return;
+  if (S.micState === 'speaking') {
+    window.speechSynthesis.cancel();
+    setMicState('ready');
+    return;
+  }
   if (S.micState === 'recording') {
     stopRecording();
   } else {
@@ -320,34 +365,22 @@ function updateTimer() {
    GEMINI API — AUDIO INPUT
 ══════════════════════════════════════════ */
 async function sendToGemini(audioBlob) {
-  // Show user bubble (placeholder)
-  const userRow = addUserBubble('🎤 음성 메시지');
-  // Show loading bubble
+  const userRow = addUserBubble('🎤 …');  // placeholder, updated after transcript
   const loadRow = addLoadingBubble();
 
   try {
     const base64Audio = await blobToBase64(audioBlob);
-    // Clean MIME type (remove codecs suffix)
     const cleanMime = audioBlob.type.split(';')[0] || 'audio/webm';
 
-    // Build contents: history + current audio
     const contents = [
       ...S.chatHistory,
-      {
-        role: 'user',
-        parts: [{ inlineData: { mimeType: cleanMime, data: base64Audio } }]
-      }
+      { role: 'user', parts: [{ inlineData: { mimeType: cleanMime, data: base64Audio } }] }
     ];
 
     const body = {
       contents,
-      systemInstruction: {
-        parts: [{ text: S.profile === 'joy' ? JOY_PROMPT : DAD_PROMPT }]
-      },
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 800
-      }
+      systemInstruction: { parts: [{ text: S.profile === 'joy' ? JOY_PROMPT : DAD_PROMPT }] },
+      generationConfig: { temperature: 0.7, maxOutputTokens: 900 }
     };
 
     const res = await fetch(`${API_BASE}/${S.model}:generateContent?key=${S.apiKey}`, {
@@ -359,25 +392,91 @@ async function sendToGemini(audioBlob) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error?.message || `HTTP ${res.status}`);
 
-    const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
-    if (!aiText) throw new Error('응답이 비어 있어요.');
+    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+    if (!raw) throw new Error('응답이 비어 있어요.');
 
-    // Update bubbles
+    // Parse transcript line ("나: ...") from AI response
+    const { transcript, response: aiText } = parseTranscript(raw);
+
+    // Update user bubble with actual transcript
+    updateBubbleText(userRow, transcript ? `🎤 ${transcript}` : '🎤 음성 메시지');
     replaceLoading(loadRow, aiText);
 
-    // Update history (text only, no audio blobs)
+    // History: store transcript text (not audio)
     S.chatHistory.push(
-      { role: 'user',  parts: [{ text: '🎤 음성 입력' }] },
+      { role: 'user',  parts: [{ text: transcript || '🎤 음성 입력' }] },
       { role: 'model', parts: [{ text: aiText }] }
     );
     if (S.chatHistory.length > 12) S.chatHistory = S.chatHistory.slice(-12);
 
-    // Speak response
     setMicState('speaking');
     speak(aiText, S.profile, () => setMicState('ready'));
 
   } catch(err) {
     console.error('Gemini error:', err);
+    replaceLoading(loadRow, null);
+    errBubble('오류: ' + err.message);
+    setMicState('ready');
+  }
+}
+
+function parseTranscript(text) {
+  // Expect first line: "나: [what user said]"
+  const m = text.match(/^나:\s*(.+?)(?:\n|$)([\s\S]*)/);
+  if (m) return { transcript: m[1].trim(), response: m[2].trim() };
+  return { transcript: null, response: text };
+}
+
+/* ══════════════════════════════════════════
+   SEND TEXT INPUT
+══════════════════════════════════════════ */
+async function sendText() {
+  const inp = document.getElementById('text-inp');
+  const text = inp.value.trim();
+  if (!text || S.micState === 'processing') return;
+  inp.value = '';
+
+  unlockTTS();
+  addUserBubble(text);
+  const loadRow = addLoadingBubble();
+  setMicState('processing');
+
+  try {
+    const contents = [
+      ...S.chatHistory,
+      { role: 'user', parts: [{ text }] }
+    ];
+    const body = {
+      contents,
+      systemInstruction: { parts: [{ text: S.profile === 'joy' ? JOY_PROMPT : DAD_PROMPT }] },
+      generationConfig: { temperature: 0.7, maxOutputTokens: 900 }
+    };
+    const res = await fetch(`${API_BASE}/${S.model}:generateContent?key=${S.apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || `HTTP ${res.status}`);
+
+    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+    if (!raw) throw new Error('응답이 비어 있어요.');
+
+    // For text input, skip transcript line (user already typed it)
+    const { response: aiText } = parseTranscript(raw);
+    replaceLoading(loadRow, aiText);
+
+    S.chatHistory.push(
+      { role: 'user',  parts: [{ text }] },
+      { role: 'model', parts: [{ text: aiText }] }
+    );
+    if (S.chatHistory.length > 12) S.chatHistory = S.chatHistory.slice(-12);
+
+    setMicState('speaking');
+    speak(aiText, S.profile, () => setMicState('ready'));
+
+  } catch(err) {
+    console.error('Text send error:', err);
     replaceLoading(loadRow, null);
     errBubble('오류: ' + err.message);
     setMicState('ready');
@@ -474,6 +573,12 @@ function replaceLoading(rowEl, text) {
   if (b) { b.textContent = text; scrollBottom(); }
 }
 
+function updateBubbleText(rowEl, text) {
+  if (!rowEl) return;
+  const b = rowEl.querySelector('.bubble');
+  if (b) b.textContent = text;
+}
+
 function sysBubble(text) {
   const b = document.createElement('div');
   b.className = 'bubble sys';
@@ -551,14 +656,9 @@ function updateModelTag() {
   document.getElementById('key-inp').addEventListener('keydown', e => {
     if (e.key === 'Enter') saveKey();
   });
-
-  // Stop TTS when mic tapped during speaking
-  document.getElementById('mic-btn').addEventListener('click', () => {
-    if (S.micState === 'speaking') {
-      window.speechSynthesis.cancel();
-      setMicState('ready');
-    }
-  }, true);
+  document.getElementById('text-inp').addEventListener('keydown', e => {
+    if (e.key === 'Enter') sendText();
+  });
 })();
 </script>
 </body>
