@@ -796,8 +796,17 @@ function buildTiles() {
   const rows = Math.floor(bh / (CELL + 2));
   const maxOnBoard = cols * rows * 3; // 레이어 3개까지 허용
 
-  const onBoardPool = fullPool.slice(0, maxOnBoard);
-  reservePool = fullPool.slice(maxOnBoard);
+  // 필수 글자가 반드시 보드에 포함되도록 보장
+  const requiredLetters = [...new Set(stageWords.flatMap(w => w.word.split('')))];
+  const remaining = [...fullPool];
+  const guaranteed = [];
+  requiredLetters.forEach(letter => {
+    const idx = remaining.findIndex(item => item.letter === letter);
+    if (idx !== -1) guaranteed.push(remaining.splice(idx, 1)[0]);
+  });
+  const filler = remaining.slice(0, Math.max(0, maxOnBoard - guaranteed.length));
+  const onBoardPool = [...guaranteed, ...filler].sort(() => Math.random() - 0.5);
+  reservePool = remaining.slice(Math.max(0, maxOnBoard - guaranteed.length));
 
   placeTilesOnBoard(onBoardPool, CELL, bw, bh, cols);
   updateCoverage();
@@ -1161,17 +1170,11 @@ function useHint() {
     || voices.find(v => v.lang === 'en-US')
     || voices.find(v => v.lang.startsWith('en'));
 
-  // 1) 단어 이름 먼저 읽기
-  const uWord = new SpeechSynthesisUtterance(w.word.toLowerCase());
-  uWord.lang = 'en-US'; uWord.rate = 0.8; uWord.pitch = 1.1;
-  if (preferred) uWord.voice = preferred;
-
-  // 2) 영어 설명 읽기
+  // 영어 설명만 읽기 (정답 단어는 음성에서 제외)
   const uDesc = new SpeechSynthesisUtterance(w.sentence);
   uDesc.lang = 'en-US'; uDesc.rate = 0.85; uDesc.pitch = 1.0;
   if (preferred) uDesc.voice = preferred;
 
-  speechSynthesis.speak(uWord);
   speechSynthesis.speak(uDesc);
 
   // 단어 카드 강조
