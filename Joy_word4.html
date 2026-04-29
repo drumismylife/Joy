@@ -623,6 +623,21 @@ function buildTiles() {
   const count = pool.length;
   const CELL = Math.min(58, Math.max(36, Math.floor(Math.sqrt((bw * bh) / count) * 0.82)));
   const cols = Math.floor(bw / (CELL + 3));
+  const rows = Math.floor(bh / (CELL + 3));
+  const maxOnBoard = cols * rows * 3; // 레이어 3개까지 허용
+
+  // 타일 수가 보드 용량 초과 시, 필수 글자를 보장하면서 자르기
+  if (pool.length > maxOnBoard) {
+    const uniqueLetters = [...new Set(alphaLetters)];
+    const rest = [...pool];
+    const guaranteed = [];
+    uniqueLetters.forEach(letter => {
+      const idx = rest.findIndex(l => l === letter);
+      if (idx !== -1) guaranteed.push(rest.splice(idx, 1)[0]);
+    });
+    const filler = rest.slice(0, Math.max(0, maxOnBoard - guaranteed.length));
+    pool = [...guaranteed, ...filler].sort(() => Math.random() - 0.5);
+  }
 
   pool.forEach((letter, i) => {
     const layer = Math.floor(i * 3 / count);
@@ -869,22 +884,8 @@ function useHint() {
   if (nextIdx >= letters.length) return;
   if (!window.speechSynthesis) return;
 
-  // 문장 전체 읽기
+  // 문장 전체 읽기만 (타일 힌트 없음)
   speak(sentence.text, 0.8);
-
-  // 다음 글자 타일 반짝임
-  const nextLetter = letters[nextIdx];
-  const matches = tiles.filter(t => !t.removed && !t.covered && t.letter === nextLetter);
-  matches.slice(0, 2).forEach(t => {
-    t.el.style.transition = 'transform 0.15s, box-shadow 0.15s';
-    t.el.style.transform = 'scale(1.25) translateY(-5px)';
-    t.el.style.boxShadow = '0 0 18px ' + t.color.bg + ', 0 0 36px ' + t.color.bg;
-    setTimeout(() => {
-      t.el.style.transition = 'transform 0.2s, box-shadow 0.2s';
-      t.el.style.transform = '';
-      t.el.style.boxShadow = '';
-    }, 900);
-  });
 }
 
 // ══════════════════════════════════════════════
