@@ -6,7 +6,7 @@
 // WORDS_PER_STAGE: 라운드당 출제 단어 수 (기본값 4)
 
 var SLOT_COUNT = 9;
-var WORDS_PER_STAGE = 4;
+var WORDS_PER_STAGE = 5;
 
 var DATE_GROUPS = [
   { label:'April 2',  color:'#FF6B6B' },
