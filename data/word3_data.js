@@ -3,10 +3,10 @@
 // DATE_GROUPS: 날짜 탭 목록. 새 날짜 추가 시 여기에 항목 추가.
 // ALL_WORDS: 각 단어. date는 DATE_GROUPS의 label과 정확히 일치해야 함.
 // SLOT_COUNT: 글자 슬롯 수 (기본값 9)
-// WORDS_PER_STAGE: 라운드당 출제 단어 수 (기본값 4)
+// WORDS_PER_STAGE: 라운드당 출제 단어 수 (기본값 5)
 
 var SLOT_COUNT = 9;
-var WORDS_PER_STAGE = 4;
+var WORDS_PER_STAGE = 5;
 
 var DATE_GROUPS = [
   { label:'April 2',  color:'#FF6B6B' },
