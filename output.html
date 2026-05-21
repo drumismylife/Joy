@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>용인 모현 근처 — 산책·포토존 당일치기 여행 계획</title>
+  <style>
+    /* ── Reset & Base ───────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+           color: #222; background: #f5f7fa; line-height: 1.6; }
+    a { color: #1a6fc4; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Layout ─────────────────────────────────────────── */
+    .container { max-width: 900px; margin: 0 auto; padding: 0 1rem 3rem; }
+
+    /* ── Hero ───────────────────────────────────────────── */
+    .hero { background: linear-gradient(135deg, #1a6fc4 0%, #0d4f9e 100%);
+            color: #fff; padding: 2.5rem 1.5rem; text-align: center; }
+    .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: .4rem; }
+    .trip-meta { font-size: 1.05rem; opacity: .9; margin-bottom: .25rem; }
+    .timezone  { font-size: .85rem; opacity: .75; }
+
+    /* ── Warning Banners ────────────────────────────────── */
+    .data-banner { padding: .75rem 1.25rem; margin: 1rem 0; border-radius: 6px;
+                   font-weight: 500; font-size: .93rem; }
+    .banner-info  { background: #e8f4fd; border-left: 4px solid #1a6fc4; color: #0d4f9e; }
+    .banner-warn  { background: #fff8e1; border-left: 4px solid #f0a500; color: #7a5800; }
+    .banner-alert { background: #fdecea; border-left: 4px solid #c0392b; color: #7b1818; }
+
+    /* ── Sections ───────────────────────────────────────── */
+    section { background: #fff; border-radius: 8px; padding: 1.5rem;
+              margin: 1.25rem 0; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    section h2 { font-size: 1.25rem; color: #1a6fc4; margin-bottom: 1rem;
+                 padding-bottom: .4rem; border-bottom: 2px solid #e8f0fa; }
+
+    /* ── Day Sections ───────────────────────────────────── */
+    .day-section { background: #fff; border-radius: 8px; padding: 1.25rem;
+                   margin: 1rem 0; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    .day-header { font-size: 1.15rem; color: #0d4f9e; margin-bottom: .75rem; }
+
+    /* ── Transport Cards ────────────────────────────────── */
+    .transport-card { background: #f0f4f9; border-radius: 5px; padding: .5rem .85rem;
+                      margin: .4rem 0; font-size: .88rem; color: #444; }
+
+    /* ── Activity Cards ─────────────────────────────────── */
+    .activity-card { border: 1px solid #e4e9f2; border-radius: 7px;
+                     padding: .85rem 1rem; margin: .6rem 0; background: #fafbfd; }
+    .act-header { display: flex; align-items: center; flex-wrap: wrap; gap: .4rem;
+                  margin-bottom: .3rem; }
+    .act-time   { font-weight: 700; color: #1a6fc4; min-width: 3.5rem; }
+    .act-icon   { font-size: 1.1rem; }
+    .act-name   { font-weight: 600; flex: 1; }
+    .act-duration { font-size: .8rem; color: #666; }
+    .act-tz-note  { font-size: .78rem; color: #888; margin-bottom: .2rem; }
+    .act-maps   { font-size: .82rem; margin-top: .35rem; }
+    .map-link   { margin-right: .5rem; }
+
+    /* ── Confidence Badges ──────────────────────────────── */
+    .conf-badge { font-size: .72rem; padding: 2px 7px; border-radius: 10px;
+                  white-space: nowrap; vertical-align: middle; }
+
+    /* ── Allergen Badge ─────────────────────────────────── */
+    .allergen-badge { background: #fff3cd; border: 1px solid #f0c040;
+                      border-radius: 4px; padding: .25rem .6rem;
+                      font-size: .82rem; color: #7a5800; margin: .3rem 0; }
+
+    /* ── Plan B ─────────────────────────────────────────── */
+    .plan-b { margin-top: .4rem; }
+    .plan-b summary { font-size: .82rem; color: #555; cursor: pointer; }
+    .plan-b p { font-size: .85rem; color: #444; margin-top: .25rem;
+                padding: .4rem .6rem; background: #f3f3f3; border-radius: 4px; }
+
+    /* ── Tables ─────────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; }
+    .comparison-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    .comparison-table th { background: #e8f0fa; color: #0d4f9e; padding: .5rem .75rem;
+                           text-align: left; white-space: nowrap; }
+    .comparison-table td { padding: .45rem .75rem; border-bottom: 1px solid #eee; vertical-align: middle; }
+    .comparison-table tr:last-child td { border-bottom: none; }
+    .caveat { font-size: .78rem; color: #777; margin-top: .5rem; }
+
+    /* ── Budget Chart ───────────────────────────────────── */
+    .budget-chart-wrap { display: flex; align-items: flex-start; gap: 1.5rem;
+                         flex-wrap: wrap; margin-bottom: 1rem; }
+    .budget-legend { border-collapse: collapse; font-size: .88rem; }
+    .budget-legend td { padding: .3rem .6rem; }
+    .budget-legend .amount { text-align: right; font-weight: 600; }
+    .legend-dot { display: inline-block; width: 12px; height: 12px;
+                  border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+
+    /* ── Print Expense Log ──────────────────────────────── */
+    .print-expense-log { margin-top: 1.5rem; }
+    .print-expense-log h3 { font-size: 1rem; color: #555; margin-bottom: .5rem; }
+    .print-expense-log table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    .print-expense-log th, .print-expense-log td {
+      border: 1px solid #ccc; padding: .4rem .6rem; }
+    .print-expense-log th { background: #f0f4f9; }
+    .print-expense-log td { height: 2rem; }
+
+    /* ── Tips Accordion ─────────────────────────────────── */
+    .tips-accordion details { border: 1px solid #e4e9f2; border-radius: 6px;
+                              margin: .5rem 0; }
+    .tips-accordion summary { padding: .65rem 1rem; font-weight: 600;
+                               cursor: pointer; color: #1a6fc4; }
+    .tips-accordion .tip-body { padding: .5rem 1rem 1rem; font-size: .9rem; color: #444; }
+    .tips-accordion ul { padding-left: 1.2rem; margin-top: .25rem; }
+    .tips-accordion li { margin: .2rem 0; }
+
+    /* ── Footer ─────────────────────────────────────────── */
+    footer { text-align: center; padding: 1.5rem; }
+    .disclaimer { font-size: .8rem; color: #888; margin-bottom: .4rem; }
+    .generated-at { font-size: .75rem; color: #aaa; margin-bottom: .75rem; }
+    #ics-download { background: #1a6fc4; color: #fff; border: none;
+                    border-radius: 6px; padding: .6rem 1.4rem; font-size: .95rem;
+                    cursor: pointer; }
+    #ics-download:hover { background: #0d4f9e; }
+
+    /* ── Print Styles ───────────────────────────────────── */
+    @media print {
+      body { background: #fff; }
+      .hero { background: #0d4f9e !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      #ics-download, nav, .map-link { display: none !important; }
+      section, .day-section { box-shadow: none; border: 1px solid #ddd; }
+      .day-section { page-break-before: always; }
+      .day-section:first-of-type { page-break-before: avoid; }
+      details { display: block; }
+      details[open] summary::after { content: ""; }
+      a[href]::after { content: " (" attr(href) ")"; font-size: .75rem; color: #555; }
+      a.map-link::after { display: none; }
+      .print-expense-log { display: block !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Hero Header ────────────────────────────────────────────────────────── -->
+<header class="hero">
+  <h1>용인 모현 근처 — 산책·포토존 당일치기</h1>
+  <p class="trip-meta">2026-05-23 ~ 2026-05-23 · 성인 2명</p>
+  <p class="timezone">현지 시간 기준: Asia/Seoul</p>
+</header>
+
+<div class="container">
+
+  <!-- ── Warning Banner ───────────────────────────────────────────────────── -->
+  <div class="data-banner banner-warn" role="alert">⚠️ 일부 항목만 검증됨 · ⚠️ 표시 항목은 직접 확인 필요</div>
+
+  <!-- ── Overview ─────────────────────────────────────────────────────────── -->
+  <section id="overview">
+    <h2>여행 개요</h2>
+    <p><strong>날씨:</strong> 맑음 예상, 최고 24°C / 최저 14°C (5월 경기 남부 평년 기준)</p>
+    <p><strong>챙길 것:</strong> 얇은 긴팔 또는 가디건, 편한 운동화, 선크림</p>
+  </section>
+
+  <!-- ── Day-by-Day ────────────────────────────────────────────────────────── -->
+  <section id="itinerary" style="background:transparent;box-shadow:none;padding:0;">
+    <h2 style="padding:1rem 0 .5rem;background:transparent;">일정</h2>
+    <section class="day-section" data-date="2026-05-23">
+  <h2 class="day-header">2026-05-23 — 모현 산책 &amp; 포토존 코스 (기쁨이랑 낮 나들이)</h2>
+  <div class="transport-card">🚌 모현읍 출발 → 용인자연휴양림 (자가용) · 5분 이내 · KRW 0 <span class="conf-badge" style="background:#2d7d2d;color:#fff">검증됨</span></div>
+<div class="transport-card">🚌 용인자연휴양림 → 처인휴게소 (자가용) · 약 10분 · KRW 0 <span class="conf-badge" style="background:#b36b00;color:#fff">추정</span></div>
+<div class="transport-card">🚌 처인휴게소 → 은이성지 (자가용) · 약 20분 (양지면 방향) · KRW 0 <span class="conf-badge" style="background:#b36b00;color:#fff">추정</span></div>
+  <div class="activity-card act-attraction">
+  <div class="act-header">
+    <span class="act-time">10:00</span>
+    <span class="act-icon" aria-hidden="true">🏛️</span>
+    <span class="act-name">용인자연휴양림</span>
+    <span class="conf-badge" style="background:#2d7d2d;color:#fff">검증됨</span>
+    <span class="act-duration">90분</span>
+  </div>
+  <p class="act-tz-note">한국 표준시(KST) 기준</p>
+  
+  <div class="act-maps"><a href="https://www.google.com/maps/search/?api=1&query=%EC%9A%A9%EC%9D%B8%EC%9E%90%EC%97%B0%ED%9C%B4%EC%96%91%EB%A6%BC" class="map-link" target="_blank" rel="noopener noreferrer">Google Maps</a> <a href="https://map.naver.com/p/search/%EC%9A%A9%EC%9D%B8%EC%9E%90%EC%97%B0%ED%9C%B4%EC%96%91%EB%A6%BC" class="map-link" target="_blank" rel="noopener noreferrer">네이버지도</a> <a href="https://map.kakao.com/link/search/%EC%9A%A9%EC%9D%B8%EC%9E%90%EC%97%B0%ED%9C%B4%EC%96%91%EB%A6%BC" class="map-link" target="_blank" rel="noopener noreferrer">카카오맵</a></div>
+  <details class="plan-b"><summary>대안 보기</summary><p><strong>용인자연휴양림 인근 산책로</strong> — 우천 시 짧은 산림치유 데크 구간만 걷고 조기 이동</p></details>
+</div>
+<div class="activity-card act-attraction">
+  <div class="act-header">
+    <span class="act-time">11:30</span>
+    <span class="act-icon" aria-hidden="true">🏛️</span>
+    <span class="act-name">처인휴게소</span>
+    <span class="conf-badge" style="background:#b36b00;color:#fff">추정</span>
+    <span class="act-duration">40분</span>
+  </div>
+  <p class="act-tz-note">한국 표준시(KST) 기준</p>
+  
+  <div class="act-maps"><a href="https://www.google.com/maps/search/?api=1&query=%EC%B2%98%EC%9D%B8%ED%9C%B4%EA%B2%8C%EC%86%8C" class="map-link" target="_blank" rel="noopener noreferrer">Google Maps</a> <a href="https://map.naver.com/p/search/%EC%B2%98%EC%9D%B8%ED%9C%B4%EA%B2%8C%EC%86%8C" class="map-link" target="_blank" rel="noopener noreferrer">네이버지도</a> <a href="https://map.kakao.com/link/search/%EC%B2%98%EC%9D%B8%ED%9C%B4%EA%B2%8C%EC%86%8C" class="map-link" target="_blank" rel="noopener noreferrer">카카오맵</a></div>
+  <details class="plan-b"><summary>대안 보기</summary><p><strong>모현읍 내 일반 카페</strong> — 처인휴게소 임시 휴무 시 대안</p></details>
+</div>
+<div class="activity-card act-restaurant">
+  <div class="act-header">
+    <span class="act-time">12:30</span>
+    <span class="act-icon" aria-hidden="true">🍽️</span>
+    <span class="act-name">모현읍 인근 점심 식사</span>
+    <span class="conf-badge" style="background:#c0392b;color:#fff">미검증</span>
+    <span class="act-duration">60분</span>
+  </div>
+  <p class="act-tz-note">한국 표준시(KST) 기준</p>
+  
+  <div class="act-maps"><a href="https://www.google.com/maps/search/?api=1&query=%EB%AA%A8%ED%98%84%EC%9D%8D%20%EC%9D%B8%EA%B7%BC%20%EC%A0%90%EC%8B%AC%20%EC%8B%9D%EC%82%AC" class="map-link" target="_blank" rel="noopener noreferrer">Google Maps</a> <a href="https://map.naver.com/p/search/%EB%AA%A8%ED%98%84%EC%9D%8D%20%EC%9D%B8%EA%B7%BC%20%EC%A0%90%EC%8B%AC%20%EC%8B%9D%EC%82%AC" class="map-link" target="_blank" rel="noopener noreferrer">네이버지도</a> <a href="https://map.kakao.com/link/search/%EB%AA%A8%ED%98%84%EC%9D%8D%20%EC%9D%B8%EA%B7%BC%20%EC%A0%90%EC%8B%AC%20%EC%8B%9D%EC%82%AC" class="map-link" target="_blank" rel="noopener noreferrer">카카오맵</a></div>
+  <details class="plan-b"><summary>대안 보기</summary><p><strong>처인휴게소 푸드코트 또는 편의점</strong> — 식당 대기가 길거나 만석인 경우</p></details>
+</div>
+<div class="activity-card act-attraction">
+  <div class="act-header">
+    <span class="act-time">14:00</span>
+    <span class="act-icon" aria-hidden="true">🏛️</span>
+    <span class="act-name">은이성지</span>
+    <span class="conf-badge" style="background:#2d7d2d;color:#fff">검증됨</span>
+    <span class="act-duration">60분</span>
+  </div>
+  <p class="act-tz-note">한국 표준시(KST) 기준</p>
+  
+  <div class="act-maps"><a href="https://www.google.com/maps/search/?api=1&query=%EC%9D%80%EC%9D%B4%EC%84%B1%EC%A7%80" class="map-link" target="_blank" rel="noopener noreferrer">Google Maps</a> <a href="https://map.naver.com/p/search/%EC%9D%80%EC%9D%B4%EC%84%B1%EC%A7%80" class="map-link" target="_blank" rel="noopener noreferrer">네이버지도</a> <a href="https://map.kakao.com/link/search/%EC%9D%80%EC%9D%B4%EC%84%B1%EC%A7%80" class="map-link" target="_blank" rel="noopener noreferrer">카카오맵</a></div>
+  <details class="plan-b"><summary>대안 보기</summary><p><strong>용인 처인성 (처인성지공원)</strong> — 은이성지 주차장 마감 또는 혼잡 시 인근 대안 역사 공원</p></details>
+</div>
+<div class="activity-card act-transport">
+  <div class="act-header">
+    <span class="act-time">15:30</span>
+    <span class="act-icon" aria-hidden="true">🚌</span>
+    <span class="act-name">귀가</span>
+    <span class="conf-badge" style="background:#b36b00;color:#fff">추정</span>
+    <span class="act-duration">10분</span>
+  </div>
+  <p class="act-tz-note">한국 표준시(KST) 기준</p>
+  
+  <div class="act-maps"><a href="https://www.google.com/maps/search/?api=1&query=%EA%B7%80%EA%B0%80" class="map-link" target="_blank" rel="noopener noreferrer">Google Maps</a> <a href="https://map.naver.com/p/search/%EA%B7%80%EA%B0%80" class="map-link" target="_blank" rel="noopener noreferrer">네이버지도</a> <a href="https://map.kakao.com/link/search/%EA%B7%80%EA%B0%80" class="map-link" target="_blank" rel="noopener noreferrer">카카오맵</a></div>
+  
+</div>
+</section>
+  </section>
+
+  <!-- ── Flights Table ────────────────────────────────────────────────────── -->
+  <section id="flights">
+    <h2>항공편 비교</h2>
+    <p>항공편 정보 없음 (자차 또는 국내 여행)</p>
+  </section>
+
+  <!-- ── Lodging Table ────────────────────────────────────────────────────── -->
+  <section id="lodging">
+    <h2>숙소 비교</h2>
+    <p>숙소 정보 없음</p>
+  </section>
+
+  <!-- ── Budget Summary ───────────────────────────────────────────────────── -->
+  <section id="budget">
+    <h2>예산 요약</h2>
+    <div class="budget-chart-wrap"><svg width="240" height="240" viewBox="0 0 240 240" aria-hidden="true"><path d="M 120.0 20.0 A 100 100 0 0 1 175.7 37.0 L 150.7 74.3 A 55 55 0 0 0 120.0 65.0 Z" fill="#3498db" /><path d="M 175.7 37.0 A 100 100 0 0 1 192.6 51.3 L 160.0 82.2 A 55 55 0 0 0 150.7 74.3 Z" fill="#e74c3c" /><path d="M 192.6 51.3 A 100 100 0 0 1 172.6 205.0 L 149.0 166.8 A 55 55 0 0 0 160.0 82.2 Z" fill="#2ecc71" /><path d="M 172.6 205.0 A 100 100 0 1 1 120.0 20.0 L 120.0 65.0 A 55 55 0 1 0 149.0 166.8 Z" fill="#f39c12" /></svg><table class="budget-legend"><tbody><tr><td><span class="legend-dot" style="background:#3498db"></span>입장료 (휴양림 2인)</td><td class="amount">KRW 4,000</td></tr><tr><td><span class="legend-dot" style="background:#e74c3c"></span>주차비</td><td class="amount">KRW 1,500</td></tr><tr><td><span class="legend-dot" style="background:#2ecc71"></span>카페 음료 (2잔)</td><td class="amount">KRW 12,000</td></tr><tr><td><span class="legend-dot" style="background:#f39c12"></span>점심 식사 (2인)</td><td class="amount">KRW 25,000</td></tr></tbody></table></div>
+    <div class="print-expense-log">
+      <h3>실지출 기록 (인쇄 후 직접 기재)</h3>
+      <table>
+        <thead><tr><th>날짜</th><th>항목</th><th>금액</th><th>현금/카드</th><th>메모</th></tr></thead>
+        <tbody>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── Tips Accordion ───────────────────────────────────────────────────── -->
+  <section id="tips">
+    <h2>여행 팁</h2>
+    <div class="tips-accordion">
+      <details>
+        <summary>비자 · 입국요건</summary>
+        <div class="tip-body">
+          <p>최신 비자 정보는 반드시 공식 기관에서 확인하세요.</p>
+          <ul>
+            <li><a href="https://www.0404.go.kr/" target="_blank" rel="noopener noreferrer">외교부 해외안전여행 0404.go.kr</a></li>
+            <li>해당 국가 대사관 공식 사이트</li>
+          </ul>
+          <p><em>이 계획서의 비자 정보는 참고용이며, 출국 전 반드시 재확인하세요.</em></p>
+        </div>
+      </details>
+      <details>
+        <summary>응급 연락처</summary>
+        <div class="tip-body">
+          <ul>
+            <li>한국 외교부 영사콜센터: <a href="tel:+82-2-3210-0404">+82-2-3210-0404</a> (24시간)</li>
+            <li>현지 한국 대사관: 목적지 대사관 번호를 저장하세요</li>
+            <li>현지 응급번호: 목적지별 확인 (예: 일본 119, 미국 911)</li>
+          </ul>
+        </div>
+      </details>
+      <details>
+        <summary>여행자보험 서류 목록</summary>
+        <div class="tip-body">
+          <ul>
+            <li>여권 사본 (앞면)</li>
+            <li>항공권 예약 확인서</li>
+            <li>숙박 예약 확인서</li>
+            <li>여행자보험 증서 및 긴급연락처</li>
+            <li>주요 의약품 처방전 (해당 시)</li>
+          </ul>
+        </div>
+      </details>
+      <details>
+        <summary>추천 앱</summary>
+        <div class="tip-body">
+          <ul>
+            <li>지도: Google Maps · 네이버지도 · 카카오맵</li>
+            <li>번역: 파파고 · Google 번역</li>
+            <li>환율: Wise · XE Currency</li>
+            <li>교통: 목적지별 공식 대중교통 앱</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </section>
+
+</div><!-- /container -->
+
+<!-- ── Footer ─────────────────────────────────────────────────────────────── -->
+<footer>
+  <p class="disclaimer">가격·운영시간은 2026-05-21 검색 기준이며 변동될 수 있습니다. 방문 전 직접 확인하세요.</p>
+  <p class="generated-at">생성: 2026-05-21T12:00:00+09:00</p>
+  <button id="ics-download">📅 캘린더 다운로드 (.ics)</button>
+</footer>
+
+<!-- ── Embedded trip data (no personal info) ───────────────────────────────── -->
+<script type="application/json" id="trip-data">
+{
+  "meta": {
+    "generated_at": "2026-05-21T12:00:00+09:00",
+    "search_method": "live-search",
+    "traveler_passport_country": "KR (assumed)",
+    "disclaimer": "가격·운영시간은 2026-05-21 검색 기준이며 변동될 수 있습니다. 방문 전 직접 확인하세요."
+  },
+  "trip": {
+    "destination": "용인 모현 근처 — 산책·포토존 당일치기",
+    "timezone": "Asia/Seoul",
+    "start_date": "2026-05-23",
+    "end_date": "2026-05-23",
+    "date_assumption": "이번 주 주말(토요일) 기준",
+    "travelers": {
+      "adults": 2,
+      "children": 0
+    },
+    "mobility_profile": "adult_standard"
+  },
+  "traveler_preferences": {
+    "dietary_restrictions": [],
+    "mobility_profile": "adult_standard"
+  },
+  "flights": [],
+  "lodging": [],
+  "days": [
+    {
+      "date": "2026-05-23",
+      "theme": "모현 산책 & 포토존 코스 (기쁨이랑 낮 나들이)",
+      "transport_cards": [
+        {
+          "from": "모현읍 출발",
+          "to": "용인자연휴양림",
+          "mode": "자가용",
+          "duration_estimate": "5분 이내",
+          "fare": {
+            "currency": "KRW",
+            "amount_min": 0,
+            "amount_max": 0
+          },
+          "assumption": "모현읍 내 위치",
+          "evidence": {
+            "checked_at": null,
+            "confidence": "high"
+          }
+        },
+        {
+          "from": "용인자연휴양림",
+          "to": "처인휴게소",
+          "mode": "자가용",
+          "duration_estimate": "약 10분",
+          "fare": {
+            "currency": "KRW",
+            "amount_min": 0,
+            "amount_max": 0
+          },
+          "assumption": "모현읍 내 이동",
+          "evidence": {
+            "checked_at": null,
+            "confidence": "medium"
+          }
+        },
+        {
+          "from": "처인휴게소",
+          "to": "은이성지",
+          "mode": "자가용",
+          "duration_estimate": "약 20분 (양지면 방향)",
+          "fare": {
+            "currency": "KRW",
+            "amount_min": 0,
+            "amount_max": 0
+          },
+          "assumption": "국도 17호선 경유 예상",
+          "evidence": {
+            "checked_at": null,
+            "confidence": "medium"
+          }
+        }
+      ],
+      "activities": [
+        {
+          "time": "10:00",
+          "timezone_note": "한국 표준시(KST) 기준",
+          "type": "attraction",
+          "name": "용인자연휴양림",
+          "duration_min": 90,
+          "description": "모현읍 내 소나무·밤나무 숲 산책. 5월 신록 절정. 입장료 성인 2,000원. 짚라인 추가 체험 가능.",
+          "address": "경기 용인시 처인구 모현읍 초부로 220",
+          "evidence": {
+            "source_tier": 1,
+            "source_name": "용인자연휴양림 공식",
+            "source_url": "https://yonginforest.foresttrip.go.kr/",
+            "checked_at": "2026-05-21T12:00:00+09:00",
+            "confidence": "high",
+            "verification_status": "verified-live-search"
+          },
+          "plan_b": {
+            "name": "용인자연휴양림 인근 산책로",
+            "reason": "우천 시 짧은 산림치유 데크 구간만 걷고 조기 이동"
+          }
+        },
+        {
+          "time": "11:30",
+          "timezone_note": "한국 표준시(KST) 기준",
+          "type": "attraction",
+          "name": "처인휴게소",
+          "duration_min": 40,
+          "description": "우주선 모양 원형 건물. 로봇 카페·드론 택시 전시·VR 스포츠 체험존. 건물 자체가 포토존. 음료 1잔 기준 약 6,000원.",
+          "address": "경기 용인시 처인구 모현읍 곡현로619번길 36",
+          "evidence": {
+            "source_tier": 3,
+            "source_name": "용인 카페 검색 결과",
+            "source_url": "https://www.diningcode.com/list.dc?query=%EC%9A%A9%EC%9D%B8%EC%B2%98%EC%9D%B8%EA%B5%AC+%EB%B6%84%EC%9C%84%EA%B8%B0%EC%A2%8B%EC%9D%80%EC%B9%B4%ED%8E%98",
+            "checked_at": "2026-05-21T12:00:00+09:00",
+            "confidence": "medium",
+            "verification_status": "live-search-estimate"
+          },
+          "plan_b": {
+            "name": "모현읍 내 일반 카페",
+            "reason": "처인휴게소 임시 휴무 시 대안"
+          }
+        },
+        {
+          "time": "12:30",
+          "timezone_note": "한국 표준시(KST) 기준",
+          "type": "restaurant",
+          "name": "모현읍 인근 점심 식사",
+          "duration_min": 60,
+          "description": "모현읍 내 한식당 이용 예상. 2인 기준 약 20,000–30,000원. 방문 전 네이버 지도에서 '모현 맛집' 검색 후 예약 또는 현장 방문 권장.",
+          "address": "경기 용인시 처인구 모현읍 일대",
+          "evidence": {
+            "source_tier": null,
+            "source_name": null,
+            "source_url": null,
+            "checked_at": null,
+            "confidence": "low",
+            "verification_status": "requires-live-verification"
+          },
+          "plan_b": {
+            "name": "처인휴게소 푸드코트 또는 편의점",
+            "reason": "식당 대기가 길거나 만석인 경우"
+          }
+        },
+        {
+          "time": "14:00",
+          "timezone_note": "한국 표준시(KST) 기준",
+          "type": "attraction",
+          "name": "은이성지",
+          "duration_min": 60,
+          "description": "김대건 신부 순교 천주교 성지. 흰 성당 건물(김가항성당)이 유럽풍 포토존으로 유명. 숲길 순례로 산책 가능. 입장·주차 무료. 주차장 09:00–17:00 운영.",
+          "address": "경기 용인시 처인구 양지면 은이로 182",
+          "evidence": {
+            "source_tier": 1,
+            "source_name": "대한민국 구석구석",
+            "source_url": "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=ba25910b-f6b6-4bf2-98a8-3b497a9b3a78",
+            "checked_at": "2026-05-21T12:00:00+09:00",
+            "confidence": "high",
+            "verification_status": "verified-live-search"
+          },
+          "plan_b": {
+            "name": "용인 처인성 (처인성지공원)",
+            "reason": "은이성지 주차장 마감 또는 혼잡 시 인근 대안 역사 공원"
+          }
+        },
+        {
+          "time": "15:30",
+          "timezone_note": "한국 표준시(KST) 기준",
+          "type": "transport",
+          "name": "귀가",
+          "duration_min": 10,
+          "description": "모현읍으로 귀가. 은이성지에서 약 20분 소요.",
+          "evidence": {
+            "source_tier": null,
+            "source_name": null,
+            "source_url": null,
+            "checked_at": null,
+            "confidence": "medium",
+            "verification_status": "estimated"
+          }
+        }
+      ]
+    }
+  ],
+  "budget_summary": {
+    "currency": "KRW",
+    "items": [
+      {
+        "category": "입장료 (휴양림 2인)",
+        "amount_min": 4000,
+        "amount_max": 4000,
+        "per_person": false,
+        "payment_type": "cash",
+        "verification_status": "verified-live-search"
+      },
+      {
+        "category": "주차비",
+        "amount_min": 1500,
+        "amount_max": 1500,
+        "per_person": false,
+        "payment_type": "cash",
+        "verification_status": "verified-live-search"
+      },
+      {
+        "category": "카페 음료 (2잔)",
+        "amount_min": 10000,
+        "amount_max": 14000,
+        "per_person": false,
+        "payment_type": "card",
+        "verification_status": "live-search-estimate"
+      },
+      {
+        "category": "점심 식사 (2인)",
+        "amount_min": 20000,
+        "amount_max": 30000,
+        "per_person": false,
+        "payment_type": "mixed",
+        "verification_status": "estimated"
+      },
+      {
+        "category": "은이성지 입장",
+        "amount_min": 0,
+        "amount_max": 0,
+        "per_person": false,
+        "payment_type": "cash",
+        "verification_status": "verified-live-search"
+      }
+    ],
+    "notes": {
+      "tips_and_service_charges": "해당 없음 (국내 여행)",
+      "hidden_costs": "용인자연휴양림 짚라인 추가 시 별도 요금 발생. 연료비 별도."
+    }
+  },
+  "data_status": {
+    "search_method": "partial-live-search",
+    "global_checked_at": "2026-05-21T12:00:00+09:00",
+    "has_unverified_fields": true,
+    "warning": "점심 식당 정보는 미검증. 방문 전 네이버·카카오 지도로 직접 확인 권장."
+  },
+  "fx_rates": [],
+  "weather": {
+    "mode": "seasonal_climate",
+    "summary": "맑음 예상, 최고 24°C / 최저 14°C (5월 경기 남부 평년 기준)",
+    "packing_implications": [
+      "얇은 긴팔 또는 가디건",
+      "편한 운동화",
+      "선크림"
+    ],
+    "evidence": {
+      "source_tier": null,
+      "source_name": null,
+      "source_url": null,
+      "checked_at": null,
+      "confidence": "medium",
+      "verification_status": "estimated"
+    }
+  }
+}
+</script>
+
+<!-- ── First-party inline JS: ICS Blob download only ─────────────────────── -->
+<script>
+(function () {
+  'use strict';
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function downloadICS() {
+    var raw = document.getElementById('trip-data').textContent;
+    var td;
+    try { td = JSON.parse(raw); } catch (e) {
+      alert('캘린더 데이터를 읽을 수 없습니다.');
+      return;
+    }
+
+    var tz = (td.trip || {}).timezone || 'Asia/Seoul';
+    var lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//travel-planner//KO',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH'
+    ];
+
+    (td.days || []).forEach(function (day) {
+      var dateParts = (day.date || '').split('-').map(Number);
+      var yr = dateParts[0], mo = dateParts[1], dd = dateParts[2];
+
+      (day.activities || []).forEach(function (act) {
+        if (!act.name || !act.time) { return; }
+        var timeParts = act.time.split(':').map(Number);
+        var hh = timeParts[0], mm = timeParts[1];
+        var dur = act.duration_min || 60;
+
+        var startDt = '' + yr + pad(mo) + pad(dd) + 'T' + pad(hh) + pad(mm) + '00';
+        var endTotalMin = hh * 60 + mm + dur;
+        var endH = Math.floor(endTotalMin / 60) % 24;
+        var endM = endTotalMin % 60;
+        var endDd = Math.floor(endTotalMin / 1440) > 0 ? dd + 1 : dd;
+        var endDt = '' + yr + pad(mo) + pad(endDd) + 'T' + pad(endH) + pad(endM) + '00';
+
+        var summary = (act.name || '').replace(/[\\;,]/g, '\\$&');
+
+        lines.push('BEGIN:VEVENT');
+        lines.push('DTSTART;TZID=' + tz + ':' + startDt);
+        lines.push('DTEND;TZID=' + tz + ':' + endDt);
+        lines.push('SUMMARY:' + summary);
+        if (act.allergen_note) {
+          lines.push('DESCRIPTION:⚠️ 알레르기 주의: ' + act.allergen_note.replace(/[\\;,]/g, '\\$&'));
+        }
+        lines.push('END:VEVENT');
+      });
+    });
+
+    lines.push('END:VCALENDAR');
+
+    var blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'travel-plan.ics';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  document.getElementById('ics-download').addEventListener('click', downloadICS);
+
+  /* Print: expand all <details> before printing */
+  window.addEventListener('beforeprint', function () {
+    document.querySelectorAll('details').forEach(function (d) { d.open = true; });
+  });
+}());
+</script>
+
+</body>
+</html>
