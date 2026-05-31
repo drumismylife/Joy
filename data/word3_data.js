@@ -25,6 +25,15 @@ var DATE_GROUPS = [
   { label:'May 21',   color:'#fc5c65' },
   { label:'May 26',   color:'#2bcbba' },
   { label:'May 28',   color:'#f7b731' },
+  { label:'June 2',   color:'#FF6B6B' },
+  { label:'June 4',   color:'#FF9F43' },
+  { label:'June 9',   color:'#FFC312' },
+  { label:'June 11',  color:'#6BCB77' },
+  { label:'June 16',  color:'#4D96FF' },
+  { label:'June 18',  color:'#A29BFE' },
+  { label:'June 23',  color:'#FF6B9D' },
+  { label:'June 25',  color:'#00CEC9' },
+  { label:'June 30',  color:'#FDCB6E' },
 ];
 
 var ALL_WORDS = [
@@ -124,4 +133,58 @@ var ALL_WORDS = [
   { date:'May 28', word:'DAMP',    kr:'축축한',           emoji:'💧', sentence:'It means slightly wet or moist, but not soaking.' },
   { date:'May 28', word:'INSECT',  kr:'곤충',             emoji:'🐛', sentence:'It is a small creature with six legs, three body parts, and usually wings.' },
   { date:'May 28', word:'PLANT',   kr:'식물/심다',        emoji:'🌱', sentence:'It is a living thing that grows in soil or water; also means to put a seed in the ground.' },
+  // ── June 2 ──
+  { date:'June 2',  word:'SAFE',    kr:'안전한/금고',      emoji:'🔒', sentence:'Not in danger of being harmed; also, a strong box where you can lock up money and valuables.' },
+  { date:'June 2',  word:'SCATTER', kr:'흩뿌리다',         emoji:'💨', sentence:'To throw or spread things over a large area.' },
+  { date:'June 2',  word:'SOIL',    kr:'흙',               emoji:'🌱', sentence:'The dirt or earth that plants grow in.' },
+  { date:'June 2',  word:'TEAM',    kr:'팀',               emoji:'👥', sentence:'A group of people who work or play a sport together.' },
+  { date:'June 2',  word:'TOOL',    kr:'도구',             emoji:'🔧', sentence:'A piece of equipment used to do a certain job.' },
+  // ── June 4 ──
+  { date:'June 4',  word:'DIVE',    kr:'뛰어들다',         emoji:'🤿', sentence:'To go head first into water with your arms stretched out in front of you.' },
+  { date:'June 4',  word:'ENEMY',   kr:'적',               emoji:'⚔️', sentence:'A person or animal that doesn\'t like, or wants to harm, another person or animal.' },
+  { date:'June 4',  word:'FRIGHTEN',kr:'겁주다',           emoji:'😱', sentence:'To scare someone and make them feel afraid.' },
+  { date:'June 4',  word:'HERD',    kr:'무리',             emoji:'🐄', sentence:'A group of animals that feed or travel together.' },
+  { date:'June 4',  word:'PACK',    kr:'싸다/묶음',        emoji:'📦', sentence:'To put things into a container; also, a group of animals, people, or things.' },
+  // ── June 9 ──
+  { date:'June 9',  word:'PROVE',   kr:'증명하다',         emoji:'✅', sentence:'To show that something is true.' },
+  { date:'June 9',  word:'SEAL',    kr:'바다표범/봉인하다', emoji:'🦭', sentence:'A sea animal with thick fur and flippers that can swim in cold places; also means to close something up tightly.' },
+  { date:'June 9',  word:'SMOOTH',  kr:'부드러운',         emoji:'🪨', sentence:'Flat and even, not rough or bumpy.' },
+  { date:'June 9',  word:'SOAR',    kr:'높이 날다',        emoji:'🦅', sentence:'To fly very high in the air.' },
+  { date:'June 9',  word:'STEADY',  kr:'꾸준한',           emoji:'📈', sentence:'Continuing without changing much; firm and not shaky.' },
+  // ── June 11 ──
+  { date:'June 11', word:'ALARM',   kr:'알람/경보',        emoji:'⏰', sentence:'A device that makes a loud sound to wake people up or warn them of danger.' },
+  { date:'June 11', word:'SCATTER', kr:'흩뿌리다',         emoji:'💨', sentence:'To throw or spread things over a large area.' },
+  { date:'June 11', word:'FRIGHTEN',kr:'겁주다',           emoji:'😱', sentence:'To scare someone and make them feel afraid.' },
+  { date:'June 11', word:'PROVE',   kr:'증명하다',         emoji:'✅', sentence:'To show that something is true.' },
+  { date:'June 11', word:'STEADY',  kr:'꾸준한',           emoji:'📈', sentence:'Continuing without changing much; firm and not shaky.' },
+  // ── June 16 ──
+  { date:'June 16', word:'CALM',    kr:'조용한/침착한',    emoji:'🕊️', sentence:'Quiet and still, without much noise or movement.' },
+  { date:'June 16', word:'CHEER',   kr:'응원하다',         emoji:'📣', sentence:'To yell or call out loudly to show support or happiness.' },
+  { date:'June 16', word:'DAWN',    kr:'새벽',             emoji:'🌅', sentence:'The time of day when the sun first comes up.' },
+  { date:'June 16', word:'ENTIRE',  kr:'전체의',           emoji:'🌐', sentence:'The whole thing, without leaving anything out.' },
+  { date:'June 16', word:'FAIR',    kr:'공정한/박람회',    emoji:'⚖️', sentence:'Treating everyone the same way; also an outdoor place where people sell things and have fun.' },
+  // ── June 18 ──
+  { date:'June 18', word:'FIELD',   kr:'들판/경기장',      emoji:'🌾', sentence:'An area where a game is played, usually covered with grass.' },
+  { date:'June 18', word:'HARM',    kr:'해치다',           emoji:'⚠️', sentence:'To hurt someone or something.' },
+  { date:'June 18', word:'PAIN',    kr:'고통',             emoji:'💢', sentence:'A feeling of hurt in your body.' },
+  { date:'June 18', word:'SHIVER',  kr:'떨다',             emoji:'🥶', sentence:'To shake quickly, usually from cold or fear.' },
+  { date:'June 18', word:'TREMBLE', kr:'떨다',             emoji:'😰', sentence:'To shake from excitement, fear, or anger.' },
+  // ── June 23 ──
+  { date:'June 23', word:'BOARD',   kr:'판자/탑승하다',    emoji:'🪵', sentence:'A long, flat piece of wood or plastic; also means to get on a bus, train, or boat.' },
+  { date:'June 23', word:'CURIOUS', kr:'궁금한',           emoji:'🤔', sentence:'Wanting to learn or find out about something.' },
+  { date:'June 23', word:'DANGEROUS',kr:'위험한',          emoji:'☠️', sentence:'Not safe; it could cause harm to someone.' },
+  { date:'June 23', word:'DOUBT',   kr:'의심하다',         emoji:'🤨', sentence:'To be not sure about something.' },
+  { date:'June 23', word:'EAGER',   kr:'열정적인',         emoji:'⭐', sentence:'Very interested and excited about doing something.' },
+  // ── June 25 ──
+  { date:'June 25', word:'FEAR',    kr:'두려움',           emoji:'😨', sentence:'A feeling that danger is near or something bad will happen; also means to be afraid of something.' },
+  { date:'June 25', word:'LEAP',    kr:'뛰어오르다',       emoji:'🐸', sentence:'To take a big jump forward or upward.' },
+  { date:'June 25', word:'SCREECH', kr:'날카로운 소리',    emoji:'📢', sentence:'A loud, high-pitched sound; also means to make such a sound.' },
+  { date:'June 25', word:'SQUEEZE', kr:'꽉 쥐다',          emoji:'🤜', sentence:'To hold or press something very tightly.' },
+  { date:'June 25', word:'VILLAGE', kr:'마을',             emoji:'🏘️', sentence:'A small town with not many people.' },
+  // ── June 30 ──
+  { date:'June 30', word:'DAWN',    kr:'새벽',             emoji:'🌅', sentence:'The time of day when the sun first comes up.' },
+  { date:'June 30', word:'ENTIRE',  kr:'전체의',           emoji:'🌐', sentence:'The whole thing, without leaving anything out.' },
+  { date:'June 30', word:'SHIVER',  kr:'떨다',             emoji:'🥶', sentence:'To shake quickly, usually from cold or fear.' },
+  { date:'June 30', word:'DOUBT',   kr:'의심하다',         emoji:'🤨', sentence:'To be not sure about something.' },
+  { date:'June 30', word:'SQUEEZE', kr:'꽉 쥐다',          emoji:'🤜', sentence:'To hold or press something very tightly.' },
 ];
