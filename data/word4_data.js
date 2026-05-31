@@ -26,6 +26,15 @@ const DATE_GROUPS = [
   { label:'May 21',   color:'#fc5c65' },
   { label:'May 26',   color:'#2bcbba' },
   { label:'May 28',   color:'#f7b731' },
+  { label:'June 2',   color:'#FF6B6B' },
+  { label:'June 4',   color:'#FF9F43' },
+  { label:'June 9',   color:'#FFC312' },
+  { label:'June 11',  color:'#6BCB77' },
+  { label:'June 16',  color:'#4D96FF' },
+  { label:'June 18',  color:'#A29BFE' },
+  { label:'June 23',  color:'#FF6B9D' },
+  { label:'June 25',  color:'#00CEC9' },
+  { label:'June 30',  color:'#FDCB6E' },
 ];
 
 const SENTENCES = [
@@ -93,4 +102,40 @@ const SENTENCES = [
   { date:'May 28', text: 'CHICKENS ROAM FREELY ON THE GREEN FIELD',           kr: '닭들이 초록 들판을 자유롭게 돌아다녀요.' },
   { date:'May 28', text: 'THE GIRLS WERE EXCITED ABOUT THEIR NEW TOY',        kr: '여자아이들은 새 장난감에 신이 났어요.' },
   { date:'May 28', text: 'MY HAIR FEELS SO SMOOTH AFTER BRUSHING IT',         kr: '머리를 빗고 나니 정말 부드러워요.' },
+  // ── June 2 ──
+  { date:'June 2',  text: 'AN ANIMAL SHELTER HELPS ANIMALS FIND A NEW HOME',  kr: '동물 보호소는 동물들이 새 집을 찾도록 도와줘요.' },
+  { date:'June 2',  text: 'SWIMMING IS GOOD EXERCISE FOR THE WHOLE BODY',     kr: '수영은 온몸에 좋은 운동이에요.' },
+  { date:'June 2',  text: 'THIS DOG IS ON A LEASH',                           kr: '이 개는 줄에 묶여 있어요.' },
+  // ── June 4 ──
+  { date:'June 4',  text: 'MY DAD IS THE OWNER OF THIS BAKERY',               kr: '우리 아빠는 이 빵집의 주인이에요.' },
+  { date:'June 4',  text: 'THE VETERINARIAN IS CHECKING MY PET',              kr: '수의사가 내 반려동물을 검사하고 있어요.' },
+  { date:'June 4',  text: 'IT WAS SUCCESSFUL',                                kr: '그것은 성공적이었어요.' },
+  // ── June 9 ──
+  { date:'June 9',  text: 'POPULATION IS THE TOTAL NUMBER OF PEOPLE LIVING IN AN AREA', kr: '인구는 한 지역에 사는 사람들의 총 수예요.' },
+  { date:'June 9',  text: 'MY GEOGRAPHY CLASS IS VERY FUN WHEN WE STUDY MAPS AND RIVERS', kr: '지도와 강을 공부할 때 지리 수업이 매우 재미있어요.' },
+  { date:'June 9',  text: 'ASIA IS THE LARGEST CONTINENT IN THE WORLD',       kr: '아시아는 세계에서 가장 큰 대륙이에요.' },
+  // ── June 11 ──
+  { date:'June 11', text: 'LITERACY IS THE ABILITY TO READ WRITE AND UNDERSTAND', kr: '글을 읽고 쓰고 이해하는 능력을 문해력이라고 해요.' },
+  { date:'June 11', text: 'THE BLUE WHALE IS THE LARGEST ANIMAL IN THE OCEAN', kr: '푸른 고래는 바다에서 가장 큰 동물이에요.' },
+  { date:'June 11', text: 'ENGLISH IS A POPULAR LANGUAGE SPOKEN AROUND THE WORLD', kr: '영어는 세계 각지에서 사용되는 인기 있는 언어예요.' },
+  // ── June 16 ──
+  { date:'June 16', text: 'THE CITY HAS A POPULATION OF MORE THAN ONE MILLION PEOPLE', kr: '그 도시의 인구는 백만 명이 넘어요.' },
+  { date:'June 16', text: 'WE RAISED THE FLAG DURING THE SCHOOL CEREMONY',    kr: '학교 행사에서 우리는 깃발을 올렸어요.' },
+  { date:'June 16', text: 'A RHOMBUS HAS FOUR EQUAL SIDES BUT NO RIGHT ANGLES', kr: '마름모는 네 변의 길이가 같지만 직각은 없어요.' },
+  // ── June 18 ──
+  { date:'June 18', text: 'THE CAPITAL CITY OF SOUTH KOREA IS SEOUL',         kr: '대한민국의 수도는 서울이에요.' },
+  { date:'June 18', text: 'THE BLUE SKY IS THE BACKGROUND OF THE BEAUTIFUL PAINTING', kr: '파란 하늘이 아름다운 그림의 배경이에요.' },
+  { date:'June 18', text: 'TREES AND WATER ARE IMPORTANT NATURAL RESOURCES',  kr: '나무와 물은 중요한 천연자원이에요.' },
+  // ── June 23 ──
+  { date:'June 23', text: 'WE MADE A RECTANGLE SHAPE USING PAPER IN ART CLASS', kr: '미술 시간에 종이로 직사각형 모양을 만들었어요.' },
+  { date:'June 23', text: 'THE RAINFOREST IS HOME TO MANY KINDS OF ANIMALS AND PLANTS', kr: '열대우림은 수많은 동식물의 서식지예요.' },
+  { date:'June 23', text: 'MANY FISH AND WHALES LIVE IN THE DEEP OCEAN',      kr: '많은 물고기와 고래가 깊은 바다에 살아요.' },
+  // ── June 25 ──
+  { date:'June 25', text: 'A RAINBOW APPEARS WHEN SUNLIGHT SHINES THROUGH RAINDROPS IN THE AIR', kr: '무지개는 햇빛이 빗방울을 통과할 때 나타나요.' },
+  { date:'June 25', text: 'TREES PRODUCE OXYGEN WHICH IS THE AIR WE NEED TO BREATHE', kr: '나무는 우리가 숨쉬는 데 필요한 산소를 만들어요.' },
+  { date:'June 25', text: 'PENGUINS ARE BIRDS THAT CANNOT FLY BUT THEY ARE EXCELLENT SWIMMERS', kr: '펭귄은 날지 못하는 새이지만 수영을 매우 잘해요.' },
+  // ── June 30 ──
+  { date:'June 30', text: 'CAMELS CAN LIVE FOR A LONG TIME WITHOUT DRINKING ANY WATER', kr: '낙타는 물을 마시지 않고도 오랫동안 살 수 있어요.' },
+  { date:'June 30', text: 'THE SUN IS ACTUALLY A STAR AND IT IS THE CENTER OF OUR SOLAR SYSTEM', kr: '태양은 사실 별이고 우리 태양계의 중심이에요.' },
+  { date:'June 30', text: 'THE MOON DOES NOT HAVE ITS OWN LIGHT',             kr: '달은 자체적인 빛을 가지고 있지 않아요.' },
 ];
