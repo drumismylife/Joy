@@ -35,6 +35,13 @@ const DATE_GROUPS = [
   { label:'June 23',  color:'#FF6B9D' },
   { label:'June 25',  color:'#00CEC9' },
   { label:'June 30',  color:'#FDCB6E' },
+  { label:'July 2',   color:'#FF6B6B' },
+  { label:'July 7',   color:'#FF9F43' },
+  { label:'July 9',   color:'#FFC312' },
+  { label:'July 14',  color:'#6BCB77' },
+  { label:'July 16',  color:'#4D96FF' },
+  { label:'July 21',  color:'#A29BFE' },
+  { label:'July 23',  color:'#FF6B9D' },
 ];
 
 const SENTENCES = [
@@ -115,7 +122,7 @@ const SENTENCES = [
   { date:'June 9',  text: 'MY GEOGRAPHY CLASS IS VERY FUN WHEN WE STUDY MAPS AND RIVERS', kr: '지도와 강을 공부할 때 지리 수업이 매우 재미있어요.' },
   { date:'June 9',  text: 'ASIA IS THE LARGEST CONTINENT IN THE WORLD',       kr: '아시아는 세계에서 가장 큰 대륙이에요.' },
   // ── June 11 ──
-  { date:'June 11', text: 'LITERACY IS THE ABILITY TO READ WRITE AND UNDERSTAND', kr: '글을 읽고 쓰고 이해하는 능력을 문해력이라고 해요.' },
+  { date:'June 11', text: 'LITERACY IS THE ABILITY TO READ WRITE AND COMPREHEND', kr: '글을 읽고 쓰고 이해하는 능력을 문해력이라고 해요.' },
   { date:'June 11', text: 'THE BLUE WHALE IS THE LARGEST ANIMAL IN THE OCEAN', kr: '푸른 고래는 바다에서 가장 큰 동물이에요.' },
   { date:'June 11', text: 'ENGLISH IS A POPULAR LANGUAGE SPOKEN AROUND THE WORLD', kr: '영어는 세계 각지에서 사용되는 인기 있는 언어예요.' },
   // ── June 16 ──
@@ -138,4 +145,32 @@ const SENTENCES = [
   { date:'June 30', text: 'CAMELS CAN LIVE FOR A LONG TIME WITHOUT DRINKING ANY WATER', kr: '낙타는 물을 마시지 않고도 오랫동안 살 수 있어요.' },
   { date:'June 30', text: 'THE SUN IS ACTUALLY A STAR AND IT IS THE CENTER OF OUR SOLAR SYSTEM', kr: '태양은 사실 별이고 우리 태양계의 중심이에요.' },
   { date:'June 30', text: 'THE MOON DOES NOT HAVE ITS OWN LIGHT',             kr: '달은 자체적인 빛을 가지고 있지 않아요.' },
+  // ── July 2 ──
+  { date:'July 2',  text: 'I AGREE WITH MY MOMS OPINION ABOUT DINNER',        kr: '나는 저녁에 대한 엄마의 의견에 동의해요.' },
+  { date:'July 2',  text: 'HE WALKED ACROSS THE BARE GROUND WITHOUT SHOES',   kr: '그는 맨발로 맨땅을 걸었어요.' },
+  { date:'July 2',  text: 'THE CITY IS FAMOUS FOR ITS BEAUTIFUL PARKS',       kr: '그 도시는 아름다운 공원들로 유명해요.' },
+  // ── July 7 ──
+  { date:'July 7',  text: 'WE HAD A DELICIOUS FEAST ON CHRISTMAS EVE',        kr: '우리는 크리스마스 이브에 맛있는 잔치를 했어요.' },
+  { date:'July 7',  text: 'PLEASE BE GENTLE WITH THE NEW PUPPY',              kr: '새 강아지를 부드럽게 다뤄 주세요.' },
+  { date:'July 7',  text: 'OUR TEAM LEADER GAVE US INSTRUCTIONS FOR THE GAME', kr: '팀 리더가 게임 방법을 알려 주었어요.' },
+  // ── July 9 ──
+  { date:'July 9',  text: 'DID YOU NOTICE THE RAINBOW IN THE SKY',            kr: '하늘에 있는 무지개를 봤나요?' },
+  { date:'July 9',  text: 'THEY WENT ON A SEARCH FOR BURIED TREASURE',        kr: '그들은 묻힌 보물을 찾으러 갔어요.' },
+  { date:'July 9',  text: 'THE SICK KITTEN WAS TOO WEAK TO STAND',            kr: '아픈 아기 고양이는 서기에는 너무 약했어요.' },
+  // ── July 14 ──
+  { date:'July 14', text: 'THE FIRE ALARM RANG LOUDLY IN THE SCHOOL',         kr: '학교에서 화재 경보가 크게 울렸어요.' },
+  { date:'July 14', text: 'THEY WENT TO THE PARK TO COLLECT AUTUMN LEAVES',   kr: '그들은 가을 낙엽을 모으러 공원에 갔어요.' },
+  { date:'July 14', text: 'THE TOWEL GOT DAMP AFTER BEING USED TO WIPE UP THE SPILL', kr: '흘린 것을 닦고 나서 수건이 축축해졌어요.' },
+  // ── July 16 ──
+  { date:'July 16', text: 'AN INSECT LANDED ON MY ARM AT THE PICNIC',         kr: '소풍에서 곤충이 내 팔에 앉았어요.' },
+  { date:'July 16', text: 'WE PLANTED TOMATOES IN THE GARDEN LAST WEEKEND',   kr: '지난 주말에 정원에 토마토를 심었어요.' },
+  { date:'July 16', text: 'THE LIFEGUARD KEEPS US SAFE AT THE POOL',          kr: '수영장에서 안전요원이 우리를 지켜줘요.' },
+  // ── July 21 ──
+  { date:'July 21', text: 'THE WIND WILL SCATTER THE LEAVES ALL OVER THE YARD', kr: '바람이 잎들을 마당 곳곳에 흩뿌릴 거예요.' },
+  { date:'July 21', text: 'DIG INTO THE SOIL TO PLANT THE SEEDS',             kr: '씨앗을 심으려면 흙을 파세요.' },
+  { date:'July 21', text: 'OUR SOCCER TEAM PRACTICES EVERY TUESDAY',          kr: '우리 축구팀은 매주 화요일에 연습해요.' },
+  // ── July 23 ──
+  { date:'July 23', text: 'THE DOLPHIN CAN DIVE VERY DEEP IN THE OCEAN',      kr: '돌고래는 바다에서 아주 깊이 잠수할 수 있어요.' },
+  { date:'July 23', text: 'IN THE GAME WE HAVE TO DEFEAT THE ENEMY',          kr: '게임에서 우리는 적을 물리쳐야 해요.' },
+  { date:'July 23', text: 'THE LOUD THUNDER CAN FRIGHTEN LITTLE CHILDREN',    kr: '큰 천둥소리는 어린 아이들을 놀라게 할 수 있어요.' },
 ];

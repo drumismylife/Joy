@@ -34,6 +34,13 @@ var DATE_GROUPS = [
   { label:'June 23',  color:'#FF6B9D' },
   { label:'June 25',  color:'#00CEC9' },
   { label:'June 30',  color:'#FDCB6E' },
+  { label:'July 2',   color:'#FF6B6B' },
+  { label:'July 7',   color:'#FF9F43' },
+  { label:'July 9',   color:'#FFC312' },
+  { label:'July 14',  color:'#6BCB77' },
+  { label:'July 16',  color:'#4D96FF' },
+  { label:'July 21',  color:'#A29BFE' },
+  { label:'July 23',  color:'#FF6B9D' },
 ];
 
 var ALL_WORDS = [
@@ -187,4 +194,46 @@ var ALL_WORDS = [
   { date:'June 30', word:'SHIVER',  kr:'떨다',             emoji:'🥶', sentence:'To shake quickly, usually from cold or fear.' },
   { date:'June 30', word:'DOUBT',   kr:'의심하다',         emoji:'🤨', sentence:'To be not sure about something.' },
   { date:'June 30', word:'SQUEEZE', kr:'꽉 쥐다',          emoji:'🤜', sentence:'To hold or press something very tightly.' },
+  // ── July 2 ──
+  { date:'July 2',  word:'BEAM',    kr:'들보/비추다',      emoji:'🔦', sentence:'A long, strong piece of wood or metal that holds up part of a building; also means to send out light or energy.' },
+  { date:'July 2',  word:'CARVE',   kr:'조각하다',         emoji:'🪵', sentence:'To cut into something to make a shape or design.' },
+  { date:'July 2',  word:'DEN',     kr:'굴',               emoji:'🐻', sentence:'A place where some wild animals rest and sleep.' },
+  { date:'July 2',  word:'LEAN',    kr:'기대다/마른',      emoji:'🧍', sentence:'To bend in a certain direction; also means having very little fat on it.' },
+  { date:'July 2',  word:'ODD',     kr:'이상한/홀수',      emoji:'🤪', sentence:'Being different from what you are used to; not being able to be divided evenly by two.' },
+  // ── July 7 ──
+  { date:'July 7',  word:'PROPER',  kr:'올바른',           emoji:'✔️', sentence:'Being right or correct for the situation.' },
+  { date:'July 7',  word:'SCRAPE',  kr:'긁다',             emoji:'🔪', sentence:'To rub something against a rough or sharp surface.' },
+  { date:'July 7',  word:'STEER',   kr:'조종하다/황소',    emoji:'🐂', sentence:'To move something in a certain direction; also a bull that is raised for meat.' },
+  { date:'July 7',  word:'TENDER',  kr:'부드러운',         emoji:'🥩', sentence:'Soft and easy to cut or chew.' },
+  { date:'July 7',  word:'TENSE',   kr:'긴장한',           emoji:'😬', sentence:'Not relaxed; feeling tight or nervous.' },
+  // ── July 9 ──
+  { date:'July 9',  word:'DASH',    kr:'빠르게 가다/소량', emoji:'💨', sentence:'To move very quickly; also a small amount of something.' },
+  { date:'July 9',  word:'PRESENT', kr:'선물/현재',        emoji:'🎁', sentence:'Something given to someone out of kindness; also means being in a particular place.' },
+  { date:'July 9',  word:'CROSS',   kr:'건너다/화난',      emoji:'🚶', sentence:'To go from one side to the other; also means angry or not pleased.' },
+  { date:'July 9',  word:'STACK',   kr:'쌓다/더미',        emoji:'📚', sentence:'A neat pile of things placed on top of each other.' },
+  { date:'July 9',  word:'WONDER',  kr:'궁금하다',         emoji:'🤔', sentence:'To feel curious and have questions about something.' },
+  // ── July 14 ──
+  { date:'July 14', word:'ARRIVE',  kr:'도착하다',         emoji:'🏁', sentence:'To get to the place you were going to.' },
+  { date:'July 14', word:'CLEAR',   kr:'맑은/분명한',      emoji:'☀️', sentence:'Not cloudy or dark, and easy to see through.' },
+  { date:'July 14', word:'FLOAT',   kr:'떠다니다',         emoji:'🎈', sentence:'To stay on top of water or drift gently in the air.' },
+  { date:'July 14', word:'NIBBLE',  kr:'조금씩 먹다',      emoji:'🐭', sentence:'To eat something with very small, gentle bites.' },
+  { date:'July 14', word:'PALE',    kr:'창백한',           emoji:'🤍', sentence:'Having very little color, almost white.' },
+  // ── July 16 ──
+  { date:'July 16', word:'SCATTER', kr:'흩뿌리다',         emoji:'💨', sentence:'To throw or spread things over a large area.' },
+  { date:'July 16', word:'SEAL',    kr:'바다표범/봉인하다', emoji:'🦭', sentence:'A sea animal with thick fur and flippers that swims in cold places; also means to close something up tightly.' },
+  { date:'July 16', word:'ENTIRE',  kr:'전체의',           emoji:'🌐', sentence:'The whole thing, without leaving anything out.' },
+  { date:'July 16', word:'SCREECH', kr:'날카로운 소리',    emoji:'📢', sentence:'A loud, high-pitched sound; also means to make such a sound.' },
+  { date:'July 16', word:'SQUEEZE', kr:'꽉 쥐다',          emoji:'🤜', sentence:'To hold or press something very tightly.' },
+  // ── July 21 ──
+  { date:'July 21', word:'ESCAPE',  kr:'탈출하다',         emoji:'🏃', sentence:'To get away from a place or a dangerous situation.' },
+  { date:'July 21', word:'HONEST',  kr:'정직한',           emoji:'🤞', sentence:'Always telling the truth and not lying.' },
+  { date:'July 21', word:'LABEL',   kr:'라벨/표시하다',    emoji:'🏷️', sentence:'A sticker or tag on something that tells more about it; also means to write on a tag.' },
+  { date:'July 21', word:'MODERN',  kr:'현대의',           emoji:'🏙️', sentence:'Having to do with the present time, not the past.' },
+  { date:'July 21', word:'OBJECT',  kr:'물건',             emoji:'📦', sentence:'A thing that you can see or touch.' },
+  // ── July 23 ──
+  { date:'July 23', word:'PITCH',   kr:'던지다',           emoji:'⚾', sentence:'To throw something toward a target.' },
+  { date:'July 23', word:'SELECT',  kr:'고르다',           emoji:'👆', sentence:'To pick something out from a group.' },
+  { date:'July 23', word:'SNIFF',   kr:'킁킁거리다',      emoji:'👃', sentence:'To take in air through your nose in short, quick breaths.' },
+  { date:'July 23', word:'STABLE',  kr:'마구간/안정적인',  emoji:'🐴', sentence:'A building where horses are kept; also means strong and not easily moving.' },
+  { date:'July 23', word:'STEEP',   kr:'가파른',           emoji:'⛰️', sentence:'Having a sharp slope that is difficult to go up.' },
 ];
