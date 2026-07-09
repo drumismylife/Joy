@@ -10,7 +10,7 @@ const REPO = {
   subtitle: "기쁨이의 신나는 학습 놀이터 🎈",
   description: "수학, 국어, 영어 등 다양한 과목의 학습 앱을 모아두었습니다.",
   baseUrl: "https://drumismylife.github.io/Joy/",
-  lastUpdated: "2026-04-10"
+  lastUpdated: "2026-04-25"
 };
 
 const CATEGORIES = [
@@ -87,7 +87,7 @@ const apps = [
     emoji: "🔤",
     color: "#FF9F43",
     difficulty: 1,
-    updatedAt: "2026-04-10"
+    updatedAt: "2026-04-25"
   },
   {
     id: "joy_word4",
@@ -98,7 +98,7 @@ const apps = [
     emoji: "💬",
     color: "#48DBFB",
     difficulty: 2,
-    updatedAt: "2026-04-10"
+    updatedAt: "2026-04-25"
   },
   {
     id: "voice_assistant",
