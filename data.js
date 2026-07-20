@@ -10,7 +10,7 @@ const REPO = {
   subtitle: "기쁨이의 신나는 학습 놀이터 🎈",
   description: "수학, 국어, 영어 등 다양한 과목의 학습 앱을 모아두었습니다.",
   baseUrl: "https://drumismylife.github.io/Joy/",
-  lastUpdated: "2026-07-20"
+  lastUpdated: "2026-07-21"
 };
 
 const CATEGORIES = [
@@ -32,29 +32,7 @@ const apps = [
     emoji: "🔢",
     color: "#FF6B6B",
     difficulty: 1,
-    updatedAt: "2026-07-20"
-  },
-  {
-    id: "joy_plus",
-    title: "덧셈 마스터",
-    file: "Joy_plus.html",
-    description: "덧셈을 빠르고 정확하게! 귀여운 캐릭터와 함께하는 덧셈 훈련.",
-    category: ["math", "game"],
-    emoji: "➕",
-    color: "#FFB347",
-    difficulty: 1,
-    updatedAt: "2026-04-10"
-  },
-  {
-    id: "joy_x",
-    title: "곱셈 챌린지",
-    file: "Joy_x.html",
-    description: "구구단을 신나게 외워요. 스테이지 클리어에 도전!",
-    category: ["math", "game"],
-    emoji: "✖️",
-    color: "#C77DFF",
-    difficulty: 2,
-    updatedAt: "2026-04-10"
+    updatedAt: "2026-07-21"
   },
   {
     id: "joy_hangul",
@@ -76,7 +54,7 @@ const apps = [
     emoji: "🔤",
     color: "#FF9F43",
     difficulty: 1,
-    updatedAt: "2026-07-20"
+    updatedAt: "2026-07-21"
   },
   {
     id: "joy_word4",
@@ -87,7 +65,7 @@ const apps = [
     emoji: "💬",
     color: "#48DBFB",
     difficulty: 2,
-    updatedAt: "2026-07-20"
+    updatedAt: "2026-07-21"
   },
   {
     id: "joy_speak",
@@ -98,7 +76,7 @@ const apps = [
     emoji: "🦜",
     color: "#A29BFE",
     difficulty: 2,
-    updatedAt: "2026-07-20"
+    updatedAt: "2026-07-21"
   }
 ];
 
