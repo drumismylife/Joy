@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>기쁨이의 국어 나라 📖</title>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FFF9F0; --card:#FFFFFF; --border:#FFE0B2; --text:#3D2B1F; --muted:#A08070;
+  --gold:#FFB300; --green:#4CAF50; --red:#FF6B6B; --radius:28px; --font:'Gaegu', sans-serif;
+}
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+html,body { width:100%; height:100%; overflow:hidden; background:var(--bg); }
+body { font-family:var(--font); color:var(--text); touch-action:manipulation; }
+.screen { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; padding:20px; overflow-y:auto; }
+.screen.active { display:flex; }
+.big-btn { font-family:var(--font); font-weight:700; border:none; border-radius:999px; cursor:pointer;
+  transition:transform .12s; box-shadow:0 6px 0 rgba(0,0,0,.12); }
+.big-btn:active { transform:translateY(4px); box-shadow:0 2px 0 rgba(0,0,0,.12); }
+
+#title-screen .mascot { font-size:6rem; animation:bob 2.4s ease-in-out infinite; }
+@keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
+#title-screen h1 { font-size:clamp(2.4rem,8vw,3.2rem); margin:8px 0 4px; }
+#title-screen p { color:var(--muted); font-size:1.2rem; margin-bottom:32px; }
+.start-btn { background:var(--gold); color:#fff; font-size:1.6rem; padding:22px 56px; }
+
+#map-screen { padding:20px 16px; justify-content:flex-start; }
+.map-top { width:100%; max-width:640px; display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+.mascot-mini { font-size:2.6rem; }
+.map-title { font-size:1.5rem; flex:1; }
+.unit-grid { width:100%; max-width:640px; display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media (max-width:520px){ .unit-grid{ grid-template-columns:1fr; } }
+.unit-card { background:var(--card); border-radius:var(--radius); border:4px solid var(--ucolor,var(--border));
+  padding:18px 16px; text-align:center; box-shadow:0 6px 0 rgba(0,0,0,.06); min-height:148px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; cursor:pointer; }
+.unit-card:active { transform:translateY(3px); }
+.unit-icon { font-size:2.6rem; }
+.unit-name { font-size:1.15rem; line-height:1.25; }
+.unit-stars { font-size:1.1rem; color:var(--gold); }
+
+#quiz-screen { padding:16px; }
+.quiz-top { width:100%; max-width:560px; display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+.back-mini { width:48px; height:48px; border-radius:50%; background:var(--card); border:3px solid var(--border);
+  font-size:1.3rem; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.progress-wrap { flex:1; height:18px; background:var(--card); border:3px solid var(--border); border-radius:99px; overflow:hidden; }
+.progress-bar { height:100%; background:linear-gradient(90deg,#FFD166,#FFB300); border-radius:99px; transition:width .3s; }
+.quiz-stars { font-size:1.3rem; color:var(--gold); min-width:60px; text-align:right; }
+
+.quiz-card { background:var(--card); border-radius:var(--radius); border:4px solid var(--border);
+  padding:28px 20px; width:100%; max-width:560px; text-align:center; box-shadow:0 8px 0 rgba(0,0,0,.06); }
+.mascot-say { font-size:3.2rem; margin-bottom:4px; }
+.quiz-q { font-size:clamp(1.35rem,5.5vw,1.9rem); line-height:1.5; margin:10px 0 8px; }
+.quiz-big { font-size:clamp(2.4rem,12vw,3.4rem); margin:6px 0 14px; }
+.quiz-emoji-row { display:flex; justify-content:center; gap:10px; font-size:3rem; margin-bottom:10px; }
+.quiz-sub { font-size:1.2rem; color:var(--muted); margin-bottom:16px; }
+
+.choice-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px; }
+.choice-grid.wide { grid-template-columns:1fr; }
+.choice-btn { background:#FFF3DC; border:4px solid var(--border); border-radius:20px; min-height:92px;
+  font-family:var(--font); font-weight:700; font-size:1.5rem; color:var(--text); cursor:pointer;
+  box-shadow:0 6px 0 rgba(0,0,0,.08); transition:transform .1s; display:flex; align-items:center; justify-content:center; padding:10px 14px; line-height:1.3; }
+.choice-btn:active { transform:translateY(4px); box-shadow:0 2px 0 rgba(0,0,0,.08); }
+.choice-btn.correct { background:#E4F8E1; border-color:var(--green); }
+.choice-btn.wrong { background:#FFE3E3; border-color:var(--red); }
+
+.feedback-banner { position:fixed; top:24px; left:50%; transform:translateX(-50%);
+  font-size:1.6rem; font-weight:700; padding:10px 26px; border-radius:99px; z-index:50;
+  animation:bannerpop .9s ease forwards; pointer-events:none; }
+@keyframes bannerpop { 0%{opacity:0;transform:translate(-50%,-14px) scale(.8)} 15%{opacity:1;transform:translate(-50%,0) scale(1.05)}
+  25%{transform:translate(-50%,0) scale(1)} 80%{opacity:1} 100%{opacity:0;transform:translate(-50%,-6px) scale(1)} }
+.fb-ok { background:#E4F8E1; color:#2E7D32; }
+.fb-no { background:#FFF0DC; color:#B26A00; }
+
+#done-screen .mascot { font-size:5.5rem; }
+.done-card { background:var(--card); border-radius:var(--radius); border:4px solid var(--gold); padding:32px 26px;
+  text-align:center; max-width:420px; width:100%; box-shadow:0 8px 0 rgba(0,0,0,.08); }
+.done-title { font-size:1.9rem; margin:8px 0 6px; }
+.done-stars { font-size:2.6rem; margin:10px 0 18px; }
+.done-sub { color:var(--muted); font-size:1.15rem; margin-bottom:22px; }
+.done-btn { background:var(--gold); color:#fff; font-size:1.3rem; padding:16px 40px; }
+
+.confetti { position:fixed; pointer-events:none; z-index:60; width:10px; height:14px; border-radius:3px;
+  animation:conf-fall var(--dur,1.6s) ease-in var(--del,0s) forwards; }
+@keyframes conf-fall { 0%{transform:translateY(-10px) rotate(0);opacity:1} 100%{transform:translateY(105vh) rotate(480deg);opacity:0} }
+::-webkit-scrollbar{width:0;height:0}
+</style>
+<style id="joy-back-btn-style">
+  #joy-back { position:fixed; top:14px; left:14px; z-index:9999; background:#FF6B6B; color:#fff; border:none;
+    border-radius:99px; padding:10px 20px; font-family:'Gaegu',cursive; font-size:1.1rem; font-weight:700;
+    cursor:pointer; box-shadow:0 4px 16px rgba(255,107,107,.4); display:flex; align-items:center; gap:6px;
+    transition:transform .18s; text-decoration:none; }
+  #joy-back:hover { transform:scale(1.07); }
+  #joy-back:active { transform:scale(.95); }
+</style>
+</head>
+<body>
+<a id="joy-back" href="https://drumismylife.github.io/Joy/" title="메인으로 돌아가기">🏠 메인</a>
+
+<!-- ═══ 타이틀 ═══ -->
+<div class="screen active" id="title-screen">
+  <div class="mascot">🐥</div>
+  <h1>기쁨이의 국어 나라</h1>
+  <p>병아리 친구와 함께 2학년 국어를 배워요!</p>
+  <button class="big-btn start-btn" onclick="goMap()">시작하기 ✨</button>
+</div>
+
+<!-- ═══ 지도 ═══ -->
+<div class="screen" id="map-screen">
+  <div class="map-top"><div class="mascot-mini">🐥</div><div class="map-title">어디로 가볼까요?</div></div>
+  <div class="unit-grid" id="unit-grid"></div>
+</div>
+
+<!-- ═══ 문제 ═══ -->
+<div class="screen" id="quiz-screen">
+  <div class="quiz-top">
+    <div class="back-mini" onclick="goMap()">←</div>
+    <div class="progress-wrap"><div class="progress-bar" id="quiz-progress" style="width:0%"></div></div>
+    <div class="quiz-stars" id="quiz-star-count">⭐ 0</div>
+  </div>
+  <div class="quiz-card">
+    <div class="mascot-say" id="quiz-mascot">🐥</div>
+    <div class="quiz-q" id="quiz-q">문제</div>
+    <div class="quiz-big" id="quiz-big" style="display:none"></div>
+    <div class="quiz-emoji-row" id="quiz-emoji-row" style="display:none"></div>
+    <div class="quiz-sub" id="quiz-sub" style="display:none"></div>
+    <div class="choice-grid" id="quiz-choices"></div>
+  </div>
+</div>
+
+<!-- ═══ 완료 ═══ -->
+<div class="screen" id="done-screen">
+  <div class="mascot">🎉</div>
+  <div class="done-card">
+    <div class="done-title" id="done-title">완료했어요!</div>
+    <div class="done-stars" id="done-stars">⭐⭐⭐</div>
+    <div class="done-sub" id="done-sub">정말 잘했어요!</div>
+    <button class="big-btn done-btn" onclick="goMap()">지도로 돌아가기</button>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  국어 단원 정의 (초2 국어 6단원 — 2022 개정 교육과정 성취요소 기반)
+// ════════════════════════════════════════════════════════
+const UNITS = [
+  { id:'u1', icon:'🐶', name:'흉내 내는 말', color:'#FF8866', kind:'mimetic' },
+  { id:'u2', icon:'😊', name:'인물의 마음 짐작하기', color:'#4488FF', kind:'emotion' },
+  { id:'u3', icon:'🔢', name:'일이 일어난 차례', color:'#8866FF', kind:'sequence' },
+  { id:'u4', icon:'❓', name:'문장 부호', color:'#44CCAA', kind:'punctuation' },
+  { id:'u5', icon:'💬', name:'바르게 말해요', color:'#FF66CC', kind:'polite' },
+  { id:'u6', icon:'📖', name:'주요 내용 찾기', color:'#FFCC44', kind:'mainidea' },
+];
+const QUESTIONS_PER_SESSION = 8;
+const COLORS = ['#FF6B6B','#FFD166','#4CAF50','#4488FF','#FF9F1C','#CC66FF','#FF66CC','#44CCAA'];
+const SAY_OK = ['참 잘했어요! ⭐','정답이에요! 🎉','최고예요! 👏','바로 그거예요! ✨'];
+const SAY_NO = ['다시 해볼까요? 🤔','괜찮아요, 한 번 더! 💪','조금만 더 생각해봐요 😊'];
+
+// ── 1. 흉내 내는 말 (의성어·의태어) ──
+const MIMETIC = [
+  {sit:'개가 짖는 소리', emoji:'🐶', ans:'멍멍', wrong:['야옹','음매','꽥꽥']},
+  {sit:'고양이가 우는 소리', emoji:'🐱', ans:'야옹', wrong:['멍멍','음매','꿀꿀']},
+  {sit:'별이 반짝이는 모습', emoji:'⭐', ans:'반짝반짝', wrong:['쿵쿵','살금살금','보슬보슬']},
+  {sit:'비가 조용히 내리는 모습', emoji:'🌧️', ans:'보슬보슬', wrong:['쿵쿵','반짝반짝','데굴데굴']},
+  {sit:'발소리가 크게 나는 모습', emoji:'👣', ans:'쿵쿵', wrong:['살금살금','반짝반짝','보슬보슬']},
+  {sit:'조용히 걷는 모습', emoji:'🤫', ans:'살금살금', wrong:['쿵쿵','데굴데굴','반짝반짝']},
+  {sit:'공이 굴러가는 모습', emoji:'⚽', ans:'데굴데굴', wrong:['반짝반짝','살금살금','쿵쿵']},
+  {sit:'시계가 가는 소리', emoji:'🕐', ans:'똑딱똑딱', wrong:['멍멍','야옹','쿵쿵']},
+  {sit:'개구리가 우는 소리', emoji:'🐸', ans:'개굴개굴', wrong:['멍멍','야옹','음매']},
+  {sit:'문이 세게 닫히는 소리', emoji:'🚪', ans:'쾅', wrong:['반짝반짝','살금살금','보슬보슬']},
+];
+
+// ── 2. 인물의 마음 짐작하기 ──
+const EMOTIONS = [
+  {sit:'친구가 내 장난감을 부러뜨렸어요.', ans:'화남', wrong:['기쁨','신남','편안함']},
+  {sit:'생일 선물을 받았어요.', ans:'기쁨', wrong:['슬픔','화남','무서움']},
+  {sit:'밤에 혼자 화장실에 가요.', ans:'무서움', wrong:['기쁨','화남','편안함']},
+  {sit:'열심히 한 일을 칭찬받았어요.', ans:'뿌듯함', wrong:['슬픔','화남','무서움']},
+  {sit:'친한 친구가 전학을 가요.', ans:'슬픔', wrong:['기쁨','화남','신남']},
+  {sit:'내일 놀이공원에 가기로 했어요.', ans:'신남', wrong:['슬픔','화남','무서움']},
+  {sit:'동생이 내 그림을 망가뜨렸어요.', ans:'화남', wrong:['기쁨','편안함','신남']},
+  {sit:'숙제를 다 못 해서 마음이 무거워요.', ans:'걱정', wrong:['기쁨','신남','편안함']},
+];
+
+// ── 3. 일이 일어난 차례 ──
+const SEQUENCES = [
+  {steps:['밥을 먹었어요','이를 닦았어요','잠을 잤어요']},
+  {steps:['씨앗을 심었어요','물을 주었어요','꽃이 피었어요']},
+  {steps:['아침에 일어났어요','세수를 했어요','학교에 갔어요']},
+  {steps:['재료를 준비했어요','케이크를 만들었어요','촛불을 켰어요']},
+  {steps:['알에서 나왔어요','올챙이가 되었어요','개구리가 되었어요']},
+  {steps:['옷을 입었어요','신발을 신었어요','밖으로 나갔어요']},
+];
+
+// ── 4. 문장 부호 ──
+const PUNCTUATION = [
+  {text:'나는 학교에 가요', ans:'.', wrong:['?','!']},
+  {text:'지금 몇 시예요', ans:'?', wrong:['.','!']},
+  {text:'우와, 정말 멋지다', ans:'!', wrong:['.','?']},
+  {text:'이름이 뭐예요', ans:'?', wrong:['.','!']},
+  {text:'오늘은 날씨가 좋아요', ans:'.', wrong:['?','!']},
+  {text:'아이코, 깜짝이야', ans:'!', wrong:['.','?']},
+  {text:'어디에 가고 있어요', ans:'?', wrong:['.','!']},
+  {text:'나는 그림 그리기를 좋아해요', ans:'.', wrong:['?','!']},
+];
+
+// ── 5. 바르게 말해요 (칭찬·상황에 맞는 말) ──
+const POLITE = [
+  {sit:'친구가 그림을 멋지게 그렸어요.', ans:'정말 멋지다!', wrong:['그게 뭐야','별로다','이상해']},
+  {sit:'동생이 심부름을 도와줬어요.', ans:'고마워, 도움이 됐어', wrong:['왜 도와줘','필요없어','저리 가']},
+  {sit:'학교에서 선생님을 만났어요.', ans:'안녕하세요', wrong:['안녕','왔어요','야']},
+  {sit:'친구가 넘어져서 아파해요.', ans:'괜찮아? 많이 아프겠다', wrong:['왜 넘어져','바보같이','웃기다']},
+  {sit:'친구가 새 신발을 신고 왔어요.', ans:'신발이 예쁘다!', wrong:['별로네','촌스러워','신경 안 써']},
+  {sit:'친구 발표가 끝났어요.', ans:'발표 정말 잘했어!', wrong:['별로였어','지루했어','다음엔 잘해'] },
+];
+
+// ── 6. 주요 내용 찾기 (짧은 글 읽기) ──
+const READING = [
+  {text:'오늘 아침 강아지가 마당에서 공을 가지고 신나게 뛰어놀았어요.', q:'강아지는 무엇을 하고 놀았나요?', ans:'공', wrong:['인형','자전거','풍선']},
+  {text:'엄마와 나는 시장에 가서 싱싱한 사과와 배를 샀어요.', q:'우리는 어디에서 물건을 샀나요?', ans:'시장', wrong:['학교','병원','도서관']},
+  {text:'하늘에 먹구름이 가득해지더니 곧 비가 쏟아지기 시작했어요.', q:'하늘에 무엇이 가득했나요?', ans:'먹구름', wrong:['눈','무지개','별']},
+  {text:'나비가 꽃밭을 이리저리 날아다니며 예쁜 꽃마다 앉았어요.', q:'나비는 어디를 날아다녔나요?', ans:'꽃밭', wrong:['바다','운동장','지붕']},
+  {text:'우리 반 친구들은 운동회에서 힘차게 달리기를 했어요.', q:'친구들은 운동회에서 무엇을 했나요?', ans:'달리기', wrong:['그림 그리기','노래 부르기','책 읽기']},
+  {text:'할머니는 따뜻한 이불을 꺼내어 손자에게 덮어 주었어요.', q:'할머니는 손자에게 무엇을 덮어 주었나요?', ans:'이불', wrong:['우산','모자','수건']},
+];
+
+// ════════════════════════════════════════════════════════
+//  진행상황 저장
+// ════════════════════════════════════════════════════════
+function loadStars(){ try { return JSON.parse(localStorage.getItem('joyHangulStars2')||'{}'); } catch(e){ return {}; } }
+function saveStars(o){ localStorage.setItem('joyHangulStars2', JSON.stringify(o)); }
+let STARS = loadStars();
+
+// ════════════════════════════════════════════════════════
+//  화면 전환
+// ════════════════════════════════════════════════════════
+function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function goMap(){ renderMap(); showScreen('map-screen'); }
+function renderMap(){
+  const grid = document.getElementById('unit-grid');
+  grid.innerHTML = '';
+  UNITS.forEach(u=>{
+    const stars = STARS[u.id]||0;
+    const card = document.createElement('div');
+    card.className='unit-card'; card.style.setProperty('--ucolor', u.color);
+    card.onclick=()=>startUnit(u.id);
+    card.innerHTML = `<div class="unit-icon">${u.icon}</div><div class="unit-name">${u.name}</div>
+      <div class="unit-stars">${'⭐'.repeat(stars)}${'☆'.repeat(3-stars)}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//  세션
+// ════════════════════════════════════════════════════════
+let Q = { unit:null, idx:0, correct:0, current:null };
+
+function startUnit(unitId){
+  Q = { unit: UNITS.find(u=>u.id===unitId), idx:0, correct:0, current:null };
+  document.getElementById('quiz-star-count').textContent = `⭐ ${STARS[unitId]||0}`;
+  showScreen('quiz-screen');
+  nextQuestion();
+}
+
+function resetQuizUI(){
+  document.getElementById('quiz-big').style.display='none';
+  document.getElementById('quiz-emoji-row').style.display='none';
+  document.getElementById('quiz-sub').style.display='none';
+  document.getElementById('quiz-big').innerHTML='';
+  document.getElementById('quiz-emoji-row').innerHTML='';
+  document.getElementById('quiz-sub').textContent='';
+}
+
+function nextQuestion(){
+  if (Q.idx >= QUESTIONS_PER_SESSION){ finishUnit(); return; }
+  document.getElementById('quiz-progress').style.width=(Q.idx/QUESTIONS_PER_SESSION*100)+'%';
+  resetQuizUI();
+  const p = genQuestion(Q.unit.kind);
+  Q.current = p;
+  document.getElementById('quiz-mascot').textContent = '🐥';
+  document.getElementById('quiz-q').innerHTML = p.q;
+  if (p.big){ document.getElementById('quiz-big').style.display='block'; document.getElementById('quiz-big').textContent = p.big; }
+  if (p.emojiRow){ document.getElementById('quiz-emoji-row').style.display='flex'; document.getElementById('quiz-emoji-row').innerHTML = p.emojiRow; }
+  if (p.sub){ document.getElementById('quiz-sub').style.display='block'; document.getElementById('quiz-sub').textContent = p.sub; }
+
+  const row = document.getElementById('quiz-choices');
+  row.innerHTML='';
+  row.classList.toggle('wide', !!p.wide);
+  p.choices.forEach(c=>{
+    const btn=document.createElement('button');
+    btn.className='choice-btn'; btn.textContent=c;
+    btn.onclick=()=>onChoice(c, btn);
+    row.appendChild(btn);
+  });
+}
+
+function onChoice(val, btn){
+  document.querySelectorAll('#quiz-choices .choice-btn').forEach(b=>b.onclick=null);
+  const correct = String(val)===String(Q.current.ans);
+  if (correct){
+    btn.classList.add('correct'); Q.correct++;
+    banner(SAY_OK[Math.floor(Math.random()*SAY_OK.length)], 'fb-ok'); spawnConfetti();
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('#quiz-choices .choice-btn').forEach(b=>{ if(String(b.textContent)===String(Q.current.ans)) b.classList.add('correct'); });
+    banner(SAY_NO[Math.floor(Math.random()*SAY_NO.length)], 'fb-no');
+  }
+  Q.idx++;
+  setTimeout(()=>nextQuestion(), 1100);
+}
+
+function banner(text, cls){
+  const el=document.createElement('div'); el.className='feedback-banner '+cls; el.textContent=text;
+  document.body.appendChild(el); setTimeout(()=>el.remove(), 900);
+}
+function spawnConfetti(){
+  for(let i=0;i<16;i++){
+    const c=document.createElement('div'); c.className='confetti';
+    c.style.cssText=`left:${Math.random()*100}%;background:${COLORS[i%COLORS.length]};--dur:${Math.random()*.8+1}s;--del:${Math.random()*.2}s`;
+    document.body.appendChild(c); setTimeout(()=>c.remove(),1800);
+  }
+}
+function finishUnit(){
+  const ratio = Q.correct/QUESTIONS_PER_SESSION;
+  const stars = ratio>=0.9?3 : ratio>=0.6?2 : ratio>=0.3?1 : 0;
+  STARS[Q.unit.id] = Math.max(STARS[Q.unit.id]||0, stars);
+  saveStars(STARS);
+  document.getElementById('done-title').textContent = `${Q.unit.name} 완료!`;
+  document.getElementById('done-stars').textContent = '⭐'.repeat(stars)+'☆'.repeat(3-stars);
+  document.getElementById('done-sub').textContent = `${QUESTIONS_PER_SESSION}문제 중 ${Q.correct}개를 맞혔어요!`;
+  if (stars>=2) spawnConfetti();
+  showScreen('done-screen');
+}
+
+// ════════════════════════════════════════════════════════
+//  문제 생성 — 단원별
+// ════════════════════════════════════════════════════════
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function genQuestion(kind){
+  if (kind==='mimetic'){
+    const item = pick(MIMETIC);
+    return { q:'어울리는 흉내 내는 말은?', emojiRow:`<span>${item.emoji}</span>`, sub:item.sit,
+      ans:item.ans, choices:[item.ans, ...item.wrong].sort(()=>Math.random()-.5) };
+  }
+  if (kind==='emotion'){
+    const item = pick(EMOTIONS);
+    return { q:`${item.sit}<br>이때 마음은 어땠을까요?`, ans:item.ans,
+      choices:[item.ans, ...item.wrong].sort(()=>Math.random()-.5) };
+  }
+  if (kind==='sequence'){
+    const item = pick(SEQUENCES);
+    const shuffled = [...item.steps].sort(()=>Math.random()-.5);
+    return { q:'다음 중 <span style="color:var(--green)">가장 먼저</span> 일어난 일은?', wide:true,
+      ans:item.steps[0], choices:shuffled };
+  }
+  if (kind==='punctuation'){
+    const item = pick(PUNCTUATION);
+    return { q:`"${item.text}___"<br>빈칸에 알맞은 문장 부호는?`, ans:item.ans,
+      choices:[item.ans, ...item.wrong].sort(()=>Math.random()-.5) };
+  }
+  if (kind==='polite'){
+    const item = pick(POLITE);
+    return { q:`${item.sit}<br>가장 알맞은 말은?`, wide:true,
+      ans:item.ans, choices:[item.ans, ...item.wrong].sort(()=>Math.random()-.5) };
+  }
+  // mainidea
+  const item = pick(READING);
+  return { q:`${item.text}<br><br>${item.q}`, ans:item.ans, choices:[item.ans, ...item.wrong].sort(()=>Math.random()-.5) };
+}
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+renderMap();
+</script>
+</body>
+</html>

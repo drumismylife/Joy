@@ -10,7 +10,7 @@ const REPO = {
   subtitle: "기쁨이의 신나는 학습 놀이터 🎈",
   description: "수학, 국어, 영어 등 다양한 과목의 학습 앱을 모아두었습니다.",
   baseUrl: "https://drumismylife.github.io/Joy/",
-  lastUpdated: "2026-04-25"
+  lastUpdated: "2026-07-20"
 };
 
 const CATEGORIES = [
@@ -25,14 +25,14 @@ const CATEGORIES = [
 const apps = [
   {
     id: "joy_math",
-    title: "수학 모험",
+    title: "수학 나라",
     file: "Joy_math.html",
-    description: "사칙연산부터 수열까지, 레벨을 올리며 수학 실력을 키워요!",
+    description: "초등 2학년 수학 12개 단원을 부엉이 친구와 하나씩 배워요!",
     category: ["math", "game"],
     emoji: "🔢",
     color: "#FF6B6B",
-    difficulty: 2,
-    updatedAt: "2026-04-10"
+    difficulty: 1,
+    updatedAt: "2026-07-20"
   },
   {
     id: "joy_plus",
@@ -57,59 +57,48 @@ const apps = [
     updatedAt: "2026-04-10"
   },
   {
-    id: "joy_word",
-    title: "낱말 카드",
-    file: "Joy_word.html",
-    description: "그림과 함께 새로운 낱말을 익혀요. 어휘력 쑥쑥!",
-    category: ["lang", "word"],
+    id: "joy_hangul",
+    title: "국어 나라",
+    file: "Joy_hangul.html",
+    description: "초등 2학년 국어 6단원(흉내말·마음짐작·문장부호 등)을 병아리 친구와 배워요!",
+    category: ["lang", "game"],
     emoji: "📖",
     color: "#6BCB77",
-    difficulty: 1,
-    updatedAt: "2026-04-10"
-  },
-  {
-    id: "joy_word2",
-    title: "낱말 퀴즈",
-    file: "Joy_word2.html",
-    description: "배운 낱말을 퀴즈로 확인해요. 몇 개나 맞출 수 있을까?",
-    category: ["lang", "word", "game"],
-    emoji: "✏️",
-    color: "#4D96FF",
     difficulty: 2,
-    updatedAt: "2026-04-10"
+    updatedAt: "2026-07-21"
   },
   {
     id: "joy_word3",
     title: "영어 단어 게임",
     file: "Joy_word3.html",
-    description: "영어 단어를 게임으로 재미있게 익혀요!",
+    description: "영어 단어를 게임으로 재미있게 익혀요! (Wonders Grade 2 어휘 추가)",
     category: ["english", "word", "game"],
     emoji: "🔤",
     color: "#FF9F43",
     difficulty: 1,
-    updatedAt: "2026-04-25"
+    updatedAt: "2026-07-20"
   },
   {
     id: "joy_word4",
     title: "영어 문장 게임",
     file: "Joy_word4.html",
-    description: "영어 문장을 듣고 말하고 써봐요. 영어 실력이 쑥쑥!",
+    description: "영어 문장을 듣고 말하고 써봐요. (Wonders Grade 2 문장 추가)",
     category: ["english", "word", "game"],
     emoji: "💬",
     color: "#48DBFB",
     difficulty: 2,
-    updatedAt: "2026-04-25"
+    updatedAt: "2026-07-20"
   },
   {
-    id: "voice_assistant",
-    title: "영어 말하기 친구",
-    file: "voice-assistant-v2.html",
-    description: "AI 친구와 영어로 대화해요. 말하기 실력이 늘어나요!",
+    id: "joy_speak",
+    title: "말하기 연습",
+    file: "Joy_speak.html",
+    description: "앵무새 친구와 영어 문장을 듣고 따라 말해요. API 없이 무료!",
     category: ["english", "game"],
-    emoji: "🎙️",
+    emoji: "🦜",
     color: "#A29BFE",
     difficulty: 2,
-    updatedAt: "2026-04-10"
+    updatedAt: "2026-07-20"
   }
 ];
 
